@@ -47,6 +47,43 @@ const _nav = [
   //   component: CNavTitle,
   //   name: 'Components',
   // },
+    {
+    component: CNavGroup,
+    name: 'Masters',
+    to: '/masters',
+    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: 'Process',
+        to: '/process/add',
+      },
+      {
+        component: CNavItem,
+        name: 'Materials',
+        to: '/base/breadcrumbs',
+      },
+      // {
+      //   component: CNavItem,
+      //   name: (
+      //     <React.Fragment>
+      //       {'Calendar'}
+      //       <CIcon icon={cilExternalLink} size="sm" className="ms-2" />
+      //     </React.Fragment>
+      //   ),
+      //   href: 'https://coreui.io/react/docs/components/calendar/',
+      //   badge: {
+      //     color: 'danger',
+      //     text: 'PRO',
+      //   },
+      // },
+      {
+        component: CNavItem,
+        name: 'Departments',
+        to: '/base/cards',
+      },
+    ],
+  },
   // {
   //   component: CNavGroup,
   //   name: 'Base',
@@ -215,8 +252,8 @@ const _nav = [
   //         color: 'danger',
   //         text: 'PRO',
   //       },
-      // },
-    // ],
+  //     },
+  //   ],
   // },
   // {
   //   component: CNavGroup,
