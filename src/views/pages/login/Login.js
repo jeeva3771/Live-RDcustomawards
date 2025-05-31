@@ -36,7 +36,7 @@ const Login = () => {
                 <CCardBody>
                   <CForm>
                     <div className="text-center mb-1">
-                      <img src={logo} alt="Logo" className='bg-white-login'/>
+                      <img src={logo} alt="Logo" className="bg-white-login" />
                     </div>
                     <>
                       <h2>Login</h2>
@@ -46,14 +46,18 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilEnvelopeClosed} className="text-body-secondary" />
                       </CInputGroupText>
-                      <CFormInput placeholder="Email" autoComplete="email" defaultValue="rd@domain.com"/>
+                      <CFormInput
+                        placeholder="Email"
+                        autoComplete="email"
+                        defaultValue="rd@domain.com"
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} className="text-body-secondary" />
                       </CInputGroupText>
                       <CFormInput
-                        type={showPassword ? "text" : "password"}
+                        type={showPassword ? 'text' : 'password'}
                         placeholder="Password"
                         autoComplete="current-password"
                         defaultValue="rd#123"
@@ -69,7 +73,10 @@ const Login = () => {
                     </div>
                     <CRow>
                       <CCol xs={6}>
-                        <button className="px-4 bg-purple clr-white" onClick={() => navigate('/dashboard')}>
+                        <button
+                          className="px-4 bg-purple clr-white"
+                          onClick={() => navigate('/dashboard')}
+                        >
                           Login
                         </button>
                       </CCol>

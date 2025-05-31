@@ -47,7 +47,7 @@ const _nav = [
   //   component: CNavTitle,
   //   name: 'Components',
   // },
-    {
+  {
     component: CNavGroup,
     name: 'Masters',
     to: '/masters',
@@ -56,12 +56,12 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Process',
-        to: '/process/add',
+        to: '/process',
       },
       {
         component: CNavItem,
         name: 'Materials',
-        to: '/base/breadcrumbs',
+        to: '/materials',
       },
       // {
       //   component: CNavItem,
@@ -80,7 +80,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Departments',
-        to: '/base/cards',
+        to: '/departments',
       },
     ],
   },

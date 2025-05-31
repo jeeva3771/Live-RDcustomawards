@@ -19,6 +19,11 @@ import {
   CPaginationItem,
   CInputGroup,
   CInputGroupText,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import {
@@ -26,43 +31,178 @@ import {
   cilPencil,
   cilTrash,
   cilInfo,
+  cilSortAscending,
+  cilSortDescending,
 } from '@coreui/icons'
+import { useNavigate } from 'react-router-dom'
 
 const ProcessList = () => {
+  const navigate = useNavigate()
   // Sample data
   const [processes] = useState([
-    { id: 1, name: 'Customer Registration', code: 'CUST001', status: 'Active' },
-    { id: 2, name: 'Payment Processing', code: 'PAY002', status: 'Inactive' },
-    { id: 3, name: 'Order Management', code: 'ORD003', status: 'Active' },
-    { id: 4, name: 'Inventory Update', code: 'INV004', status: 'Inactive' },
-    { id: 5, name: 'Email Notification', code: 'EML005', status: 'Active' },
-    { id: 6, name: 'Data Backup', code: 'BAK006', status: 'Active' },
-    { id: 7, name: 'Report Generation', code: 'RPT007', status: 'Inactive' },
-    { id: 8, name: 'Security Scan', code: 'SEC008', status: 'Active' },
-    { id: 9, name: 'System Maintenance', code: 'SYS009', status: 'Active' },
-    { id: 10, name: 'Data Migration', code: 'MIG010', status: 'Inactive' },
-    { id: 11, name: 'API Integration', code: 'API011', status: 'Active' },
-    { id: 12, name: 'Log Cleanup', code: 'LOG012', status: 'Inactive' },
+    {
+      id: 1,
+      name: 'Customer Registration',
+      code: 'CUST001',
+      status: 'Active',
+      createdAt: '2024-01-15 09:30 AM',
+      createdBy: 'John Doe',
+      updatedAt: '2024-12-20 4:25 PM',
+      updatedBy: 'Ram Kumar',
+    },
+    {
+      id: 2,
+      name: 'Payment Processing',
+      code: 'PAY002',
+      status: 'Inactive',
+      createdAt: '2024-02-10 11:15 AM',
+      createdBy: 'Jane Smith',
+      updatedAt: '2024-12-18 6:30 PM',
+      updatedBy: 'Kumar',
+    },
+    {
+      id: 3,
+      name: 'Order Management',
+      code: 'ORD003',
+      status: 'Active',
+      createdAt: '2024-03-05 11:20 AM',
+      createdBy: 'Mike Johnson',
+      updatedAt: '2024-12-19 11:45 PM',
+      updatedBy: 'Siva',
+    },
+    {
+      id: 4,
+      name: 'Inventory Update',
+      code: 'INV004',
+      status: 'Inactive',
+      createdAt: '2024-04-12 08:45 AM',
+      createdBy: 'Sarah Wilson',
+      updatedAt: '2024-12-17 3:20 PM',
+      updatedBy: 'Ravi',
+    },
+    {
+      id: 5,
+      name: 'Email Notification',
+      code: 'EML005',
+      status: 'Active',
+      createdAt: '2024-05-18 08:45 AM',
+      createdBy: 'David Chen',
+      updatedAt: '2024-12-21 07:45 AM',
+      updatedBy: 'Ravi',
+    },
+    {
+      id: 6,
+      name: 'Data Backup',
+      code: 'BAK006',
+      status: 'Active',
+      createdAt: '2024-06-22 09:45 AM',
+      createdBy: 'Lisa Anderson',
+      updatedAt: '2024-12-20 10:45 AM',
+      updatedBy: 'Suresh',
+    },
+    {
+      id: 7,
+      name: 'Report Generation',
+      code: 'RPT007',
+      status: 'Inactive',
+      createdAt: '2024-07-08 09:45 AM',
+      createdBy: 'Robert Taylor',
+      updatedAt: '2024-12-16 02:45 AM',
+      updatedBy: 'Dinesh',
+    },
+    {
+      id: 8,
+      name: 'Security Scan',
+      code: 'SEC008',
+      status: 'Active',
+      createdAt: '2024-08-14 04:45 AM',
+      createdBy: 'Emily Davis',
+      updatedAt: '2024-12-22 09:45 AM',
+      updatedBy: 'Dinesh',
+    },
+    {
+      id: 9,
+      name: 'System Maintenance',
+      code: 'SYS009',
+      status: 'Active',
+      createdAt: '2024-09-03 02:45 AM',
+      createdBy: 'Tom Brown',
+      updatedAt: '2024-12-19 09:45 AM',
+      updatedBy: 'Suresh',
+    },
+    {
+      id: 10,
+      name: 'Data Migration',
+      code: 'MIG010',
+      status: 'Inactive',
+      createdAt: '2024-10-11 09:45 AM',
+      createdBy: 'Anna White',
+      updatedAt: '2024-12-15 09:45 AM',
+      updatedBy: 'Praveen',
+    },
+    {
+      id: 11,
+      name: 'API Integration',
+      code: 'API011',
+      status: 'Active',
+      createdAt: '2024-11-07 01:45 AM',
+      createdBy: 'Chris Green',
+      updatedAt: '2024-12-21 09:45 PM',
+      updatedBy: 'Praveen',
+    },
+    {
+      id: 12,
+      name: 'Log Cleanup',
+      code: 'LOG012',
+      status: 'Inactive',
+      createdAt: '2024-12-01 11:45 AM',
+      createdBy: 'Mark Wilson',
+      updatedAt: '2024-12-18 09:45 AM',
+      updatedBy: 'Praveen',
+    },
   ])
 
   // State management
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemsPerPage] = useState(5)
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
+  const [showModal, setShowModal] = useState(false)
+  const [modalType, setModalType] = useState('')
+  const [selectedProcess, setSelectedProcess] = useState(null)
 
   // Filtering
   const filteredProcesses = useMemo(() => {
-    return processes.filter(process =>
-      process.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      process.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      process.status.toLowerCase().includes(searchTerm.toLowerCase())
+    return processes.filter(
+      (process) =>
+        process.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        process.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        process.status.toLowerCase().includes(searchTerm.toLowerCase()),
     )
   }, [processes, searchTerm])
 
+  // Sorting
+  const sortedProcesses = useMemo(() => {
+    if (!sortConfig.key) return filteredProcesses
+
+    return [...filteredProcesses].sort((a, b) => {
+      if (a[sortConfig.key] < b[sortConfig.key]) {
+        return sortConfig.direction === 'asc' ? -1 : 1
+      }
+      if (a[sortConfig.key] > b[sortConfig.key]) {
+        return sortConfig.direction === 'asc' ? 1 : -1
+      }
+      return 0
+    })
+  }, [filteredProcesses, sortConfig])
+
   // Pagination
-  const totalPages = Math.ceil(filteredProcesses.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const paginatedProcesses = filteredProcesses.slice(startIndex, startIndex + itemsPerPage)
+  const totalPages = itemsPerPage === 'all' ? 1 : Math.ceil(sortedProcesses.length / itemsPerPage)
+  const startIndex = itemsPerPage === 'all' ? 0 : (currentPage - 1) * itemsPerPage
+  const paginatedProcesses =
+    itemsPerPage === 'all'
+      ? sortedProcesses
+      : sortedProcesses.slice(startIndex, startIndex + itemsPerPage)
 
   // Reset to first page when search changes
   React.useEffect(() => {
@@ -70,16 +210,48 @@ const ProcessList = () => {
   }, [searchTerm])
 
   const handleAction = (action, process) => {
-    console.log(`${action} action for process:`, process)
-    // Implement your action logic here
+    if (action === 'info' || action === 'delete') {
+      setModalType(action)
+      setSelectedProcess(process)
+      setShowModal(true)
+    } else if (action === 'edit') {
+      console.log('Edit action for process:', process)
+      // Implement edit logic here (e.g., navigate to edit page)
+    }
+  }
+
+  const handleModalClose = () => {
+    setShowModal(false)
+    setModalType('')
+    setSelectedProcess(null)
+  }
+
+  const handleDeleteConfirm = () => {
+    console.log('Delete process:', selectedProcess)
+    // Implement actual delete logic here
+    handleModalClose()
+  }
+
+  const handleSort = (key) => {
+    setSortConfig((prevConfig) => ({
+      key,
+      direction: prevConfig.key === key && prevConfig.direction === 'asc' ? 'desc' : 'asc',
+    }))
+  }
+
+  const getSortIcon = (columnKey) => {
+    if (sortConfig.key !== columnKey) return null
+    return (
+      <CIcon
+        icon={sortConfig.direction === 'asc' ? cilSortAscending : cilSortDescending}
+        size="sm"
+        className="ms-1"
+      />
+    )
   }
 
   const getStatusBadge = (status) => {
-    return (
-      <CBadge color={status === 'Active' ? 'success' : 'secondary'}>
-        {status}
-      </CBadge>
-    )
+    return <CBadge color={status === 'Active' ? 'success' : 'secondary'}>{status}</CBadge>
   }
 
   return (
@@ -91,20 +263,20 @@ const ProcessList = () => {
         <CCardBody>
           {/* Search Bar and Button */}
           <CRow className="mb-3">
-            <CCol md={4}>
-              <CInputGroup size="sm">
+            <CCol md={3}>
+              <CInputGroup>
                 <CInputGroupText>
-                  <CIcon icon={cilSearch} size="sm" />
+                  <CIcon icon={cilSearch} />
                 </CInputGroupText>
                 <CFormInput
-                  placeholder="Search processes..."
+                  placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
               </CInputGroup>
             </CCol>
-            <CCol md={8} className="d-flex justify-content-end">
-              <CButton color="primary" size="sm">
+            <CCol md={9} className="d-flex justify-content-end">
+              <CButton color="primary" onClick={() => navigate('/process/add')}>
                 Add
               </CButton>
             </CCol>
@@ -115,17 +287,37 @@ const ProcessList = () => {
             <CTableHead>
               <CTableRow>
                 <CTableHeaderCell scope="col">S.No</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Process Name</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Code</CTableHeaderCell>
-                <CTableHeaderCell scope="col">Status</CTableHeaderCell>
-                <CTableHeaderCell scope="col" className="text-center">Actions</CTableHeaderCell>
+                <CTableHeaderCell
+                  scope="col"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleSort('name')}
+                >
+                  Process Name{getSortIcon('name')}
+                </CTableHeaderCell>
+                <CTableHeaderCell
+                  scope="col"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleSort('code')}
+                >
+                  Code{getSortIcon('code')}
+                </CTableHeaderCell>
+                <CTableHeaderCell
+                  scope="col"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleSort('status')}
+                >
+                  Status{getSortIcon('status')}
+                </CTableHeaderCell>
+                <CTableHeaderCell scope="col" className="text-center">
+                  Actions
+                </CTableHeaderCell>
               </CTableRow>
             </CTableHead>
             <CTableBody>
               {paginatedProcesses.length > 0 ? (
                 paginatedProcesses.map((process, index) => (
                   <CTableRow key={process.id}>
-                    <CTableHeaderCell scope="row">{startIndex + index + 1}</CTableHeaderCell>
+                    <CTableDataCell>{startIndex + index + 1}</CTableDataCell>
                     <CTableDataCell>{process.name}</CTableDataCell>
                     <CTableDataCell>{process.code}</CTableDataCell>
                     <CTableDataCell>{getStatusBadge(process.status)}</CTableDataCell>
@@ -145,7 +337,7 @@ const ProcessList = () => {
                         variant="outline"
                         size="sm"
                         className="me-1"
-                        onClick={() => handleAction('edit', process)}
+                        onClick={() => navigate('/process/1')}
                         title="Edit Process"
                       >
                         <CIcon icon={cilPencil} size="sm" />
@@ -182,7 +374,8 @@ const ProcessList = () => {
                 style={{ width: 'auto' }}
                 value={itemsPerPage}
                 onChange={(e) => {
-                  setItemsPerPage(Number(e.target.value))
+                  const value = e.target.value === 'all' ? 'all' : Number(e.target.value)
+                  setItemsPerPage(value)
                   setCurrentPage(1)
                 }}
               >
@@ -190,20 +383,24 @@ const ProcessList = () => {
                 <option value={10}>10</option>
                 <option value={25}>25</option>
                 <option value={50}>50</option>
+                <option value="all">All</option>
               </CFormSelect>
               <span className="ms-2">entries</span>
               <small className="text-muted ms-3">
-                Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredProcesses.length)} of {filteredProcesses.length} entries
+                {itemsPerPage === 'all'
+                  ? `Showing all ${sortedProcesses.length} entries`
+                  : `Showing ${startIndex + 1} to ${Math.min(startIndex + itemsPerPage, sortedProcesses.length)} of ${sortedProcesses.length} entries`}
               </small>
             </CCol>
 
             {/* Pagination - Right */}
             <CCol md={6} className="d-flex justify-content-end">
-              {totalPages > 1 && (
+              {totalPages > 1 && itemsPerPage !== 'all' && (
                 <CPagination>
                   <CPaginationItem
                     disabled={currentPage === 1}
                     onClick={() => setCurrentPage(currentPage - 1)}
+                    style={{ cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
                   >
                     Previous
                   </CPaginationItem>
@@ -212,6 +409,7 @@ const ProcessList = () => {
                       key={page}
                       active={page === currentPage}
                       onClick={() => setCurrentPage(page)}
+                      style={{ cursor: 'pointer' }}
                     >
                       {page}
                     </CPaginationItem>
@@ -219,6 +417,7 @@ const ProcessList = () => {
                   <CPaginationItem
                     disabled={currentPage === totalPages}
                     onClick={() => setCurrentPage(currentPage + 1)}
+                    style={{ cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
                   >
                     Next
                   </CPaginationItem>
@@ -228,6 +427,162 @@ const ProcessList = () => {
           </CRow>
         </CCardBody>
       </CCard>
+
+      {/* Modal for View/Delete */}
+      <CModal
+        visible={showModal}
+        onClose={handleModalClose}
+        size="md"
+        alignment="center"
+        backdrop="static"
+      >
+        <CModalHeader closeButton>
+          <strong className="clr-blue fs-5">
+            {modalType === 'info' && 'Process Details'}
+            {modalType === 'delete' && 'Delete Process'}
+          </strong>
+        </CModalHeader>
+
+        <CModalBody>
+          {selectedProcess && modalType === 'info' && (
+            <div>
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Process Name
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.name}</CCol>
+              </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Code
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.code}</CCol>
+              </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Status
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{getStatusBadge(selectedProcess.status)}</CCol>
+              </CRow>
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  CreatedAt
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.createdAt}</CCol>
+              </CRow>
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  CreatedBy
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.createdBy}</CCol>
+              </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  UpdatedAt
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.updatedAt}</CCol>
+              </CRow>
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  UpdatedBy
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.updatedBy}</CCol>
+              </CRow>
+            </div>
+          )}
+
+          {selectedProcess && modalType === 'delete' && (
+            <div className="text-center">
+              <div className="mb-4">
+                <CIcon icon={cilTrash} size="xxl" className="text-danger mb-3" />
+                <h5>Confirm Deletion</h5>
+              </div>
+              <p className="mb-4">
+                Are you sure you want to delete the process{' '}
+                <strong className="clr-black">"{selectedProcess.name}"</strong>?
+                <br />
+                <small className="text-muted">This action cannot be undone.</small>
+              </p>
+              {/* <div className="bg-light p-3 rounded">
+
+                <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Process Name
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.name}</CCol>
+              </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Code
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.code}</CCol>
+              </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Status
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>
+                  <CBadge color="success">{selectedProcess.status}</CBadge>
+                </CCol>
+              </CRow>
+              </div> */}
+            </div>
+          )}
+        </CModalBody>
+
+        <CModalFooter className="justify-content-center">
+          {modalType === 'info' && (
+            <CButton color="secondary" onClick={handleModalClose}>
+              Close
+            </CButton>
+          )}
+          {modalType === 'delete' && (
+            <>
+              <CButton color="secondary" onClick={handleModalClose}>
+                Cancel
+              </CButton>
+              <CButton color="danger" className="text-white" onClick={handleDeleteConfirm}>
+                Yes, Delete
+              </CButton>
+            </>
+          )}
+        </CModalFooter>
+      </CModal>
     </CCol>
   )
 }

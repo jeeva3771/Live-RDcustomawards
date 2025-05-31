@@ -59,7 +59,6 @@
 
 // export default App
 
-
 import React, { Suspense, useEffect } from 'react'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -89,7 +88,13 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Suspense fallback={<div className="pt-3 text-center"><CSpinner color="primary" variant="grow" /></div>}>
+      <Suspense
+        fallback={
+          <div className="pt-3 text-center">
+            <CSpinner color="primary" variant="grow" />
+          </div>
+        }
+      >
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />

@@ -17,11 +17,15 @@ import {
   CRow,
 } from '@coreui/react'
 import { DocsComponents, DocsExample } from 'src/components'
+import { useNavigate, useParams } from 'react-router-dom'
+
 const Tooltips = () => {
+  const { processId } = useParams()
+  const navigate = useNavigate()
   // const [validated, setValidated] = useState(false)
   const handleSubmit = (event) => {
-      event.preventDefault()
-      event.stopPropagation()
+    event.preventDefault()
+    event.stopPropagation()
   }
   return (
     <CForm
@@ -31,21 +35,27 @@ const Tooltips = () => {
       onSubmit={handleSubmit}
     >
       <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="processName" className="clr-black fw-medium">Process Name</CFormLabel>
+        <CFormLabel htmlFor="processName" className="clr-black fw-medium">
+          Process Name
+        </CFormLabel>
         <CFormInput type="text" id="processName" required />
         {/* <CFormFeedback tooltip invalid>
           Please provide a valid process name.
         </CFormFeedback> */}
       </CCol>
       <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="code" className="clr-black fw-medium">Code</CFormLabel>
+        <CFormLabel htmlFor="code" className="clr-black fw-medium">
+          Code
+        </CFormLabel>
         <CFormInput type="text" id="code" required />
         {/* <CFormFeedback tooltip invalid>
           Please provide a valid code.
         </CFormFeedback> */}
       </CCol>
       <CCol md={4} className="position-relative mb-2">
-        <CFormLabel htmlFor="status" className="clr-black fw-medium">Status</CFormLabel>
+        <CFormLabel htmlFor="status" className="clr-black fw-medium">
+          Status
+        </CFormLabel>
         <CFormSelect id="status" required>
           <option defaultValue="">Select status</option>
           <option value="active">Active</option>
@@ -87,16 +97,27 @@ const Tooltips = () => {
           Please provide a valid zip.
         </CFormFeedback>
       </CCol> */}
-      <CCol xs={12} className="position-relative text-center">
-        <CButton color="primary" type="submit">
-          Submit
-        </CButton>
+      <CCol xs={12} className="d-flex justify-content-center gap-2 flex-wrap">
+        {processId ? (
+          <CButton color="primary" type="submit" onClick={() => navigate('/process')}>
+            Update
+          </CButton>
+        ) : (
+          <>
+            <CButton color="danger" type="reset" className="text-white">
+              Reset
+            </CButton>
+            <CButton color="primary" type="submit" onClick={() => navigate('/process')}>
+              Submit
+            </CButton>
+          </>
+        )}
       </CCol>
     </CForm>
   )
 }
 
-const Process = () => {
+const ProcessForm = () => {
   return (
     <>
       <CCol xs={12}>
@@ -121,4 +142,4 @@ const Process = () => {
   )
 }
 
-export default Process
+export default ProcessForm

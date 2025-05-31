@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, matchPath } from 'react-router-dom'
 
 import routes from '../routes'
 
@@ -8,9 +8,17 @@ import { CBreadcrumb, CBreadcrumbItem } from '@coreui/react'
 const AppBreadcrumb = () => {
   const currentLocation = useLocation().pathname
 
+  // const getRouteName = (pathname, routes) => {
+  //   const currentRoute = routes.find((route) => route.path === pathname)
+  //   return currentRoute ? currentRoute.name : false
+  // }
+
   const getRouteName = (pathname, routes) => {
-    const currentRoute = routes.find((route) => route.path === pathname)
-    return currentRoute ? currentRoute.name : false
+    for (const route of routes) {
+      const match = matchPath({ path: route.path, end: true }, pathname)
+      if (match) return route.name
+    }
+    return false
   }
 
   const getBreadcrumbs = (location) => {
