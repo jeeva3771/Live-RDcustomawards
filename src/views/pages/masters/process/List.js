@@ -276,9 +276,15 @@ const ProcessList = () => {
               </CInputGroup>
             </CCol>
             <CCol md={9} className="d-flex justify-content-end">
-              <CButton color="primary" onClick={() => navigate('/process/add')}>
+              {/* <CButton color="primary" onClick={() => navigate('/process/add')}>
                 Add
-              </CButton>
+              </CButton> */}
+              <button
+                className="px-3 bg-blue clr-white button-sizing"
+                onClick={() => navigate('/process/add')}
+              >
+                Add
+              </button>
             </CCol>
           </CRow>
 
@@ -567,18 +573,27 @@ const ProcessList = () => {
 
         <CModalFooter className="justify-content-center">
           {modalType === 'info' && (
-            <CButton color="secondary" onClick={handleModalClose}>
+            // <CButton color="secondary" onClick={handleModalClose}>
+            //   Close
+            // </CButton>
+            <button className="px-3 bg-blue clr-white button-sizing" onClick={handleModalClose}>
               Close
-            </CButton>
+            </button>
           )}
           {modalType === 'delete' && (
             <>
               <CButton color="secondary" onClick={handleModalClose}>
                 Cancel
               </CButton>
-              <CButton color="danger" className="text-white" onClick={handleDeleteConfirm}>
+              {/* <CButton color="danger" className="text-white" onClick={handleDeleteConfirm}>
                 Yes, Delete
-              </CButton>
+              </CButton> */}
+              <button
+                className="px-3 bg-blue clr-white button-sizing"
+                onClick={handleDeleteConfirm}
+              >
+                Yes, Delete
+              </button>
             </>
           )}
         </CModalFooter>

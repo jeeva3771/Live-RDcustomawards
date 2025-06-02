@@ -30,7 +30,7 @@ import { AppHeaderDropdown } from './header/index'
 
 const AppHeader = () => {
   const headerRef = useRef()
-  const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
+  const { colorMode, setColorMode } = useColorModes('light')
 
   const dispatch = useDispatch()
   const sidebarShow = useSelector((state) => state.sidebarShow)
@@ -95,7 +95,7 @@ const AppHeader = () => {
                 <CIcon icon={cilSun} size="lg" />
               )}
             </CDropdownToggle>
-            <CDropdownMenu>
+            {/* <CDropdownMenu>
               <CDropdownItem
                 active={colorMode === 'light'}
                 className="d-flex align-items-center"
@@ -123,7 +123,7 @@ const AppHeader = () => {
               >
                 <CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
               </CDropdownItem>
-            </CDropdownMenu>
+            </CDropdownMenu> */}
           </CDropdown>
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>

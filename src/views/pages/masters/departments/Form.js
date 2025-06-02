@@ -99,17 +99,29 @@ const Tooltips = () => {
       </CCol> */}
       <CCol xs={12} className="d-flex justify-content-center gap-2 flex-wrap">
         {departmentId ? (
-          <CButton color="primary" type="submit" onClick={() => navigate('/departments')}>
+          // <CButton color="primary" type="submit" onClick={() => navigate('/departments')}>
+          //   Update
+          // </CButton>
+          <button
+            className="px-3 bg-blue clr-white button-sizing"
+            onClick={() => navigate('/departments')}
+          >
             Update
-          </CButton>
+          </button>
         ) : (
           <>
             <CButton color="danger" type="reset" className="text-white">
               Reset
             </CButton>
-            <CButton color="primary" type="submit" onClick={() => navigate('/departments')}>
+            {/* <CButton color="primary" type="submit" onClick={() => navigate('/departments')}>
               Submit
-            </CButton>
+            </CButton> */}
+            <button
+              className="px-3 bg-blue clr-white button-sizing"
+              onClick={() => navigate('/departments')}
+            >
+              Submit
+            </button>
           </>
         )}
       </CCol>

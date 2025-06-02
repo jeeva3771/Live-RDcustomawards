@@ -16,7 +16,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilEnvelopeClosed } from '@coreui/icons'
-import logo from '../../../../public/logo.svg'
+import logo from '../../../../src/logo.svg'
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -34,7 +34,7 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
+                  <div>
                     <div className="text-center mb-1">
                       <img src={logo} alt="Logo" className="bg-white-login" />
                     </div>
@@ -74,19 +74,19 @@ const Login = () => {
                     <CRow>
                       <CCol xs={6}>
                         <button
-                          className="px-4 bg-purple clr-white"
+                          className="px-4 bg-blue clr-white button-sizing"
                           onClick={() => navigate('/dashboard')}
                         >
                           Login
                         </button>
                       </CCol>
                       <CCol xs={6} className="text-end">
-                        <CButton color="link" className="px-0">
+                        <CButton color="link" className="clr-blue px-0">
                           Forgot password?
                         </CButton>
                       </CCol>
                     </CRow>
-                  </CForm>
+                  </div>
                 </CCardBody>
               </CCard>
             </CCardGroup>

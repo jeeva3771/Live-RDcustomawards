@@ -36,7 +36,6 @@ import {
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 
-
 const MaterialsList = () => {
   const navigate = useNavigate()
 
@@ -328,7 +327,14 @@ const MaterialsList = () => {
               </CInputGroup>
             </CCol>
             <CCol md={9} className="d-flex justify-content-end">
-              <CButton color="primary" onClick={() => navigate('/materials/add')}>Add</CButton>
+              {/* <CButton color="primary" onClick={() => navigate('/materials/add')}>Add</CButton>
+               */}
+              <button
+                className="px-3 bg-blue clr-white button-sizing"
+                onClick={() => navigate('/materials/add')}
+              >
+                Add
+              </button>
             </CCol>
           </CRow>
 
@@ -689,18 +695,27 @@ const MaterialsList = () => {
 
         <CModalFooter className="justify-content-center">
           {modalType === 'info' && (
-            <CButton color="secondary" onClick={handleModalClose}>
+            // <CButton color="secondary" onClick={handleModalClose}>
+            //   Close
+            // </CButton>
+            <button className="px-3 bg-blue clr-white button-sizing" onClick={handleModalClose}>
               Close
-            </CButton>
+            </button>
           )}
           {modalType === 'delete' && (
             <>
               <CButton color="secondary" onClick={handleModalClose}>
                 Cancel
               </CButton>
-              <CButton color="danger" className="text-white" onClick={handleDeleteConfirm}>
+              {/* <CButton color="danger" className="text-white" onClick={handleDeleteConfirm}>
                 Yes, Delete
-              </CButton>
+              </CButton> */}
+              <button
+                className="px-3 bg-blue clr-white button-sizing"
+                onClick={handleDeleteConfirm}
+              >
+                Yes, Delete
+              </button>
             </>
           )}
         </CModalFooter>

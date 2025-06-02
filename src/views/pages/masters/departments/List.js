@@ -264,9 +264,12 @@ const DepartmentList = () => {
               </CInputGroup>
             </CCol>
             <CCol md={9} className="d-flex justify-content-end">
-              <CButton color="primary" onClick={() => navigate('/departments/add')}>
+              <button
+                className="px-3 bg-blue clr-white button-sizing"
+                onClick={() => navigate('/departments/add')}
+              >
                 Add
-              </CButton>
+              </button>
             </CCol>
           </CRow>
 
@@ -521,18 +524,27 @@ const DepartmentList = () => {
 
         <CModalFooter className="justify-content-center">
           {modalType === 'info' && (
-            <CButton color="secondary" onClick={handleModalClose}>
+            // <CButton color="secondary" onClick={handleModalClose} className='bg-blue'>
+            //   Close
+            // </CButton>
+            <button className="px-3 bg-blue clr-white button-sizing" onClick={handleModalClose}>
               Close
-            </CButton>
+            </button>
           )}
           {modalType === 'delete' && (
             <>
               <CButton color="secondary" onClick={handleModalClose}>
                 Cancel
               </CButton>
-              <CButton color="danger" className="text-white" onClick={handleDeleteConfirm}>
+              {/* <CButton color="danger" className="text-white" onClick={handleDeleteConfirm}>
                 Yes, Delete
-              </CButton>
+              </CButton> */}
+              <button
+                className="px-3 bg-blue clr-white button-sizing"
+                onClick={handleDeleteConfirm}
+              >
+                Yes, Delete
+              </button>
             </>
           )}
         </CModalFooter>
