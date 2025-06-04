@@ -381,16 +381,16 @@ const _nav = [
   //     },
   //   ],
   // },
-  // {
-  //   component: CNavItem,
-  //   name: 'Charts',
-  //   to: '/charts',
-  //   icon: <CIcon icon={cilChartPie} customClassName="nav-icon" />,
-  // },
+  {
+    component: CNavItem,
+    name: 'Production Planning',
+    to: '/productionplanning',
+    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
+  },
   // {
   //   component: CNavGroup,
   //   name: 'Icons',
-  //   icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
+  //   icon: <CIcon icon={cilChartPie} customClassName="nav-icon" />,
   //   items: [
   //     {
   //       component: CNavItem,

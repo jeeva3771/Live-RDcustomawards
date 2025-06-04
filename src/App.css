@@ -165,3 +165,51 @@ a {
     margin: 0 0.5rem !important;
   }
 }
+
+
+
+.custom-number-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  width: 120px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.custom-number-input input {
+  flex: 1;
+  border: none;
+  padding: 8px;
+  text-align: center;
+  font-size: 16px;
+  outline: none;
+}
+
+.custom-number-input .buttons {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #ccc;
+}
+
+.custom-number-input button {
+  all: unset;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: center;
+  user-select: none;
+}
+
+.custom-number-input button:hover {
+  background-color: #f0f0f0;
+}
+
+
+
+
+
+
+
+
+

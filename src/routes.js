@@ -12,6 +12,8 @@ const MaterialsForm = React.lazy(() => import('./views/pages/masters/materials/F
 const DepartmentsList = React.lazy(() => import('./views/pages/masters/departments/List'))
 const DepartmentsForm = React.lazy(() => import('./views/pages/masters/departments/Form'))
 
+const ProductionPlanning = React.lazy(() => import('./views/pages/Productionplanning'))
+
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 
@@ -74,6 +76,7 @@ const routes = [
   { path: '/departments', name: 'Departments List', element: DepartmentsList },
   { path: '/departments/add', name: 'Add', element: DepartmentsForm },
   { path: '/departments/:departmentId', name: 'Edit', element: DepartmentsForm },
+  { path: '/productionplanning', name: 'Production Planning', element: ProductionPlanning },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
