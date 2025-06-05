@@ -1,1 +1,0 @@
-import{r as l,_ as d,R as n,b as i,c as m,P as e}from"./index-DLYOJSKi.js";var r=l.forwardRef(function(a,s){var c=a.children,t=a.className,o=d(a,["children","className"]);return n.createElement("div",i({className:m("card-footer",t)},o,{ref:s}),c)});r.propTypes={children:e.node,className:e.string};r.displayName="CCardFooter";export{r as C};

@@ -1,1 +1,0 @@
-import{r as d,_ as o,R as p,b as n,c as i,P as r}from"./index-DLYOJSKi.js";var s=d.forwardRef(function(a,e){var c=a.children,l=a.className,t=o(a,["children","className"]);return p.createElement("div",n({className:i("card-group",l)},t,{ref:e}),c)});s.propTypes={children:r.node,className:r.string};s.displayName="CCardGroup";export{s as C};
