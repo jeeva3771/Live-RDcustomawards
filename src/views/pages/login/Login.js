@@ -63,7 +63,7 @@ const Login = () => {
                         defaultValue="rd#123"
                       />
                     </CInputGroup>
-                    <div className="mb-3">
+                    <div className="mb-3 checkbox-blue">
                       <CFormCheck
                         id="showPassword"
                         label="Show Password"

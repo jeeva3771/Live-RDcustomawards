@@ -7,12 +7,20 @@ const ProcessList = React.lazy(() => import('./views/pages/masters/process/List'
 const ProcessForm = React.lazy(() => import('./views/pages/masters/process/Form'))
 
 const MaterialsList = React.lazy(() => import('./views/pages/masters/materials/List'))
-const MaterialsForm = React.lazy(() => import('./views/pages/masters/materials/Form'))
+const MaterialForm = React.lazy(() => import('./views/pages/masters/materials/Form'))
 
 const DepartmentsList = React.lazy(() => import('./views/pages/masters/departments/List'))
-const DepartmentsForm = React.lazy(() => import('./views/pages/masters/departments/Form'))
+const DepartmentForm = React.lazy(() => import('./views/pages/masters/departments/Form'))
+
+const RolesList = React.lazy(() => import('./views/pages/masters/roles/List'))
+const RoleForm = React.lazy(() => import('./views/pages/masters/roles/Form'))
 
 const ProductionPlanning = React.lazy(() => import('./views/pages/Productionplanning'))
+
+const UsersList = React.lazy(() => import('./views/pages/Users/List'))
+const UserForm = React.lazy(() => import('./views/pages/Users/Form'))
+
+
 
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
@@ -71,12 +79,19 @@ const routes = [
   { path: '/process/add', name: 'Add', element: ProcessForm },
   { path: '/process/:processId', name: 'Edit', element: ProcessForm },
   { path: '/materials', name: 'Materials List', element: MaterialsList },
-  { path: '/materials/add', name: 'Add', element: MaterialsForm },
-  { path: '/materials/:materialId', name: 'Edit', element: MaterialsForm },
+  { path: '/materials/add', name: 'Add', element: MaterialForm },
+  { path: '/materials/:materialId', name: 'Edit', element: MaterialForm },
   { path: '/departments', name: 'Departments List', element: DepartmentsList },
-  { path: '/departments/add', name: 'Add', element: DepartmentsForm },
-  { path: '/departments/:departmentId', name: 'Edit', element: DepartmentsForm },
+  { path: '/departments/add', name: 'Add', element: DepartmentForm },
+  { path: '/departments/:departmentId', name: 'Edit', element: DepartmentForm },
   { path: '/productionplanning', name: 'Production Planning', element: ProductionPlanning },
+  { path: '/users', name: 'Users List', element: UsersList },
+  { path: '/users/add', name: 'Add', element: UserForm },
+  { path: '/users/:userId', name: 'Edit', element: UserForm },
+  { path: '/roles', name: 'Roles List', element: RolesList },
+  { path: '/roles/add', name: 'Add', element: RoleForm },
+  { path: '/roles/:roleId', name: 'Edit', element: RoleForm },
+
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },

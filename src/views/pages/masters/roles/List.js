@@ -36,15 +36,13 @@ import {
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 
-const ProcessList = () => {
+const RoleList = () => {
   const navigate = useNavigate()
   // Sample data
-  const [processes] = useState([
+  const [roles] = useState([
     {
       id: 1,
-      name: 'Customer Registration',
-      code: 'CUST001',
-      status: 'Active',
+      name: 'Admin',
       createdAt: '2024-01-15 09:30 AM',
       createdBy: 'John Doe',
       updatedAt: '2024-12-20 4:25 PM',
@@ -52,9 +50,7 @@ const ProcessList = () => {
     },
     {
       id: 2,
-      name: 'Payment Processing',
-      code: 'PAY002',
-      status: 'Inactive',
+      name: 'Manager',
       createdAt: '2024-02-10 11:15 AM',
       createdBy: 'Jane Smith',
       updatedAt: '2024-12-18 6:30 PM',
@@ -62,9 +58,7 @@ const ProcessList = () => {
     },
     {
       id: 3,
-      name: 'Order Management',
-      code: 'ORD003',
-      status: 'Active',
+      name: 'Awards Coordinator',
       createdAt: '2024-03-05 11:20 AM',
       createdBy: 'Mike Johnson',
       updatedAt: '2024-12-19 11:45 PM',
@@ -72,9 +66,7 @@ const ProcessList = () => {
     },
     {
       id: 4,
-      name: 'Inventory Update',
-      code: 'INV004',
-      status: 'Inactive',
+      name: 'Design Lead',
       createdAt: '2024-04-12 08:45 AM',
       createdBy: 'Sarah Wilson',
       updatedAt: '2024-12-17 3:20 PM',
@@ -82,9 +74,7 @@ const ProcessList = () => {
     },
     {
       id: 5,
-      name: 'Email Notification',
-      code: 'EML005',
-      status: 'Active',
+      name: 'Data Entry',
       createdAt: '2024-05-18 08:45 AM',
       createdBy: 'David Chen',
       updatedAt: '2024-12-21 07:45 AM',
@@ -92,9 +82,7 @@ const ProcessList = () => {
     },
     {
       id: 6,
-      name: 'Data Backup',
-      code: 'BAK006',
-      status: 'Active',
+      name: 'Proofing Manager',
       createdAt: '2024-06-22 09:45 AM',
       createdBy: 'Lisa Anderson',
       updatedAt: '2024-12-20 10:45 AM',
@@ -102,9 +90,7 @@ const ProcessList = () => {
     },
     {
       id: 7,
-      name: 'Report Generation',
-      code: 'RPT007',
-      status: 'Inactive',
+      name: 'Vendor Liaison',
       createdAt: '2024-07-08 09:45 AM',
       createdBy: 'Robert Taylor',
       updatedAt: '2024-12-16 02:45 AM',
@@ -112,9 +98,7 @@ const ProcessList = () => {
     },
     {
       id: 8,
-      name: 'Security Scan',
-      code: 'SEC008',
-      status: 'Active',
+      name: 'Event Liaison',
       createdAt: '2024-08-14 04:45 AM',
       createdBy: 'Emily Davis',
       updatedAt: '2024-12-22 09:45 AM',
@@ -122,9 +106,7 @@ const ProcessList = () => {
     },
     {
       id: 9,
-      name: 'System Maintenance',
-      code: 'SYS009',
-      status: 'Active',
+      name: 'Inventory Manager',
       createdAt: '2024-09-03 02:45 AM',
       createdBy: 'Tom Brown',
       updatedAt: '2024-12-19 09:45 AM',
@@ -132,9 +114,7 @@ const ProcessList = () => {
     },
     {
       id: 10,
-      name: 'Data Migration',
-      code: 'MIG010',
-      status: 'Inactive',
+      name: 'Guest',
       createdAt: '2024-10-11 09:45 AM',
       createdBy: 'Anna White',
       updatedAt: '2024-12-15 09:45 AM',
@@ -142,9 +122,7 @@ const ProcessList = () => {
     },
     {
       id: 11,
-      name: 'API Integration',
-      code: 'API011',
-      status: 'Active',
+      name: 'Photographer',
       createdAt: '2024-11-07 01:45 AM',
       createdBy: 'Chris Green',
       updatedAt: '2024-12-21 09:45 PM',
@@ -152,9 +130,7 @@ const ProcessList = () => {
     },
     {
       id: 12,
-      name: 'Log Cleanup',
-      code: 'LOG012',
-      status: 'Inactive',
+      name: 'Archivist',
       createdAt: '2024-12-01 11:45 AM',
       createdBy: 'Mark Wilson',
       updatedAt: '2024-12-18 09:45 AM',
@@ -169,23 +145,21 @@ const ProcessList = () => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
   const [showModal, setShowModal] = useState(false)
   const [modalType, setModalType] = useState('')
-  const [selectedProcess, setSelectedProcess] = useState(null)
+  const [selectedRole, setSelectedRole] = useState(null)
 
   // Filtering
-  const filteredProcesses = useMemo(() => {
-    return processes.filter(
-      (process) =>
-        process.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        process.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        process.status.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredRoles = useMemo(() => {
+    return roles.filter(
+      (role) =>
+        role.name.toLowerCase().includes(searchTerm.toLowerCase()),
     )
-  }, [processes, searchTerm])
+  }, [roles, searchTerm])
 
   // Sorting
-  const sortedProcesses = useMemo(() => {
-    if (!sortConfig.key) return filteredProcesses
+  const sortedRoles = useMemo(() => {
+    if (!sortConfig.key) return filteredRoles
 
-    return [...filteredProcesses].sort((a, b) => {
+    return [...filteredRoles].sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key]) {
         return sortConfig.direction === 'asc' ? -1 : 1
       }
@@ -194,28 +168,28 @@ const ProcessList = () => {
       }
       return 0
     })
-  }, [filteredProcesses, sortConfig])
+  }, [filteredRoles, sortConfig])
 
   // Pagination
-  const totalPages = itemsPerPage === 'all' ? 1 : Math.ceil(sortedProcesses.length / itemsPerPage)
+  const totalPages = itemsPerPage === 'all' ? 1 : Math.ceil(sortedRoles.length / itemsPerPage)
   const startIndex = itemsPerPage === 'all' ? 0 : (currentPage - 1) * itemsPerPage
-  const paginatedProcesses =
+  const paginatedRoles =
     itemsPerPage === 'all'
-      ? sortedProcesses
-      : sortedProcesses.slice(startIndex, startIndex + itemsPerPage)
+      ? sortedRoles
+      : sortedRoles.slice(startIndex, startIndex + itemsPerPage)
 
   // Reset to first page when search changes
   React.useEffect(() => {
     setCurrentPage(1)
   }, [searchTerm])
 
-  const handleAction = (action, process) => {
+  const handleAction = (action, role) => {
     if (action === 'info' || action === 'delete') {
       setModalType(action)
-      setSelectedProcess(process)
+      setSelectedRole(role)
       setShowModal(true)
     } else if (action === 'edit') {
-      console.log('Edit action for process:', process)
+      console.log('Edit action for role:', role)
       // Implement edit logic here (e.g., navigate to edit page)
     }
   }
@@ -223,7 +197,7 @@ const ProcessList = () => {
   const handleModalClose = () => {
     setShowModal(false)
     setModalType('')
-    setSelectedProcess(null)
+    setSelectedRole(null)
   }
 
   const handleDeleteConfirm = () => {
@@ -249,15 +223,11 @@ const ProcessList = () => {
     )
   }
 
-  const getStatusBadge = (status) => {
-    return <CBadge color={status === 'Active' ? 'success' : 'secondary'}>{status}</CBadge>
-  }
-
   return (
     <CCol xs={12}>
       <CCard className="mb-4">
         <CCardHeader>
-          <strong className="clr-blue fs-5">Process List</strong>
+          <strong className="clr-blue fs-5">Role List</strong>
         </CCardHeader>
         <CCardBody>
           {/* Search Bar and Button */}
@@ -278,14 +248,13 @@ const ProcessList = () => {
             <CCol xs={12} sm={4} md={6} lg={8} xl={9} className="d-flex justify-content-sm-end">
               <button
                 className="px-3 bg-blue clr-white button-sizing"
-                onClick={() => navigate('/process/add')}
+                onClick={() => navigate('/roles/add')}
               >
                 Add
               </button>
             </CCol>
           </CRow>
 
-          {/* Table */}
 
           {/* Responsive Table with Horizontal Scroll */}
           <div className="responsive-table-container">
@@ -298,21 +267,7 @@ const ProcessList = () => {
                     className="sortable-header"
                     onClick={() => handleSort('name')}
                   >
-                    Process Name{getSortIcon('name')}
-                  </CTableHeaderCell>
-                  <CTableHeaderCell
-                    scope="col"
-                    className="sortable-header"
-                    onClick={() => handleSort('code')}
-                  >
-                    Code{getSortIcon('code')}
-                  </CTableHeaderCell>
-                  <CTableHeaderCell
-                    scope="col"
-                    className="sortable-header"
-                    onClick={() => handleSort('status')}
-                  >
-                    Status{getSortIcon('status')}
+                    Role Name{getSortIcon('name')}
                   </CTableHeaderCell>
                   <CTableHeaderCell scope="col" className="text-center">
                     Actions
@@ -320,20 +275,18 @@ const ProcessList = () => {
                 </CTableRow>
               </CTableHead>
               <CTableBody>
-                {paginatedProcesses.length > 0 ? (
-                  paginatedProcesses.map((process, index) => (
-                    <CTableRow key={process.id}>
+                {paginatedRoles.length > 0 ? (
+                  paginatedRoles.map((role, index) => (
+                    <CTableRow key={role.id}>
                       <CTableDataCell>{startIndex + index + 1}</CTableDataCell>
-                      <CTableDataCell className="no-wrap">{process.name}</CTableDataCell>
-                      <CTableDataCell className="no-wrap">{process.code}</CTableDataCell>
-                      <CTableDataCell>{getStatusBadge(process.status)}</CTableDataCell>
+                      <CTableDataCell className="no-wrap">{role.name}</CTableDataCell>
                       <CTableDataCell className="text-center">
                         <div className="d-flex justify-content-center gap-1 actions-container">
                           <CButton
                             color="primary"
                             variant="outline"
                             size="sm"
-                            onClick={() => handleAction('info', process)}
+                            onClick={() => handleAction('info', role)}
                             title="View Details"
                           >
                             <CIcon icon={cilInfo} size="sm" />
@@ -342,8 +295,8 @@ const ProcessList = () => {
                             color="success"
                             variant="outline"
                             size="sm"
-                            onClick={() => navigate('/process/1')}
-                            title="Edit Process"
+                            onClick={() => navigate(`/roles/${role.id}`)}
+                            title="Edit Role"
                           >
                             <CIcon icon={cilPencil} size="sm" />
                           </CButton>
@@ -351,8 +304,8 @@ const ProcessList = () => {
                             color="danger"
                             variant="outline"
                             size="sm"
-                            onClick={() => handleAction('delete', process)}
-                            title="Delete Process"
+                            onClick={() => handleAction('delete', role)}
+                            title="Delete Role"
                           >
                             <CIcon icon={cilTrash} size="sm" />
                           </CButton>
@@ -362,8 +315,8 @@ const ProcessList = () => {
                   ))
                 ) : (
                   <CTableRow>
-                    <CTableDataCell colSpan={5} className="text-center py-4">
-                      No processes found
+                    <CTableDataCell colSpan={3} className="text-center py-4">
+                      No roles found
                     </CTableDataCell>
                   </CTableRow>
                 )}
@@ -395,8 +348,8 @@ const ProcessList = () => {
               <span className="ms-2">entries</span>
               <small className="text-muted ms-3">
                 {itemsPerPage === 'all'
-                  ? `Showing all ${sortedProcesses.length} entries`
-                  : `Showing ${startIndex + 1} to ${Math.min(startIndex + itemsPerPage, sortedProcesses.length)} of ${sortedProcesses.length} entries`}
+                  ? `Showing all ${sortedRoles.length} entries`
+                  : `Showing ${startIndex + 1} to ${Math.min(startIndex + itemsPerPage, sortedRoles.length)} of ${sortedRoles.length} entries`}
               </small>
             </CCol>
 
@@ -445,138 +398,84 @@ const ProcessList = () => {
       >
         <CModalHeader closeButton>
           <strong className="clr-blue fs-5">
-            {modalType === 'info' && 'Process Details'}
-            {modalType === 'delete' && 'Delete Process'}
+            {modalType === 'info' && 'Role Details'}
+            {modalType === 'delete' && 'Delete Role'}
           </strong>
         </CModalHeader>
 
         <CModalBody>
-          {selectedProcess && modalType === 'info' && (
+          {selectedRole && modalType === 'info' && (
             <div>
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">
-                  Process Name
+                  Role Name
                 </CCol>
                 <CCol sm={1} className="text-center fw-bold">
                   :
                 </CCol>
-                <CCol sm={7}>{selectedProcess.name}</CCol>
+                <CCol sm={7}>{selectedRole.name}</CCol>
               </CRow>
 
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">
-                  Code
+                  Created At
                 </CCol>
                 <CCol sm={1} className="text-center fw-bold">
                   :
                 </CCol>
-                <CCol sm={7}>{selectedProcess.code}</CCol>
+                <CCol sm={7}>{selectedRole.createdAt}</CCol>
               </CRow>
 
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">
-                  Status
+                  Created By
                 </CCol>
                 <CCol sm={1} className="text-center fw-bold">
                   :
                 </CCol>
-                <CCol sm={7}>{getStatusBadge(selectedProcess.status)}</CCol>
-              </CRow>
-              <CRow className="mb-2">
-                <CCol sm={4} className="fw-semibold">
-                  CreatedAt
-                </CCol>
-                <CCol sm={1} className="text-center fw-bold">
-                  :
-                </CCol>
-                <CCol sm={7}>{selectedProcess.createdAt}</CCol>
-              </CRow>
-              <CRow className="mb-2">
-                <CCol sm={4} className="fw-semibold">
-                  CreatedBy
-                </CCol>
-                <CCol sm={1} className="text-center fw-bold">
-                  :
-                </CCol>
-                <CCol sm={7}>{selectedProcess.createdBy}</CCol>
+                <CCol sm={7}>{selectedRole.createdBy}</CCol>
               </CRow>
 
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">
-                  UpdatedAt
+                  Updated At
                 </CCol>
                 <CCol sm={1} className="text-center fw-bold">
                   :
                 </CCol>
-                <CCol sm={7}>{selectedProcess.updatedAt}</CCol>
+                <CCol sm={7}>{selectedRole.updatedAt}</CCol>
               </CRow>
+
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">
-                  UpdatedBy
+                  Updated By
                 </CCol>
                 <CCol sm={1} className="text-center fw-bold">
                   :
                 </CCol>
-                <CCol sm={7}>{selectedProcess.updatedBy}</CCol>
+                <CCol sm={7}>{selectedRole.updatedBy}</CCol>
               </CRow>
             </div>
           )}
 
-          {selectedProcess && modalType === 'delete' && (
+          {selectedRole && modalType === 'delete' && (
             <div className="text-center">
               <div className="mb-4">
                 <CIcon icon={cilTrash} size="xxl" className="text-danger mb-3" />
                 <h5>Confirm Deletion</h5>
               </div>
               <p className="mb-4">
-                Are you sure you want to delete the process{' '}
-                <strong className="clr-black">"{selectedProcess.name}"</strong>?
+                Are you sure you want to delete the role{' '}
+                <strong className="clr-black">"{selectedRole.name}"</strong>?
                 <br />
                 <small className="text-muted">This action cannot be undone.</small>
               </p>
-              {/* <div className="bg-light p-3 rounded">
-
-                <CRow className="mb-2">
-                <CCol sm={4} className="fw-semibold">
-                  Process Name
-                </CCol>
-                <CCol sm={1} className="text-center fw-bold">
-                  :
-                </CCol>
-                <CCol sm={7}>{selectedProcess.name}</CCol>
-              </CRow>
-
-              <CRow className="mb-2">
-                <CCol sm={4} className="fw-semibold">
-                  Code
-                </CCol>
-                <CCol sm={1} className="text-center fw-bold">
-                  :
-                </CCol>
-                <CCol sm={7}>{selectedProcess.code}</CCol>
-              </CRow>
-
-              <CRow className="mb-2">
-                <CCol sm={4} className="fw-semibold">
-                  Status
-                </CCol>
-                <CCol sm={1} className="text-center fw-bold">
-                  :
-                </CCol>
-                <CCol sm={7}>
-                  <CBadge color="success">{selectedProcess.status}</CBadge>
-                </CCol>
-              </CRow>
-              </div> */}
             </div>
           )}
         </CModalBody>
 
         <CModalFooter className="justify-content-center">
           {modalType === 'info' && (
-            // <CButton color="secondary" onClick={handleModalClose}>
-            //   Close
-            // </CButton>
             <button className="px-3 bg-blue clr-white button-sizing" onClick={handleModalClose}>
               Close
             </button>
@@ -586,9 +485,6 @@ const ProcessList = () => {
               <CButton color="secondary" onClick={handleModalClose}>
                 Cancel
               </CButton>
-              {/* <CButton color="danger" className="text-white" onClick={handleDeleteConfirm}>
-                Yes, Delete
-              </CButton> */}
               <button
                 className="px-3 bg-blue clr-white button-sizing"
                 onClick={handleDeleteConfirm}
@@ -603,4 +499,4 @@ const ProcessList = () => {
   )
 }
 
-export default ProcessList
+export default RoleList

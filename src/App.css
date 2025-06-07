@@ -1520,3 +1520,89 @@ a {
 .form-input::placeholder {
   color: #6c757d;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*checkbox*/
+.checkbox-blue .form-check-input:checked {
+    background-color: #0061ed;
+    border-color: #0061ed;
+  }
+
+  .checkbox-blue .form-check-input:focus {
+    border-color: #0061ed;
+  }
+
+  .checkbox-blue .form-check-input:checked:focus {
+    border-color: #0061ed;
+  }
+
+
+
+
+  /*table*/
+
+  .responsive-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-min-widths th:nth-child(1) {
+    min-width: 60px;
+  }
+
+  .table-min-widths th:nth-child(2) {
+    min-width: 150px;
+  }
+
+  .table-min-widths th:nth-child(3) {
+    min-width: 150px;
+  }
+
+  .sortable-header {
+    cursor: pointer;
+  }
+
+  .no-wrap {
+    white-space: nowrap;
+  }
+
+  .actions-container {
+    min-width: 150px;
+  }
+
+  .pagination-container {
+    overflow-x: auto;
+  }
+
+  .pagination-nowrap {
+    flex-wrap: nowrap;
+  }
+
+  .pagination-item-min {
+    min-width: 40px;
+  }
+
+  .dropdown-auto-width {
+    width: auto;
+    min-width: 70px;
+  }
+
+  .text-nowrap {
+    white-space: nowrap;
+  }
