@@ -246,7 +246,7 @@ const DepartmentList = () => {
     <CCol xs={12}>
       <CCard className="mb-4">
         <CCardHeader>
-          <strong className="clr-blue fs-5">Department List</strong>
+          <strong className="clr-blue fs-5">Departments List</strong>
         </CCardHeader>
         <CCardBody>
           {/* Search Bar and Button */}

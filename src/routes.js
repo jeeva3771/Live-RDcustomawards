@@ -20,6 +20,9 @@ const ProductionPlanning = React.lazy(() => import('./views/pages/Productionplan
 const UsersList = React.lazy(() => import('./views/pages/Users/List'))
 const UserForm = React.lazy(() => import('./views/pages/Users/Form'))
 
+const UserProfile = React.lazy(() => import('./views/pages/Userprofile'))
+
+
 
 
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -91,6 +94,8 @@ const routes = [
   { path: '/roles', name: 'Roles List', element: RolesList },
   { path: '/roles/add', name: 'Add', element: RoleForm },
   { path: '/roles/:roleId', name: 'Edit', element: RoleForm },
+    { path: '/profile', name: '', element: UserProfile },
+
 
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },

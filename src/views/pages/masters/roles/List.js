@@ -227,7 +227,7 @@ const RoleList = () => {
     <CCol xs={12}>
       <CCard className="mb-4">
         <CCardHeader>
-          <strong className="clr-blue fs-5">Role List</strong>
+          <strong className="clr-blue fs-5">Roles List</strong>
         </CCardHeader>
         <CCardBody>
           {/* Search Bar and Button */}

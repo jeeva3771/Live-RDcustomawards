@@ -68,10 +68,10 @@ const AppHeaderDropdown = () => {
           <CIcon icon={cilUser} className="me-2" />
           Profile
         </CDropdownItem>
-        <CDropdownItem>
+        {/* <CDropdownItem>
           <CIcon icon={cilSettings} className="me-2" />
           Settings
-        </CDropdownItem>
+        </CDropdownItem> */}
         {/* <CDropdownItem href="#">
           <CIcon icon={cilCreditCard} className="me-2" />
           Payments
@@ -86,7 +86,7 @@ const AppHeaderDropdown = () => {
             42
           </CBadge>
         </CDropdownItem> */}
-        <CDropdownDivider />
+        {/* <CDropdownDivider /> */}
         <CDropdownItem onClick={() => navigate('/login')}>
           <CIcon icon={cilLockLocked} className="me-2" />
           Logout

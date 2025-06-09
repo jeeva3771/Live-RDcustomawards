@@ -10,12 +10,13 @@ function BOMProcessWizard() {
   const [uploadedFiles, setUploadedFiles] = useState([])
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [currentFormat, setCurrentFormat] = useState(null)
-  const [bomEntries, setBomEntries] = useState([]) // New state for BOM entries
+  const [bomEntries, setBomEntries] = useState([]) // BOM entries for step 3
+  const [timeEntries, setTimeEntries] = useState([]) // Time entries for step 4
 
   const fileInputRef = useRef(null)
   const textareaRef = useRef(null)
   const imageInputRef = useRef(null)
-  const [submit, setSubmit] =useState(false)
+  const [submit, setSubmit] = useState(false)
 
   const { register, handleSubmit, getValues, setValue, watch } = useForm({
     defaultValues: {
@@ -39,41 +40,7 @@ function BOMProcessWizard() {
   ]
 
   const sizeOptions = ["8' x 4'", "4' x 4'"]
-
   const processOptions = ['LASER CUTTING', 'LASER CUTTING OUTSOURCED']
-
-  const emojis = [
-    '😊',
-    '😂',
-    '🥰',
-    '😍',
-    '🤔',
-    '👍',
-    '👎',
-    '❤️',
-    '🔥',
-    '💯',
-    '🎉',
-    '🚀',
-    '⭐',
-    '✅',
-    '❌',
-    '⚠️',
-    '💡',
-    '🎯',
-    '📝',
-    '📊',
-    '🔧',
-    '⚙️',
-    '🛠️',
-    '📋',
-    '📁',
-    '💼',
-    '🏭',
-    '🔬',
-    '📈',
-    '📉',
-  ]
 
   // Initialize BOM entries when selected items change
   React.useEffect(() => {
@@ -84,11 +51,26 @@ function BOMProcessWizard() {
         size: '',
         quantity: '',
         process: '',
-        timeTaken: '',
       }))
       setBomEntries(newBomEntries)
     } else {
       setBomEntries([])
+    }
+  }, [selectedItems])
+
+  // Initialize time entries when selected items change
+  React.useEffect(() => {
+    if (selectedItems.length > 0) {
+      const newTimeEntries = selectedItems.map((material, index) => ({
+        id: index,
+        material: material,
+        size: '',
+        timeTaken: '',
+        additionalTime: '',
+      }))
+      setTimeEntries(newTimeEntries)
+    } else {
+      setTimeEntries([])
     }
   }, [selectedItems])
 
@@ -99,134 +81,11 @@ function BOMProcessWizard() {
     )
   }
 
-  const applyFormat = (format) => {
-    const selectedText = textareaRef.current
-
-    // const start = textarea.selectionStart
-    // alert(start)
-    // const end = textarea.selectionEnd
-    // alert(start, end)
-    // const selectedText = textarea.value.substring(start, end)
-
-    setCurrentFormat(format)
-    setTimeout(() => setCurrentFormat(null), 200)
-
-    let formattedText = ''
-    let newCursorPos = start
-
-    switch (format) {
-      case 'bold':
-        if (selectedText) {
-          formattedText = `**${selectedText}**`
-          newCursorPos = start + formattedText.length
-        } else {
-          formattedText = '****'
-          newCursorPos = start + 2
-        }
-        break
-      case 'italic':
-        if (selectedText) {
-          formattedText = `*${selectedText}*`
-          newCursorPos = start + formattedText.length
-        } else {
-          formattedText = '**'
-          newCursorPos = start + 1
-        }
-        break
-      case 'underline':
-        if (selectedText) {
-          formattedText = `<u>${selectedText}</u>`
-          newCursorPos = start + formattedText.length
-        } else {
-          formattedText = '<u></u>'
-          newCursorPos = start + 3
-        }
-        break
-      case 'link':
-        if (selectedText) {
-          formattedText = `[${selectedText}](url)`
-          newCursorPos = start + formattedText.length - 4
-        } else {
-          formattedText = '[link text](url)'
-          newCursorPos = start + 1
-        }
-        break
-      case 'bullet':
-        formattedText = selectedText ? `\n• ${selectedText}` : '\n• '
-        newCursorPos = start + formattedText.length
-        break
-      case 'numbered':
-        formattedText = selectedText ? `\n1. ${selectedText}` : '\n1. '
-        newCursorPos = start + formattedText.length
-        break
-      case 'quote':
-        formattedText = selectedText ? `> ${selectedText}` : '> '
-        newCursorPos = start + formattedText.length
-        break
-      case 'line':
-        formattedText = '\n---\n'
-        newCursorPos = start + formattedText.length
-        break
-      default:
-        formattedText = selectedText
-        newCursorPos = end
-    }
-
-    const newValue =
-      textarea.value.substring(0, start) + formattedText + textarea.value.substring(end)
-
-    setValue('productionRemarks', newValue)
-
-    // Reset cursor position
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(newCursorPos, newCursorPos)
-    }, 0)
-  }
-
-  const insertEmoji = (emoji) => {
-    const textarea = textareaRef.current
-
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-
-    const newValue = textarea.value.substring(0, start) + emoji + textarea.value.substring(end)
-
-    setValue('productionRemarks', newValue)
-
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start + emoji.length, start + emoji.length)
-    }, 0)
-
-    setShowEmojiPicker(false)
-  }
-
-  const handleImageInsert = (event) => {
-    const file = event.target.files[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      const textarea = textareaRef.current
-
-      const start = textarea.selectionStart
-      const imageMarkdown = `![${file.name}](${e.target.result})\n`
-
-      const newValue =
-        textarea.value.substring(0, start) + imageMarkdown + textarea.value.substring(start)
-
-      setValue('productionRemarks', newValue)
-
-      setTimeout(() => {
-        textarea.focus()
-        textarea.setSelectionRange(start + imageMarkdown.length, start + imageMarkdown.length)
-      }, 0)
-    }
-    reader.readAsDataURL(file)
-
-    // Reset the input
-    event.target.value = ''
+  // Update time entry
+  const updateTimeEntry = (entryId, field, value) => {
+    setTimeEntries((prev) =>
+      prev.map((entry) => (entry.id === entryId ? { ...entry, [field]: value } : entry)),
+    )
   }
 
   const toggleItemSelection = (item) => {
@@ -254,12 +113,94 @@ function BOMProcessWizard() {
 
   const stepLabels = [
     { id: 'job', label: 'Job Details', icon: '📋' },
+    { id: 'upload', label: 'Upload', icon: '📁' },
     { id: 'recipe', label: 'Recipe', icon: '📝' },
     { id: 'process', label: 'Process Info', icon: '⚙️' },
     { id: 'bom', label: 'BOM Details', icon: '📋' },
-    { id: 'upload', label: 'Upload', icon: '📁' },
     { id: 'remarks', label: 'Remarks', icon: '💬' },
   ]
+
+  // Function to render previous content for current step only
+  const renderPreviousContent = () => {
+    const currentFormValues = getValues()
+
+    // Only show previous content for the immediate previous step
+    if (currentStep === 0) return null
+
+    return (
+      <div className="previous-content-container">
+      <h3 className="previous-content-title">Previous Step Summary</h3>
+      {currentStep === 1 && currentFormValues.jobNumber && (
+          <div className="previous-item">
+            <span className="previous-label">📋 Job Number:</span>
+            <span className="previous-value">{currentFormValues.jobNumber}</span>
+          </div>
+      )}
+
+        {currentStep === 2 && selectedItems.length > 0 && (
+          <div className="previous-item">
+            <span className="previous-label">📝 Selected Materials:</span>
+            <div className="previous-materials">
+              {selectedItems.map((item, index) => (
+                <span key={index} className="material-tag">
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {currentStep === 3 && bomEntries.length > 0 && (
+          <div className="previous-item">
+            <span className="previous-label">⚙️ BOM & Process Details:</span>
+            <div className="previous-bom-entries">
+              {bomEntries
+                .filter((entry) => entry.size || entry.quantity || entry.process)
+                .map((entry, index) => (
+                  <div key={index} className="bom-summary-item">
+                    <strong>{entry.material}</strong>
+                    {entry.size && <span> - Size: {entry.size}</span>}
+                    {entry.quantity && <span> - Qty: {entry.quantity}</span>}
+                    {entry.process && <span> - Process: {entry.process}</span>}
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {currentStep === 4 && bomEntries.length > 0 && (
+          <div className="previous-item">
+            <span className="previous-label">⚙️ BOM & Process Info:</span>
+            <div className="previous-bom-entries">
+              {bomEntries
+                .filter((entry) => entry.size || entry.quantity || entry.process)
+                .map((entry, index) => (
+                  <div key={index} className="bom-summary-item">
+                    <strong>{entry.material}</strong>
+                    {entry.size && <span> - Size: {entry.size}</span>}
+                    {entry.quantity && <span> - Qty: {entry.quantity}</span>}
+                    {entry.process && <span> - Process: {entry.process}</span>}
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
+        {currentStep === 5 && uploadedFiles.length > 0 && (
+          <div className="previous-item">
+            <span className="previous-label">📁 Uploaded Files:</span>
+            <div className="previous-files">
+              {uploadedFiles.map((file, index) => (
+                <span key={index} className="file-tag">
+                  {file.name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   const steps = [
     {
@@ -275,6 +216,59 @@ function BOMProcessWizard() {
               className="job-input"
               placeholder="Enter Job Number"
             />
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: 'IMAGE UPLOAD',
+      subtitle: '',
+      content: (
+        <div className="step-content">
+          <div className="upload-container">
+            <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
+              <div className="upload-content">
+                <div className="upload-icon">📁</div>
+                <button type="button" className="upload-button">
+                  BROWSE & UPLOAD
+                </button>
+                <p className="upload-text">Click to browse files or drag and drop</p>
+              </div>
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*,.pdf,.doc,.docx"
+              onChange={handleFileUpload}
+              style={{ display: 'none' }}
+            />
+
+            {uploadedFiles.length > 0 && (
+              <div className="uploaded-files">
+                <h4>Uploaded Files ({uploadedFiles.length}):</h4>
+                <div className="files-grid">
+                  {uploadedFiles.map((file, index) => (
+                    <div key={index} className="file-item">
+                      <div className="file-info">
+                        <span className="file-name">{file.name}</span>
+                        <span className="file-size">
+                          {parseFloat((file.size / 1024 / 1024).toFixed(2)).toString()} MB
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="remove-file"
+                        onClick={() => removeFile(index)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       ),
@@ -411,7 +405,7 @@ function BOMProcessWizard() {
               </div>
             ) : (
               <div className="bom-entries">
-                {bomEntries.map((entry, index) => (
+                {timeEntries.map((entry, index) => (
                   <div key={entry.id} className="bom-entry-card">
                     <h4 className="bom-entry-title">Laser Process {index + 1}</h4>
                     <div className="form-row">
@@ -429,7 +423,7 @@ function BOMProcessWizard() {
                         <label className="form-label">Size</label>
                         <select
                           value={entry.size}
-                          onChange={(e) => updateBomEntry(entry.id, 'size', e.target.value)}
+                          onChange={(e) => updateTimeEntry(entry.id, 'size', e.target.value)}
                           className="form-select"
                         >
                           <option value="">Please Select</option>
@@ -444,12 +438,12 @@ function BOMProcessWizard() {
 
                     <div className="form-row">
                       <div className="form-group">
-                        <label className="form-label"></label>
+                        {/* <label className="form-label">Time Taken (mins)</label> */}
                         <input
                           type="number"
                           min="0"
                           value={entry.timeTaken}
-                          onChange={(e) => updateBomEntry(entry.id, 'timeTaken', e.target.value)}
+                          onChange={(e) => updateTimeEntry(entry.id, 'timeTaken', e.target.value)}
                           className="form-input"
                           placeholder="Please enter a number"
                           step="0.1"
@@ -457,12 +451,14 @@ function BOMProcessWizard() {
                       </div>
 
                       <div className="form-group">
-                        <label className="form-label"></label>
+                        {/* <label className="form-label">Additional Time (mins)</label> */}
                         <input
                           type="number"
                           min="0"
-                          value={entry.timeTaken}
-                          onChange={(e) => updateBomEntry(entry.id, 'timeTaken', e.target.value)}
+                          value={entry.additionalTime}
+                          onChange={(e) =>
+                            updateTimeEntry(entry.id, 'additionalTime', e.target.value)
+                          }
                           className="form-input"
                           placeholder="Please enter a number"
                           step="0.1"
@@ -478,202 +474,9 @@ function BOMProcessWizard() {
       ),
     },
     {
-      title: 'IMAGE UPLOAD',
-      subtitle: '',
-      content: (
-        <div className="step-content">
-          <div className="upload-container">
-            <div className="upload-area" onClick={() => fileInputRef.current?.click()}>
-              <div className="upload-content">
-                <div className="upload-icon">📁</div>
-                <button type="button" className="upload-button">
-                  BROWSE & UPLOAD
-                </button>
-                <p className="upload-text">Click to browse files or drag and drop</p>
-              </div>
-            </div>
-
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*,.pdf,.doc,.docx"
-              onChange={handleFileUpload}
-              style={{ display: 'none' }}
-            />
-
-            {uploadedFiles.length > 0 && (
-              <div className="uploaded-files">
-                <h4>Uploaded Files ({uploadedFiles.length}):</h4>
-                <div className="files-grid">
-                  {uploadedFiles.map((file, index) => (
-                    <div key={index} className="file-item">
-                      <div className="file-info">
-                        <span className="file-name">{file.name}</span>
-                        <span className="file-size">
-                          {parseFloat((file.size / 1024 / 1024).toFixed(2)).toString()} MB
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        className="remove-file"
-                        onClick={() => removeFile(index)}
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      ),
-    },
-    {
       title: 'PRODUCTION REMARKS',
       subtitle: '',
-      content: (
-        // <div className="step-content">
-        //   <div className="editor-container">
-        //     <div className="editor-toolbar">
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn ${currentFormat === 'text' ? 'active' : ''}`}
-        //         title="Text"
-        //         onClick={() => applyFormat('text')}
-        //       >
-        //         T
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn bold-btn ${currentFormat === 'bold' ? 'active' : ''}`}
-        //         title="Bold"
-        //         onClick={() => applyFormat('bold')}
-        //       >
-        //         <strong>B</strong>
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn italic-btn ${currentFormat === 'italic' ? 'active' : ''}`}
-        //         title="Italic"
-        //         onClick={() => applyFormat('italic')}
-        //       >
-        //         <em>I</em>
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn underline-btn ${currentFormat === 'underline' ? 'active' : ''}`}
-        //         title="Underline"
-        //         onClick={() => applyFormat('underline')}
-        //       >
-        //         <u>U</u>
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn ${currentFormat === 'link' ? 'active' : ''}`}
-        //         title="Link"
-        //         onClick={() => applyFormat('link')}
-        //       >
-        //         🔗
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn ${currentFormat === 'bullet' ? 'active' : ''}`}
-        //         title="Bullet List"
-        //         onClick={() => applyFormat('bullet')}
-        //       >
-        //         •
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn ${currentFormat === 'numbered' ? 'active' : ''}`}
-        //         title="Numbered List"
-        //         onClick={() => applyFormat('numbered')}
-        //       >
-        //         1.
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn ${currentFormat === 'quote' ? 'active' : ''}`}
-        //         title="Quote"
-        //         onClick={() => applyFormat('quote')}
-        //       >
-        //         "
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn ${currentFormat === 'line' ? 'active' : ''}`}
-        //         title="Horizontal Line"
-        //         onClick={() => applyFormat('line')}
-        //       >
-        //         —
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className="toolbar-btn"
-        //         title="Insert Image"
-        //         onClick={() => imageInputRef.current?.click()}
-        //       >
-        //         🖼️
-        //       </button>
-        //       <button
-        //         type="button"
-        //         className={`toolbar-btn ${showEmojiPicker ? 'active' : ''}`}
-        //         title="Emoji"
-        //         onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-        //       >
-        //         😊
-        //       </button>
-        //     </div>
-
-        //     {showEmojiPicker && (
-        //       <div className="emoji-picker">
-        //         <div className="emoji-picker-header">
-        //           <span>Select an emoji</span>
-        //           <button
-        //             type="button"
-        //             className="emoji-close"
-        //             onClick={() => setShowEmojiPicker(false)}
-        //           >
-        //             ×
-        //           </button>
-        //         </div>
-        //         <div className="emoji-grid">
-        //           {emojis.map((emoji, index) => (
-        //             <button
-        //               key={index}
-        //               type="button"
-        //               className="emoji-item"
-        //               onClick={() => insertEmoji(emoji)}
-        //               title={emoji}
-        //             >
-        //               {emoji}
-        //             </button>
-        //           ))}
-        //         </div>
-        //       </div>
-        //     )}
-
-        //     <input
-        //       ref={imageInputRef}
-        //       type="file"
-        //       accept="image/*"
-        //       onChange={handleImageInsert}
-        //       style={{ display: 'none' }}
-        //     />
-
-        //     <textarea
-        //       ref={textareaRef}
-        //       {...register('productionRemarks')}
-        //       className="editor-textarea"
-        //       placeholder="Enter your production remarks here..."
-        //       rows="8"
-        //     />
-        //   </div>
-        // </div>
-        <AdvancedRichTextEditor />
-      ),
+      content: <AdvancedRichTextEditor />,
     },
   ]
 
@@ -682,8 +485,10 @@ function BOMProcessWizard() {
       ...data,
       selectedItems,
       bomEntries,
+      timeEntries,
       uploadedFiles: uploadedFiles.map((f) => ({ name: f.name, size: f.size })),
     }
+    console.log('Form Data:', formData)
   }
 
   const nextStep = () => {
@@ -696,10 +501,130 @@ function BOMProcessWizard() {
 
   const submitWizard = () => {
     setSubmit(true)
+    handleSubmit(onSubmit)()
   }
 
   return (
     <>
+      <style jsx>{`
+        .previous-content-container {
+          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+          border: 2px solid #e9ecef;
+          border-radius: 12px;
+          padding: 20px;
+          margin-bottom: 24px;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .previous-content-title {
+          color: #495057;
+          font-size: 18px;
+          font-weight: 600;
+          margin-bottom: 16px;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .previous-content-title::before {
+          content: '📝';
+          font-size: 20px;
+        }
+
+        .previous-item {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          margin-bottom: 16px;
+          padding: 12px;
+          background: white;
+          border-radius: 8px;
+          border-left: 4px solid #007bff;
+        }
+
+        .previous-item:last-child {
+          margin-bottom: 0;
+        }
+
+        .previous-label {
+          font-weight: 600;
+          color: #495057;
+          font-size: 14px;
+        }
+
+        .previous-value {
+          color: #007bff;
+          font-weight: 500;
+          font-size: 16px;
+        }
+
+        .previous-materials,
+        .previous-files {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 4px;
+        }
+
+        .material-tag,
+        .file-tag {
+          background: #007bff;
+          color: white;
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+
+        .previous-bom-entries,
+        .previous-time-entries {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+          margin-top: 8px;
+        }
+
+        .bom-summary-item,
+        .time-summary-item {
+          background: #f8f9fa;
+          padding: 8px 12px;
+          border-radius: 6px;
+          border: 1px solid #e9ecef;
+          font-size: 14px;
+        }
+
+        .bom-summary-item strong,
+        .time-summary-item strong {
+          color: #495057;
+        }
+
+        @media (max-width: 768px) {
+          .previous-content-container {
+            padding: 16px;
+            margin-bottom: 20px;
+          }
+
+          .previous-content-title {
+            font-size: 16px;
+          }
+
+          .previous-item {
+            padding: 8px;
+          }
+
+          .previous-materials,
+          .previous-files {
+            gap: 6px;
+          }
+
+          .material-tag,
+          .file-tag {
+            font-size: 11px;
+            padding: 3px 8px;
+          }
+        }
+      `}</style>
+
       {submit === true && (
         <div>
           <CToaster placement="top-end">
@@ -739,6 +664,9 @@ function BOMProcessWizard() {
         {/* Form Content */}
         <form onSubmit={handleSubmit(onSubmit)} className="wizard-form">
           <div>
+            {/* Previous Content Display */}
+            {currentStep > 0 && currentStep === 1 && renderPreviousContent()}
+
             <div className="step-header">
               <h2 className="step-title">{steps[currentStep].title}</h2>
               {steps[currentStep].subtitle && (
