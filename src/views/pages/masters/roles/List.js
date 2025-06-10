@@ -242,6 +242,7 @@ const RoleList = () => {
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  className="inputFocus"
                 />
               </CInputGroup>
             </CCol>

@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import { CToastBody, CToaster } from '@coreui/react'
+import { CFormInput, CInputGroup, CInputGroupText, CToastBody, CToaster } from '@coreui/react'
 import AdvancedRichTextEditor from './Textarea'
 import ToastColorSchemesExample from '../../components/Toast'
+import CIcon from '@coreui/icons-react'
+import { cilSearch } from '@coreui/icons'
 
 function BOMProcessWizard() {
   const [currentStep, setCurrentStep] = useState(0)
@@ -12,6 +14,7 @@ function BOMProcessWizard() {
   const [currentFormat, setCurrentFormat] = useState(null)
   const [bomEntries, setBomEntries] = useState([]) // BOM entries for step 3
   const [timeEntries, setTimeEntries] = useState([]) // Time entries for step 4
+  const [searchTerm, setSearchTerm] = useState('') // Search functionality
 
   const fileInputRef = useRef(null)
   const textareaRef = useRef(null)
@@ -38,6 +41,11 @@ function BOMProcessWizard() {
     'BLACK ACRYLIC 12MM',
     'WHITE ACRYLIC 2MM',
   ]
+
+  // Filter materials based on search term
+  const filteredMaterials = materialOptions.filter((material) =>
+    material.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
   const sizeOptions = ["8' x 4'", "4' x 4'"]
   const processOptions = ['LASER CUTTING', 'LASER CUTTING OUTSOURCED']
@@ -129,73 +137,11 @@ function BOMProcessWizard() {
 
     return (
       <div className="previous-content-container">
-      <h3 className="previous-content-title">Previous Step Summary</h3>
-      {currentStep === 1 && currentFormValues.jobNumber && (
+        <h3 className="previous-content-title">Previous Step Summary</h3>
+        {currentFormValues.jobNumber && (
           <div className="previous-item">
             <span className="previous-label">📋 Job Number:</span>
             <span className="previous-value">{currentFormValues.jobNumber}</span>
-          </div>
-      )}
-
-        {currentStep === 2 && selectedItems.length > 0 && (
-          <div className="previous-item">
-            <span className="previous-label">📝 Selected Materials:</span>
-            <div className="previous-materials">
-              {selectedItems.map((item, index) => (
-                <span key={index} className="material-tag">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {currentStep === 3 && bomEntries.length > 0 && (
-          <div className="previous-item">
-            <span className="previous-label">⚙️ BOM & Process Details:</span>
-            <div className="previous-bom-entries">
-              {bomEntries
-                .filter((entry) => entry.size || entry.quantity || entry.process)
-                .map((entry, index) => (
-                  <div key={index} className="bom-summary-item">
-                    <strong>{entry.material}</strong>
-                    {entry.size && <span> - Size: {entry.size}</span>}
-                    {entry.quantity && <span> - Qty: {entry.quantity}</span>}
-                    {entry.process && <span> - Process: {entry.process}</span>}
-                  </div>
-                ))}
-            </div>
-          </div>
-        )}
-
-        {currentStep === 4 && bomEntries.length > 0 && (
-          <div className="previous-item">
-            <span className="previous-label">⚙️ BOM & Process Info:</span>
-            <div className="previous-bom-entries">
-              {bomEntries
-                .filter((entry) => entry.size || entry.quantity || entry.process)
-                .map((entry, index) => (
-                  <div key={index} className="bom-summary-item">
-                    <strong>{entry.material}</strong>
-                    {entry.size && <span> - Size: {entry.size}</span>}
-                    {entry.quantity && <span> - Qty: {entry.quantity}</span>}
-                    {entry.process && <span> - Process: {entry.process}</span>}
-                  </div>
-                ))}
-            </div>
-          </div>
-        )}
-
-        {currentStep === 5 && uploadedFiles.length > 0 && (
-          <div className="previous-item">
-            <span className="previous-label">📁 Uploaded Files:</span>
-            <div className="previous-files">
-              {uploadedFiles.map((file, index) => (
-                <span key={index} className="file-tag">
-                  {file.name}
-                </span>
-              ))}
-            </div>
           </div>
         )}
       </div>
@@ -278,20 +224,48 @@ function BOMProcessWizard() {
       subtitle: 'PLS SELECT THE LIST OF ITEMS U WANT TO USE TO PROCESS THIS JOB',
       content: (
         <div className="step-content">
+          <div className="search-container-top">
+            {/* <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search materials..."
+              className="search-input-top"
+            /> */}
+            <CInputGroup>
+              <CInputGroupText>
+                <CIcon icon={cilSearch} />
+              </CInputGroupText>
+              <CFormInput
+                placeholder="Search materials..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="inputFocus"
+              />
+            </CInputGroup>
+          </div>
+
           <div className="recipe-container">
             <div className="recipe-section">
               <h3>Options</h3>
               <div className="options-list">
-                {materialOptions.map((material, index) => (
-                  <div
-                    key={index}
-                    className={`option-item ${selectedItems.includes(material) ? 'selected' : ''}`}
-                    onClick={() => toggleItemSelection(material)}
-                  >
-                    <span>{material}</span>
-                    <span className="arrow">›</span>
+                {filteredMaterials.length > 0 ? (
+                  filteredMaterials.map((material, index) => (
+                    <div
+                      key={index}
+                      className={`option-item ${selectedItems.includes(material) ? 'selected' : ''}`}
+                      onClick={() => toggleItemSelection(material)}
+                    >
+                      <span>{material}</span>
+                      <span className="arrow">›</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-results">
+                    <div className="no-results-icon">🔍</div>
+                    <p>No materials found matching "{searchTerm}"</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
@@ -506,124 +480,6 @@ function BOMProcessWizard() {
 
   return (
     <>
-      <style jsx>{`
-        .previous-content-container {
-          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-          border: 2px solid #e9ecef;
-          border-radius: 12px;
-          padding: 20px;
-          margin-bottom: 24px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .previous-content-title {
-          color: #495057;
-          font-size: 18px;
-          font-weight: 600;
-          margin-bottom: 16px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .previous-content-title::before {
-          content: '📝';
-          font-size: 20px;
-        }
-
-        .previous-item {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          margin-bottom: 16px;
-          padding: 12px;
-          background: white;
-          border-radius: 8px;
-          border-left: 4px solid #007bff;
-        }
-
-        .previous-item:last-child {
-          margin-bottom: 0;
-        }
-
-        .previous-label {
-          font-weight: 600;
-          color: #495057;
-          font-size: 14px;
-        }
-
-        .previous-value {
-          color: #007bff;
-          font-weight: 500;
-          font-size: 16px;
-        }
-
-        .previous-materials,
-        .previous-files {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          margin-top: 4px;
-        }
-
-        .material-tag,
-        .file-tag {
-          background: #007bff;
-          color: white;
-          padding: 4px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 500;
-        }
-
-        .previous-bom-entries,
-        .previous-time-entries {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          margin-top: 8px;
-        }
-
-        .bom-summary-item,
-        .time-summary-item {
-          background: #f8f9fa;
-          padding: 8px 12px;
-          border-radius: 6px;
-          border: 1px solid #e9ecef;
-          font-size: 14px;
-        }
-
-        .bom-summary-item strong,
-        .time-summary-item strong {
-          color: #495057;
-        }
-
-        @media (max-width: 768px) {
-          .previous-content-container {
-            padding: 16px;
-            margin-bottom: 20px;
-          }
-
-          .previous-content-title {
-            font-size: 16px;
-          }
-
-          .previous-item {
-            padding: 8px;
-          }
-
-          .previous-materials,
-          .previous-files {
-            gap: 6px;
-          }
-
-          .material-tag,
-          .file-tag {
-            font-size: 11px;
-            padding: 3px 8px;
-          }
-        }
-      `}</style>
 
       {submit === true && (
         <div>
@@ -665,7 +521,7 @@ function BOMProcessWizard() {
         <form onSubmit={handleSubmit(onSubmit)} className="wizard-form">
           <div>
             {/* Previous Content Display */}
-            {currentStep > 0 && currentStep === 1 && renderPreviousContent()}
+            {currentStep > 0 && renderPreviousContent()}
 
             <div className="step-header">
               <h2 className="step-title">{steps[currentStep].title}</h2>

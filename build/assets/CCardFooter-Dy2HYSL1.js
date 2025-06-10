@@ -1,0 +1,1 @@
+import{r as l,_ as d,y as n,b as i,c as m,P as e}from"./index-DDCTJz66.js";var s=l.forwardRef(function(r,a){var c=r.children,o=r.className,t=d(r,["children","className"]);return n.createElement("div",i({className:m("card-footer",o)},t,{ref:a}),c)});s.propTypes={children:e.node,className:e.string};s.displayName="CCardFooter";export{s as C};

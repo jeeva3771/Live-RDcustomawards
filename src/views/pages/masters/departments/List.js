@@ -260,6 +260,7 @@ const DepartmentList = () => {
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  className="inputFocus"
                 />
               </CInputGroup>
             </CCol>
@@ -456,7 +457,6 @@ const DepartmentList = () => {
                 </CCol>
                 <CCol sm={7}>{selectedProcess.code}</CCol>
               </CRow>
-
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">
                   Status

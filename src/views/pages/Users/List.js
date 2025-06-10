@@ -46,6 +46,7 @@ const UsersList = () => {
       id: 1,
       name: 'John Doe',
       username: 'john_doe',
+      department: 'Laser Engraving Unit',
       password: 'John@123',
       role: 'Admin',
       createdAt: '2024-01-15 09:30 AM',
@@ -58,6 +59,7 @@ const UsersList = () => {
       name: 'Jane Smith',
       username: 'jane.smith',
       password: 'Jane@456',
+      department: 'Laser Engraving Unit',
       role: 'Manager',
       createdAt: '2024-02-10 11:15 AM',
       createdBy: 'John Doe',
@@ -68,6 +70,7 @@ const UsersList = () => {
       id: 3,
       name: 'Mike Johnson',
       username: 'mike_johnson',
+      department: 'Client Design Approvals',
       password: 'Mike@789',
       role: 'Design Lead',
       createdAt: '2024-03-05 11:20 AM',
@@ -79,6 +82,7 @@ const UsersList = () => {
       id: 4,
       name: 'Sarah Wilson',
       username: 'sarah.wilson',
+      department: 'Procurement & Vendor Management',
       password: 'Sarah@321',
       role: 'Design Lead',
       createdAt: '2024-04-12 08:45 AM',
@@ -90,6 +94,7 @@ const UsersList = () => {
       id: 5,
       name: 'David Chen',
       username: 'david.chen',
+      department: 'Procurement & Vendor Management',
       password: 'David@654',
       role: 'Manager',
       createdAt: '2024-05-18 08:45 AM',
@@ -100,6 +105,7 @@ const UsersList = () => {
     {
       id: 6,
       name: 'Lisa Anderson',
+      department: 'Packaging & Logistics',
       username: 'lisa.anderson',
       password: 'Lisa@987',
       role: 'Data Entry',
@@ -112,6 +118,7 @@ const UsersList = () => {
       id: 7,
       name: 'Robert Taylor',
       username: 'robert.taylor',
+      department: 'Order Fulfilment & Dispatch',
       password: 'Robert@147',
       role: 'Photographer',
       createdAt: '2024-07-08 09:45 AM',
@@ -123,6 +130,7 @@ const UsersList = () => {
       id: 8,
       name: 'Emily Davis',
       username: 'emily.davis',
+      department: 'Order Fulfilment & Dispatch',
       password: 'Emily@258',
       role: 'Manager',
       createdAt: '2024-08-14 04:45 AM',
@@ -133,6 +141,7 @@ const UsersList = () => {
     {
       id: 9,
       name: 'Tom Brown',
+      department: 'Quality Control & Assurance',
       username: 'tom.brown',
       password: 'Tom@369',
       role: 'Proofing Manager',
@@ -144,6 +153,7 @@ const UsersList = () => {
     {
       id: 10,
       name: 'Anna White',
+      department: 'Metal Casting & Finishing',
       username: 'anna.white',
       password: 'Anna@741',
       role: 'Admin',
@@ -155,6 +165,7 @@ const UsersList = () => {
     {
       id: 11,
       name: 'Chris Green',
+      department: 'Metal Casting & Finishing',
       username: 'chris.green',
       password: 'Chris@852',
       role: 'Manager',
@@ -167,6 +178,7 @@ const UsersList = () => {
       id: 12,
       name: 'Mark Wilson',
       username: 'mark.wilson',
+      department: 'Metal Casting & Finishing',
       password: 'Mark@963',
       role: 'Vendor Liaison',
       createdAt: '2024-12-01 11:45 AM',
@@ -215,9 +227,7 @@ const UsersList = () => {
   const totalPages = itemsPerPage === 'all' ? 1 : Math.ceil(sortedUsers.length / itemsPerPage)
   const startIndex = itemsPerPage === 'all' ? 0 : (currentPage - 1) * itemsPerPage
   const paginatedUsers =
-    itemsPerPage === 'all'
-      ? sortedUsers
-      : sortedUsers.slice(startIndex, startIndex + itemsPerPage)
+    itemsPerPage === 'all' ? sortedUsers : sortedUsers.slice(startIndex, startIndex + itemsPerPage)
 
   // Reset to first page when search changes
   React.useEffect(() => {
@@ -265,25 +275,24 @@ const UsersList = () => {
   }
 
   const getRoleBadge = (role) => {
-        //  * @type 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'dark' | 'light' | 'primary-emphasis' | 'secondary-emphasis' | 'success-emphasis' | 'danger-emphasis' | 'warning-emphasis' | 'info-emphasis' | 'light-emphasis' | 'body' | 'body-emphasis' | 'body-secondary' | 'body-tertiary' | 'black' | 'black-50' | 'white' | 'white-50' | string
+    //  * @type 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'dark' | 'light' | 'primary-emphasis' | 'secondary-emphasis' | 'success-emphasis' | 'danger-emphasis' | 'warning-emphasis' | 'info-emphasis' | 'light-emphasis' | 'body' | 'body-emphasis' | 'body-secondary' | 'body-tertiary' | 'black' | 'black-50' | 'white' | 'white-50' | string
 
     const roleColors = {
       Photographer: 'danger',
       Manager: 'warning',
       Awards: 'secondary',
-      Admin : 'success',
+      Admin: 'success',
       Inventory: 'info',
     }
     return <CBadge color={roleColors[role] || 'secondary'}>{role}</CBadge>
   }
 
   const togglePasswordVisibility = (userId) => {
-    setShowPasswords(prev => ({
+    setShowPasswords((prev) => ({
       ...prev,
-      [userId]: !prev[userId]
+      [userId]: !prev[userId],
     }))
   }
-
 
   return (
     <CCol xs={12}>
@@ -303,6 +312,7 @@ const UsersList = () => {
                   placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  className="inputFocus"
                 />
               </CInputGroup>
             </CCol>
@@ -409,6 +419,13 @@ const UsersList = () => {
                   <CTableHeaderCell
                     scope="col"
                     className="sortable-header"
+                    onClick={() => handleSort('department')}
+                  >
+                    Department{getSortIcon('department')}
+                  </CTableHeaderCell>
+                  <CTableHeaderCell
+                    scope="col"
+                    className="sortable-header"
                     onClick={() => handleSort('role')}
                   >
                     Role{getSortIcon('role')}
@@ -425,6 +442,7 @@ const UsersList = () => {
                       <CTableDataCell>{startIndex + index + 1}</CTableDataCell>
                       <CTableDataCell className="no-wrap">{user.name}</CTableDataCell>
                       <CTableDataCell className="no-wrap">{user.username}</CTableDataCell>
+                      <CTableDataCell className="no-wrap">{user.department}</CTableDataCell>
                       <CTableDataCell>{getRoleBadge(user.role)}</CTableDataCell>
                       <CTableDataCell className="text-center">
                         <div className="d-flex justify-content-center gap-1 actions-container">
@@ -570,6 +588,16 @@ const UsersList = () => {
                   :
                 </CCol>
                 <CCol sm={7}>{selectedUser.username}</CCol>
+              </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Department
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedUser.department}</CCol>
               </CRow>
 
               <CRow className="mb-2">
