@@ -1,0 +1,1 @@
+import{r as p,_ as i,y as t,b as c,c as d,P as m}from"./index-DLT1SFJX.js";var r=p.forwardRef(function(s,a){var e=s.className,o=i(s,["className"]);return t.createElement("hr",c({className:d("dropdown-divider",e)},o,{ref:a}))});r.propTypes={className:m.string};r.displayName="CDropdownDivider";export{r as C};

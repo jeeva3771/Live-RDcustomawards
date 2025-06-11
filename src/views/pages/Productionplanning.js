@@ -16,6 +16,10 @@ function BOMProcessWizard() {
   const [timeEntries, setTimeEntries] = useState([]) // Time entries for step 4
   const [searchTerm, setSearchTerm] = useState('') // Search functionality
 
+  // New state for collapsible materials
+  const [expandedBomMaterials, setExpandedBomMaterials] = useState(new Set([0])) // First material expanded by default
+  const [expandedProcessMaterials, setExpandedProcessMaterials] = useState(new Set([0])) // First material expanded by default
+
   const fileInputRef = useRef(null)
   const textareaRef = useRef(null)
   const imageInputRef = useRef(null)
@@ -50,6 +54,32 @@ function BOMProcessWizard() {
   const sizeOptions = ["8' x 4'", "4' x 4'"]
   const processOptions = ['LASER CUTTING', 'LASER CUTTING OUTSOURCED']
 
+  // Toggle expanded state for BOM materials
+  const toggleBomMaterial = (index) => {
+    setExpandedBomMaterials(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        newSet.add(index)
+      }
+      return newSet
+    })
+  }
+
+  // Toggle expanded state for Process materials
+  const toggleProcessMaterial = (index) => {
+    setExpandedProcessMaterials(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(index)) {
+        newSet.delete(index)
+      } else {
+        newSet.add(index)
+      }
+      return newSet
+    })
+  }
+
   // Initialize BOM entries when selected items change
   React.useEffect(() => {
     if (selectedItems.length > 0) {
@@ -57,6 +87,7 @@ function BOMProcessWizard() {
         id: index,
         material: material,
         size: '',
+        timing: '',
         quantity: '',
         process: '',
       }))
@@ -123,8 +154,9 @@ function BOMProcessWizard() {
     { id: 'job', label: 'Job Details', icon: '📋' },
     { id: 'upload', label: 'Upload', icon: '📁' },
     { id: 'recipe', label: 'Recipe', icon: '📝' },
+    { id: 'bom', label: 'Bom', icon: '🧾' },
     { id: 'process', label: 'Process Info', icon: '⚙️' },
-    { id: 'bom', label: 'BOM Details', icon: '📋' },
+    { id: 'laser', label: 'Laser', icon: '📋' },
     { id: 'remarks', label: 'Remarks', icon: '💬' },
   ]
 
@@ -225,13 +257,6 @@ function BOMProcessWizard() {
       content: (
         <div className="step-content">
           <div className="search-container-top">
-            {/* <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search materials..."
-              className="search-input-top"
-            /> */}
             <CInputGroup>
               <CInputGroupText>
                 <CIcon icon={cilSearch} />
@@ -288,7 +313,7 @@ function BOMProcessWizard() {
       ),
     },
     {
-      title: 'BOM & PROCESS',
+      title: 'BOM',
       subtitle: 'CREATE LIST OF ITEMS ITS SIZE AND QTY',
       content: (
         <div className="step-content">
@@ -301,8 +326,21 @@ function BOMProcessWizard() {
               <div className="bom-entries">
                 {bomEntries.map((entry, index) => (
                   <div key={entry.id} className="bom-entry-card">
-                    <h4 className="bom-entry-title">Material {index + 1}</h4>
-                    <div className="form-row">
+                    <div
+                      className="bom-entry-header"
+                      onClick={() => toggleBomMaterial(index)}
+                      style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #e0e0e0', marginBottom: '10px' }}
+                    >
+                      <h4 className="bom-entry-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        Material {index + 1}
+                        <span className="toggle-icon" style={{ fontSize: '14px', transition: 'transform 0.3s', transform: expandedBomMaterials.has(index) ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                          ▶
+                        </span>
+                      </h4>
+                    </div>
+
+                    {/* Show first form-group (Material Type) for all materials */}
+                    <div className="form-col">
                       <div className="form-group">
                         <label className="form-label">Material Type</label>
                         <input
@@ -313,51 +351,142 @@ function BOMProcessWizard() {
                         />
                       </div>
 
-                      <div className="form-group">
-                        <label className="form-label">Size</label>
-                        <select
-                          value={entry.size}
-                          onChange={(e) => updateBomEntry(entry.id, 'size', e.target.value)}
-                          className="form-select"
-                        >
-                          <option value="">Please Select</option>
-                          {sizeOptions.map((size, sizeIndex) => (
-                            <option key={sizeIndex} value={size}>
-                              {size}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      {/* Collapsible content - show only if expanded */}
+                      {expandedBomMaterials.has(index) && (
+                        <>
+                          <div className="form-group">
+                            <label className="form-label">Size</label>
+                            <select
+                              value={entry.size}
+                              onChange={(e) => updateBomEntry(entry.id, 'size', e.target.value)}
+                              className="form-select"
+                            >
+                              <option value="">Please Select</option>
+                              {sizeOptions.map((size, sizeIndex) => (
+                                <option key={sizeIndex} value={size}>
+                                  {size}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="form-group">
+                            <label className="form-label">Ups</label>
+                            <input
+                              type="text"
+                              value={entry.ups}
+                              onChange={(e) => updateBomEntry(entry.id, 'ups', e.target.value)}
+                              className="form-input"
+                              placeholder="Enter Ups"
+                              min="0"
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label className="form-label">Quantity</label>
+                            <input
+                              type="number"
+                              value={entry.quantity}
+                              onChange={(e) => updateBomEntry(entry.id, 'quantity', e.target.value)}
+                              className="form-input"
+                              placeholder="Enter Quantity"
+                              min="0"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: 'Process',
+      subtitle: 'CREATE LIST OF ITEMS ITS SIZE AND QTY',
+      content: (
+        <div className="step-content">
+          <div className="bom-form-container">
+            {selectedItems.length === 0 ? (
+              <div className="empty-state bom-empty-state">
+                <p>Please select materials from the Recipe step first.</p>
+              </div>
+            ) : (
+              <div className="bom-entries">
+                {bomEntries.map((entry, index) => (
+                  <div key={entry.id} className="bom-entry-card">
+                    <div
+                      className="bom-entry-header"
+                      onClick={() => toggleProcessMaterial(index)}
+                      style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #e0e0e0', marginBottom: '10px' }}
+                    >
+                      <h4 className="bom-entry-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        Material {index + 1}
+                        <span className="toggle-icon" style={{ fontSize: '14px', transition: 'transform 0.3s', transform: expandedProcessMaterials.has(index) ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                          ▶
+                        </span>
+                      </h4>
                     </div>
 
-                    <div className="form-row">
+                    {/* Show first form-group (Material Type) for all materials */}
+                    <div className="form-col">
                       <div className="form-group">
-                        <label className="form-label">Quantity</label>
+                        <label className="form-label">Material Type</label>
                         <input
-                          type="number"
-                          value={entry.quantity}
-                          onChange={(e) => updateBomEntry(entry.id, 'quantity', e.target.value)}
-                          className="form-input"
-                          placeholder="Please enter a number"
-                          min="0"
+                          type="text"
+                          value={entry.material}
+                          className="form-input readonly"
+                          readOnly
                         />
                       </div>
 
-                      <div className="form-group">
-                        <label className="form-label">Process</label>
-                        <select
-                          value={entry.process}
-                          onChange={(e) => updateBomEntry(entry.id, 'process', e.target.value)}
-                          className="form-select"
-                        >
-                          <option value="">Please Select</option>
-                          {processOptions.map((process, processIndex) => (
-                            <option key={processIndex} value={process}>
-                              {process}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                      {/* Collapsible content - show only if expanded */}
+                      {expandedProcessMaterials.has(index) && (
+                        <>
+                          <div className="form-group">
+                            <label className="form-label">Size</label>
+                            <select
+                              value={entry.size}
+                              onChange={(e) => updateBomEntry(entry.id, 'size', e.target.value)}
+                              className="form-select readonly"
+                              disabled
+                            >
+                              <option value="">Please Select</option>
+                              {sizeOptions.map((size, sizeIndex) => (
+                                <option key={sizeIndex} value={size}>
+                                  {size}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="form-group">
+                            <label className="form-label">Ups</label>
+                            <input
+                              type="text"
+                              value={entry.ups}
+                              className="form-input readonly"
+                              placeholder="Enter Ups"
+                              min="0"
+                              readOnly
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label className="form-label">Timing</label>
+                            <input
+                              type="text"
+                              value={entry.timing}
+                              onChange={(e) => updateBomEntry(entry.id, 'timing', e.target.value)}
+                              className="form-input"
+                              placeholder="Enter Timing"
+                            />
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -382,7 +511,7 @@ function BOMProcessWizard() {
                 {timeEntries.map((entry, index) => (
                   <div key={entry.id} className="bom-entry-card">
                     <h4 className="bom-entry-title">Laser Process {index + 1}</h4>
-                    <div className="form-row">
+                    <div className="form-col">
                       <div className="form-group">
                         <label className="form-label">Material Type</label>
                         <input
@@ -408,11 +537,8 @@ function BOMProcessWizard() {
                           ))}
                         </select>
                       </div>
-                    </div>
 
-                    <div className="form-row">
                       <div className="form-group">
-                        {/* <label className="form-label">Time Taken (mins)</label> */}
                         <input
                           type="number"
                           min="0"
@@ -425,7 +551,6 @@ function BOMProcessWizard() {
                       </div>
 
                       <div className="form-group">
-                        {/* <label className="form-label">Additional Time (mins)</label> */}
                         <input
                           type="number"
                           min="0"
@@ -480,7 +605,6 @@ function BOMProcessWizard() {
 
   return (
     <>
-
       {submit === true && (
         <div>
           <CToaster placement="top-end">
