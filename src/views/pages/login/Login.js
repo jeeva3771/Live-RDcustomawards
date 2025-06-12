@@ -51,6 +51,7 @@ const Login = () => {
                         placeholder="Username"
                         autoComplete="text"
                         defaultValue="rd_domain"
+                        className="focus-box"
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-3">
@@ -62,6 +63,7 @@ const Login = () => {
                         placeholder="Password"
                         autoComplete="current-password"
                         defaultValue="rd#123"
+                        className="focus-box"
                       />
                     </CInputGroup>
                     <div className="mb-3 checkbox-blue">

@@ -28,6 +28,12 @@ a {
   background-color: rgb(88, 86, 214);
 }
 
+.focus-box:focus {
+  outline: none;
+  border-color: #0061ed;
+  box-shadow: 0 0 0 2px rgba(0, 97, 237, 0.1);
+}
+
 .clr-white {
   color: white;
 }
@@ -1753,6 +1759,7 @@ a {
           border-color: #0061ed;
           box-shadow: 0 0 0 2px rgba(0, 97, 237, 0.1);
         }
+
 
         .search-input-top::placeholder {
           color: #6c757d;
