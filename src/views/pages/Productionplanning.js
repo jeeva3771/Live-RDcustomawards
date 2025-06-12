@@ -56,7 +56,7 @@ function BOMProcessWizard() {
 
   // Toggle expanded state for BOM materials
   const toggleBomMaterial = (index) => {
-    setExpandedBomMaterials(prev => {
+    setExpandedBomMaterials((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(index)) {
         newSet.delete(index)
@@ -69,7 +69,7 @@ function BOMProcessWizard() {
 
   // Toggle expanded state for Process materials
   const toggleProcessMaterial = (index) => {
-    setExpandedProcessMaterials(prev => {
+    setExpandedProcessMaterials((prev) => {
       const newSet = new Set(prev)
       if (newSet.has(index)) {
         newSet.delete(index)
@@ -220,7 +220,7 @@ function BOMProcessWizard() {
               multiple
               accept="image/*,.pdf,.doc,.docx"
               onChange={handleFileUpload}
-              style={{ display: 'none' }}
+              className="d-none"
             />
 
             {uploadedFiles.length > 0 && (
@@ -326,14 +326,20 @@ function BOMProcessWizard() {
               <div className="bom-entries">
                 {bomEntries.map((entry, index) => (
                   <div key={entry.id} className="bom-entry-card">
-                    <div
-                      className="bom-entry-header"
-                      onClick={() => toggleBomMaterial(index)}
-                      style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #e0e0e0', marginBottom: '10px' }}
-                    >
-                      <h4 className="bom-entry-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="bom-entry-header" onClick={() => toggleBomMaterial(index)}>
+                     <label className="form-label-material">Material Type</label> <h4 className="bom-entry-title">
                         Material {index + 1}
-                        <span className="toggle-icon" style={{ fontSize: '14px', transition: 'transform 0.3s', transform: expandedBomMaterials.has(index) ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+
+                        <span
+                          className="toggle-icon"
+                          style={{
+                            fontSize: '14px',
+                            transition: 'transform 0.3s',
+                            transform: expandedBomMaterials.has(index)
+                              ? 'rotate(90deg)'
+                              : 'rotate(0deg)',
+                          }}
+                        >
                           ▶
                         </span>
                       </h4>
@@ -342,7 +348,6 @@ function BOMProcessWizard() {
                     {/* Show first form-group (Material Type) for all materials */}
                     <div className="form-col">
                       <div className="form-group">
-                        <label className="form-label">Material Type</label>
                         <input
                           type="text"
                           value={entry.material}
@@ -355,7 +360,7 @@ function BOMProcessWizard() {
                       {expandedBomMaterials.has(index) && (
                         <>
                           <div className="form-group">
-                            <label className="form-label">Size</label>
+                            <label className="form-label">Size </label>
                             <select
                               value={entry.size}
                               onChange={(e) => updateBomEntry(entry.id, 'size', e.target.value)}
@@ -418,14 +423,19 @@ function BOMProcessWizard() {
               <div className="bom-entries">
                 {bomEntries.map((entry, index) => (
                   <div key={entry.id} className="bom-entry-card">
-                    <div
-                      className="bom-entry-header"
-                      onClick={() => toggleProcessMaterial(index)}
-                      style={{ cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #e0e0e0', marginBottom: '10px' }}
-                    >
-                      <h4 className="bom-entry-title" style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div className="bom-entry-header" onClick={() => toggleProcessMaterial(index)}>
+                      <label className="form-label-material">Material Type</label><h4 className="bom-entry-title">
                         Material {index + 1}
-                        <span className="toggle-icon" style={{ fontSize: '14px', transition: 'transform 0.3s', transform: expandedProcessMaterials.has(index) ? 'rotate(90deg)' : 'rotate(0deg)' }}>
+                        <span
+                          className="toggle-icon"
+                          style={{
+                            fontSize: '14px',
+                            transition: 'transform 0.3s',
+                            transform: expandedProcessMaterials.has(index)
+                              ? 'rotate(90deg)'
+                              : 'rotate(0deg)',
+                          }}
+                        >
                           ▶
                         </span>
                       </h4>
@@ -434,7 +444,6 @@ function BOMProcessWizard() {
                     {/* Show first form-group (Material Type) for all materials */}
                     <div className="form-col">
                       <div className="form-group">
-                        <label className="form-label">Material Type</label>
                         <input
                           type="text"
                           value={entry.material}
@@ -470,6 +479,19 @@ function BOMProcessWizard() {
                               value={entry.ups}
                               className="form-input readonly"
                               placeholder="Enter Ups"
+                              min="0"
+                              readOnly
+                            />
+                          </div>
+
+                          <div className="form-group">
+                            <label className="form-label">Quantity</label>
+                            <input
+                              type="number"
+                              value={entry.quantity}
+                              // onChange={(e) => updateBomEntry(entry.id, 'quantity', e.target.value)}
+                              className="form-input readonly"
+                              placeholder="Enter Quantity"
                               min="0"
                               readOnly
                             />
