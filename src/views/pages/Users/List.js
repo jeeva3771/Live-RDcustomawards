@@ -56,8 +56,8 @@ const UsersList = () => {
     },
     {
       id: 2,
-      name: 'Jane Smith',
-      username: 'jane.smith',
+      name: 'RD',
+      username: 'rd_domain',
       password: 'Jane@456',
       department: 'Laser Engraving Unit',
       role: 'Manager',

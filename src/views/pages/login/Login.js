@@ -15,7 +15,7 @@ import {
   CFormCheck,
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { cilLockLocked, cilEnvelopeClosed } from '@coreui/icons'
+import { cilLockLocked, cilUser } from '@coreui/icons'
 import logo from '../../../../src/logo.svg'
 
 const Login = () => {
@@ -44,12 +44,13 @@ const Login = () => {
                     </>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
-                        <CIcon icon={cilEnvelopeClosed} className="text-body-secondary" />
+                        <CIcon icon={cilUser} className="text-body-secondary" />
                       </CInputGroupText>
                       <CFormInput
-                        placeholder="Email"
-                        autoComplete="email"
-                        defaultValue="rd@domain.com"
+                        type="text"
+                        placeholder="Username"
+                        autoComplete="text"
+                        defaultValue="rd_domain"
                       />
                     </CInputGroup>
                     <CInputGroup className="mb-3">
