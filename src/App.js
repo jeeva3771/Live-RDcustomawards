@@ -66,6 +66,7 @@ import { CSpinner, useColorModes } from '@coreui/react'
 
 import './scss/style.scss'
 import './App.css'
+import './media.css'
 
 // Pages
 const Login = React.lazy(() => import('./views/pages/login/Login'))

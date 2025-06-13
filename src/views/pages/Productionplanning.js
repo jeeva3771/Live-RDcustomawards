@@ -411,7 +411,7 @@ function BOMProcessWizard() {
     },
     {
       title: 'Process',
-      subtitle: 'CREATE LIST OF ITEMS ITS SIZE AND QTY',
+      subtitle: 'CREATE PROCESS LIST AND PROCESSING INSTRUCTIONS',
       content: (
         <div className="step-content">
           <div className="bom-form-container">
