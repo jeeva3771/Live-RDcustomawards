@@ -19,6 +19,7 @@ import {
 import { DocsComponents, DocsExample } from 'src/components'
 import { useNavigate, useParams } from 'react-router-dom'
 
+
 const Tooltips = () => {
   const { materialId } = useParams()
   const navigate = useNavigate()

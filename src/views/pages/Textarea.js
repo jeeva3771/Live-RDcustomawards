@@ -25,6 +25,7 @@ import {
   Download,
   Upload,
 } from 'lucide-react'
+
 const AdvancedRichTextEditor = () => {
   const editorRef = useRef(null)
   const fileInputRef = useRef(null)

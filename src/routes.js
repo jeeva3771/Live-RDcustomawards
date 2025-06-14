@@ -16,6 +16,8 @@ const RolesList = React.lazy(() => import('./views/pages/masters/roles/List'))
 const RoleForm = React.lazy(() => import('./views/pages/masters/roles/Form'))
 
 const ProductionPlanning = React.lazy(() => import('./views/pages/Productionplanning'))
+const SalesOrderForm = React.lazy(() => import('./views/pages/sales/Salesorderform'))
+
 
 const UsersList = React.lazy(() => import('./views/pages/Users/List'))
 const UserForm = React.lazy(() => import('./views/pages/Users/Form'))
@@ -88,6 +90,7 @@ const routes = [
   { path: '/departments/add', name: 'Add', element: DepartmentForm },
   { path: '/departments/:departmentId', name: 'Edit', element: DepartmentForm },
   { path: '/productionplanning', name: 'Production Planning', element: ProductionPlanning },
+  { path: '/salesorder', name: 'Sales Order Form', element: SalesOrderForm },
   { path: '/users', name: 'Users List', element: UsersList },
   { path: '/users/add', name: 'Add', element: UserForm },
   { path: '/users/:userId', name: 'Edit', element: UserForm },
