@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
@@ -19,25 +19,25 @@ import {
   ChevronDown,
   ChevronUp,
   User,
+  Package,
+  Gift,
+  Settings,
+  Award,
+  CreditCard,
+  Building,
+  Truck,
+  FileText,
+  X,
 } from 'lucide-react'
-import AdvancedRichTextEditor from '../Textarea'
-// import React, { useState } from "react";
-// import {
-// ChevronLeft,
-// ChevronRight,
-// Check,
-// Calendar,
-
-// } from "lucide-react";
 
 const MultiStepWizard = () => {
   const [currentStep, setCurrentStep] = useState(0)
+  const [uploadedImages, setUploadedImages] = useState([])
+  const fileInputRef = useRef(null)
+  const [dragActive, setDragActive] = useState(false)
+
   const [formData, setFormData] = useState({
-    // date: {
-    //   date: '',
-    // },
     jobDetails: {
-      // jobOwner: '',
       jobQty: '',
       jobCompletionDate: '',
     },
@@ -60,6 +60,41 @@ const MultiStepWizard = () => {
       courier: 'RD Courier',
       productName: '',
       productSize: '',
+      pricePerPc: '',
+    },
+    packingType: {
+      packingType: '',
+    },
+    innerPacking: {
+      innerPackingType: '',
+    },
+    premiumPacking: {
+      premiumPackingOptions: [],
+    },
+    packingInstructions: {
+      packingInstructions: '',
+    },
+    packingMode: {
+      packingMode: '',
+    },
+    payment: {
+      paymentType: '',
+    },
+    productImages: {
+      images: [],
+    },
+    timeDetails: {
+      time: '',
+    },
+    bankDetails: {
+      bankName: '',
+      accountNumber: '',
+      ifscCode: '',
+      accountHolderName: '',
+      branch: '',
+    },
+    remarks: {
+      remarks: '',
     },
   })
 
@@ -67,24 +102,11 @@ const MultiStepWizard = () => {
   const [expandedSteps, setExpandedSteps] = useState(new Set())
 
   const formSteps = [
-    // {
-    //   id: 'date',
-    //   title: 'Date',
-    //   icon: Calendar,
-    //   fields: [{ name: 'date', label: 'Date', type: 'date', required: true }],
-    // },
     {
       id: 'jobDetails',
       title: 'Job Details',
       icon: Briefcase,
       fields: [
-        // {
-        //   name: 'jobOwner',
-        //   label: 'Job Owner',
-        //   type: 'select',
-        //   required: true,
-        //   options: ['Please Select', 'John Doe', 'RD', 'Mike Johnson', 'David Chen'],
-        // },
         { name: 'jobQty', label: 'Job QTY', type: 'number', required: true },
         {
           name: 'jobCompletionDate',
@@ -125,8 +147,6 @@ const MultiStepWizard = () => {
           required: true,
           placeholder: 'example@example.com',
         },
-
-        // Billing Address Section
         {
           name: 'billingAddressHeader',
           label: 'Billing Address',
@@ -164,8 +184,6 @@ const MultiStepWizard = () => {
           type: 'text',
           required: false,
         },
-
-        // Delivery Address Section
         {
           name: 'deliveryAddressHeader',
           label: 'Delivery Address',
@@ -203,8 +221,6 @@ const MultiStepWizard = () => {
           type: 'text',
           required: true,
         },
-
-        // Delivery Options
         { name: 'deliveryTypeHeader', label: 'Delivery Type', type: 'header' },
         {
           name: 'deliveryType',
@@ -216,7 +232,6 @@ const MultiStepWizard = () => {
             { value: 'Multi Point', label: 'Multi Point' },
           ],
         },
-
         { name: 'courierHeader', label: 'Courier', type: 'header' },
         {
           name: 'courier',
@@ -226,10 +241,9 @@ const MultiStepWizard = () => {
           options: [
             { value: 'Client Courier', label: 'Client Courier' },
             { value: 'RD Courier', label: 'RD Courier' },
+            { value: 'Hand Delivery', label: 'Hand Delivery' },
           ],
         },
-
-        // Product Information
         { name: 'productHeader', label: 'Product Information', type: 'header' },
         {
           name: 'productName',
@@ -242,6 +256,201 @@ const MultiStepWizard = () => {
           label: 'Product Size',
           type: 'text',
           required: true,
+        },
+        {
+          name: 'pricePerPc',
+          label: 'Price Per Piece',
+          type: 'number',
+          required: true,
+          placeholder: 'Enter price per piece',
+        },
+      ],
+    },
+    {
+      id: 'packingType',
+      title: 'Select Type of Packing',
+      icon: Package,
+      fields: [
+        {
+          name: 'packingType',
+          label: 'Select Type of Packing',
+          type: 'radio',
+          required: true,
+          options: [
+            { value: 'Standard', label: 'Standard' },
+            { value: 'Premium', label: 'Premium' },
+            { value: 'Custom', label: 'Custom' },
+            { value: 'Gift Box', label: 'Gift Box' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'innerPacking',
+      title: 'Inner Packing',
+      icon: Gift,
+      fields: [
+        {
+          name: 'innerPackingType',
+          label: 'Inner Packing Type',
+          type: 'select',
+          required: true,
+          options: [
+            'Please Select',
+            'Foam Padding',
+            'Tissue Paper',
+            'Bubble Wrap',
+            'Velvet Pouch',
+            'Air Cushions',
+            'None',
+          ],
+        },
+      ],
+    },
+    {
+      id: 'premiumPacking',
+      title: 'Premium Packing',
+      icon: Award,
+      fields: [
+        {
+          name: 'premiumPackingOptions',
+          label: 'Premium Packing Options',
+          type: 'checkbox-group',
+          required: false,
+          options: [
+            { value: 'Certificate', label: 'Certificate' },
+            { value: 'Gift Card', label: 'Gift Card' },
+            { value: 'Ribbon', label: 'Ribbon' },
+            { value: 'Custom Tag', label: 'Custom Tag' },
+            { value: 'Instruction Manual', label: 'Instruction Manual' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'packingInstructions',
+      title: 'Packing Instructions',
+      icon: Edit,
+      fields: [
+        {
+          name: 'packingInstructions',
+          label: 'Packing Instructions',
+          type: 'textarea',
+          required: false,
+          placeholder: 'Enter detailed packing instructions...',
+        },
+      ],
+    },
+    {
+      id: 'packingMode',
+      title: 'Packing Mode',
+      icon: Settings,
+      fields: [
+        {
+          name: 'packingMode',
+          label: 'Packing Mode',
+          type: 'radio',
+          required: true,
+          options: [
+            { value: 'Individual', label: 'Individual' },
+            { value: 'Consolidated', label: 'Consolidated' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'payment',
+      title: 'Payment',
+      icon: CreditCard,
+      fields: [
+        {
+          name: 'paymentType',
+          label: 'Payment Type',
+          type: 'radio',
+          required: true,
+          options: [
+            { value: '100% Advance', label: '100% Advance' },
+            { value: '50% Advance & Balance when Material is Ready', label: '50% Advance & Balance when Material is Ready' },
+            { value: 'Corporate Credit', label: 'Corporate Credit' },
+          ],
+        },
+      ],
+    },
+    {
+      id: 'productImages',
+      title: 'Product Images',
+      icon: Image,
+      fields: [
+        {
+          name: 'images',
+          label: 'Upload Product Images (2-3 copies)',
+          type: 'image-upload',
+          required: false,
+        },
+      ],
+    },
+    {
+      id: 'timeDetails',
+      title: 'Time',
+      icon: Clock,
+      fields: [
+        {
+          name: 'time',
+          label: 'Time',
+          type: 'time',
+          required: true,
+        },
+      ],
+    },
+    {
+      id: 'bankDetails',
+      title: 'Bank Details',
+      icon: Building,
+      fields: [
+        {
+          name: 'bankName',
+          label: 'Bank Name',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'accountNumber',
+          label: 'Account Number',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'ifscCode',
+          label: 'IFSC Code',
+          type: 'text',
+          required: true,
+          placeholder: 'Enter IFSC code',
+        },
+        {
+          name: 'accountHolderName',
+          label: 'Account Holder Name',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'branch',
+          label: 'Branch',
+          type: 'text',
+          required: true,
+        },
+      ],
+    },
+    {
+      id: 'remarks',
+      title: 'Remarks',
+      icon: FileText,
+      fields: [
+        {
+          name: 'remarks',
+          label: 'Remarks',
+          type: 'textarea',
+          required: false,
+          placeholder: 'Additional remarks or notes...',
         },
       ],
     },
@@ -257,19 +466,52 @@ const MultiStepWizard = () => {
     }))
   }
 
+  const handleImageUpload = (files) => {
+    const newImages = Array.from(files).slice(0, 3 - uploadedImages.length)
+    const imageUrls = newImages.map(file => URL.createObjectURL(file))
+    setUploadedImages(prev => [...prev, ...imageUrls])
+    handleInputChange('productImages', 'images', [...uploadedImages, ...imageUrls])
+  }
+
+  const handleDrag = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true)
+    } else if (e.type === 'dragleave') {
+      setDragActive(false)
+    }
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleImageUpload(e.dataTransfer.files)
+    }
+  }
+
+  const removeImage = (index) => {
+    const newImages = uploadedImages.filter((_, i) => i !== index)
+    setUploadedImages(newImages)
+    handleInputChange('productImages', 'images', newImages)
+  }
+
   const validateStep = (stepIndex) => {
     const step = formSteps[stepIndex]
     const stepData = formData[step.id]
 
     return step.fields.every((field) => {
-      if (field.type === 'header') return true
+      if (field.type === 'header' || field.type === 'checkbox-group' || field.type === 'image-upload') return true
 
       if (field.required) {
         const value = stepData[field.name]
         if (field.type === 'select') {
           return value && value.trim() !== '' && value !== 'Please Select'
         }
-        return value && value.trim() !== ''
+        return value && value.toString().trim() !== ''
       }
       return true
     })
@@ -309,7 +551,10 @@ const MultiStepWizard = () => {
   }
 
   const handleSubmit = () => {
-    alert('Form submitted successfully!')
+    if (validateStep(currentStep)) {
+      setCompletedSteps((prev) => new Set([...prev, currentStep]))
+      alert('Sales Order Form submitted successfully!\n\nJob Number will be generated.')
+    }
   }
 
   const isCurrentStepValid = validateStep(currentStep)
@@ -330,28 +575,160 @@ const MultiStepWizard = () => {
             {field.label}
             {field.required && <span className="text-danger ms-1">*</span>}
           </label>
-          <div className="d-flex gap-4">
+          <div className="row g-3">
             {field.options.map((option) => (
-              <div key={option.value} className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name={field.name}
-                  id={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
-                  value={option.value}
-                  checked={formData[stepId][field.name] === option.value}
-                  onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
-                  required={field.required}
-                />
-                <label
-                  className="form-check-label"
-                  htmlFor={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
-                >
-                  {option.label}
-                </label>
+              <div key={option.value} className="col-12">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name={field.name}
+                    id={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
+                    value={option.value}
+                    checked={formData[stepId][field.name] === option.value}
+                    onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
+                    required={field.required}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
+                  >
+                    {option.label}
+                  </label>
+                </div>
               </div>
             ))}
           </div>
+        </div>
+      )
+    }
+
+    if (field.type === 'checkbox-group') {
+      return (
+        <div key={field.name} className="mb-4">
+          <label className="form-label fw-medium fs-6 mb-3">
+            {field.label}
+            {field.required && <span className="text-danger ms-1">*</span>}
+          </label>
+          <div className="row g-3">
+            {field.options.map((option) => (
+              <div key={option.value} className="col-12 col-md-6">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
+                    checked={
+                      formData[stepId][field.name] &&
+                      formData[stepId][field.name].includes(option.value)
+                    }
+                    onChange={(e) => {
+                      const currentValues = formData[stepId][field.name] || []
+                      const newValues = e.target.checked
+                        ? [...currentValues, option.value]
+                        : currentValues.filter((v) => v !== option.value)
+                      handleInputChange(stepId, field.name, newValues)
+                    }}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
+                  >
+                    {option.label}
+                  </label>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    if (field.type === 'image-upload') {
+      return (
+        <div key={field.name} className="col-12 mb-4">
+          <label className="form-label fw-medium fs-6 mb-3">
+            {field.label}
+            {field.required && <span className="text-danger ms-1">*</span>}
+          </label>
+
+          <div
+            className={`border-2 border-dashed rounded-lg p-6 text-center ${
+              dragActive ? 'border-primary bg-light' : 'border-muted'
+            }`}
+            onDragEnter={handleDrag}
+            onDragLeave={handleDrag}
+            onDragOver={handleDrag}
+            onDrop={handleDrop}
+          >
+            <Upload size={48} className="mx-auto mb-3 text-muted" />
+            <p className="mb-3">Drag and drop images here, or click to browse</p>
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => handleImageUpload(e.target.files)}
+              className="d-none"
+            />
+            <button
+              type="button"
+              className="btn btn-outline-primary"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploadedImages.length >= 3}
+            >
+              Choose Images
+            </button>
+            <p className="small text-muted mt-2">Maximum 3 images allowed</p>
+          </div>
+
+          {uploadedImages.length > 0 && (
+            <div className="mt-3">
+              <div className="row g-3">
+                {uploadedImages.map((image, index) => (
+                  <div key={index} className="col-4">
+                    <div className="position-relative">
+                      <img
+                        src={image}
+                        alt={`Product ${index + 1}`}
+                        className="img-fluid rounded border"
+                        style={{ aspectRatio: '1/1', objectFit: 'cover' }}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
+                        onClick={() => removeImage(index)}
+                        style={{ padding: '2px 6px' }}
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    if (field.type === 'textarea') {
+      return (
+        <div key={field.name} className="col-12 mb-4">
+          <label htmlFor={field.name} className="form-label fw-medium fs-6">
+            {field.label}
+            {field.required && <span className="text-danger ms-1">*</span>}
+          </label>
+          <textarea
+            className="form-control form-control-lg"
+            id={field.name}
+            name={field.name}
+            rows="4"
+            value={formData[stepId][field.name]}
+            onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
+            placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
+            required={field.required}
+          />
         </div>
       )
     }
@@ -375,11 +752,7 @@ const MultiStepWizard = () => {
             required={field.required}
           >
             {field.options.map((option, index) => (
-              <option
-                key={index}
-                value={option}
-                // disabled={option === "Please Select"}
-              >
+              <option key={index} value={option} disabled={option === 'Please Select'}>
                 {option}
               </option>
             ))}
@@ -394,9 +767,14 @@ const MultiStepWizard = () => {
             onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
             placeholder={
               field.placeholder ||
-              (field.type === 'date' ? 'yyyy-mm-dd' : `Enter ${field.label.toLowerCase()}`)
+              (field.type === 'date'
+                ? 'yyyy-mm-dd'
+                : field.type === 'time'
+                ? 'HH:MM'
+                : `Enter ${field.label.toLowerCase()}`)
             }
             required={field.required}
+            step={field.type === 'number' ? '0.01' : undefined}
           />
         )}
       </div>
@@ -405,17 +783,10 @@ const MultiStepWizard = () => {
 
   return (
     <>
-      {/* Bootstrap CSS */}
-      <link
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-        rel="stylesheet"
-      />
-
-      {/* Custom CSS for specific styling */}
       <style>{`
         .step-indicator {
-          width: 60px;
-          height: 60px;
+          width: 50px;
+          height: 50px;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -446,17 +817,6 @@ const MultiStepWizard = () => {
 
         .step-indicator.clickable:hover:not(.pending) {
           transform: scale(1.05);
-        }
-
-        .step-connector {
-          height: 2px;
-          background-color: #dee2e6;
-          flex: 1;
-          margin: 0 1rem;
-        }
-
-        .step-connector.completed {
-          background-color: #198754;
         }
 
         .previous-step-header {
@@ -496,24 +856,52 @@ const MultiStepWizard = () => {
           height: fit-content;
         }
 
-        .accordion-item {
-          height: fit-content;
+        .steps-container {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 0.3rem;
+          max-width: 100%;
+          overflow-x: auto;
+          padding: 0 10px;
+        }
+
+        .step-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          min-width: 80px;
+          flex-shrink: 0;
+        }
+
+        @media (max-width: 768px) {
+          .step-indicator {
+            width: 40px;
+            height: 40px;
+          }
+
+          .steps-container {
+            gap: 0.2rem;
+            justify-content: flex-start;
+          }
+
+          .step-item {
+            min-width: 70px;
+          }
         }
       `}</style>
 
       <div className="container-fluid bg-light min-vh-100">
         <div className="container py-5">
           <div className="row justify-content-center">
-            <div className="col-lg-8">
-              {/* Header */}
+            <div className="col-lg-10">
               <div className="mb-5 text-center">
                 <h1 className="display-5 fw-bold text-dark mb-3">Sales Order Form</h1>
-                <p className="text-muted fs-5">Complete all steps to submit your information</p>
+                <p className="text-muted fs-5">Complete all steps to generate job number</p>
               </div>
 
-              {/* Progress Steps */}
               <div className="mb-5">
-                <div className="d-flex align-items-center justify-content-center">
+                <div className="steps-container">
                   {formSteps.map((step, index) => {
                     const Icon = step.icon
                     const isCompleted = completedSteps.has(index)
@@ -521,47 +909,40 @@ const MultiStepWizard = () => {
                     const isClickable = index <= currentStep || completedSteps.has(index)
 
                     return (
-                      <React.Fragment key={step.id}>
-                        <div className="d-flex flex-column align-items-center position-relative">
-                          <button
-                            onClick={() => isClickable && handleStepClick(index)}
-                            disabled={!isClickable}
-                            className={`step-indicator ${
-                              isCompleted ? 'completed' : isCurrent ? 'current' : 'pending'
-                            } ${isClickable ? 'clickable' : ''} mb-2`}
+                      <div key={step.id} className="step-item">
+                        <button
+                          onClick={() => isClickable && handleStepClick(index)}
+                          disabled={!isClickable}
+                          className={`step-indicator ${
+                            isCompleted ? 'completed' : isCurrent ? 'current' : 'pending'
+                          } ${isClickable ? 'clickable' : ''} mb-2`}
+                        >
+                          {isCompleted ? <Check size={16} /> : <Icon size={16} />}
+                        </button>
+                        <div className="text-center">
+                          <p
+                            className={`small fw-medium mb-1 ${
+                              isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
+                            }`}
+                            style={{ fontSize: '10px' }}
                           >
-                            {isCompleted ? <Check size={24} /> : <Icon size={24} />}
-                          </button>
-                          <div className="text-center">
-                            <p
-                              className={`small fw-medium mb-1 ${
-                                isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
-                              }`}
-                            >
-                              Step {index + 1}
-                            </p>
-                            <p
-                              className={`small mb-0 ${
-                                isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
-                              }`}
-                            >
-                              {step.title}
-                            </p>
-                          </div>
+                            Step {index + 1}
+                          </p>
+                          <p
+                            className={`small mb-0 ${
+                              isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
+                            }`}
+                            style={{ fontSize: '9px', lineHeight: '1.2' }}
+                          >
+                            {step.title}
+                          </p>
                         </div>
-                        {index < formSteps.length - 1 && (
-                          <div
-                            className={`step-connector mx-4 ${isCompleted ? 'completed' : ''}`}
-                            style={{ marginTop: '-40px', width: '100px' }}
-                          />
-                        )}
-                      </React.Fragment>
+                      </div>
                     )
                   })}
                 </div>
               </div>
 
-              {/* Previous Steps Content */}
               {currentStep > 0 && (
                 <div className="mb-4">
                   <div className="card shadow-sm">
@@ -592,64 +973,33 @@ const MultiStepWizard = () => {
                                   {step.title}
                                 </span>
                                 <span className="text-muted small ms-2">(Step {index + 1})</span>
-                                {step.title === 'Date' && (
-                                  <>
-                                    <span className="text-muted fw-medium ms-2">Date: </span>
-                                    {step.fields
-                                      .filter((field) => field.type !== 'header')
-                                      .map((field) => {
-                                        const value = formData[step.id][field.name]
-                                        const displayValue = value || ''
-
-                                        return (
-                                          <span
-                                            key={field.name}
-                                            className="fw-medium text-dark me-3 d-block ms-2"
-                                          >
-                                            {displayValue ? (
-                                              displayValue
-                                            ) : (
-                                              <em className="text-muted">Not filled</em>
-                                            )}
-                                          </span>
-                                        )
-                                      })}
-                                  </>
+                              </div>
+                              <div className="d-flex align-items-center">
+                                <span className="text-muted small me-2">
+                                  {isExpanded ? 'Hide Details' : 'Show Details'}
+                                </span>
+                                {isExpanded ? (
+                                  <ChevronUp size={18} className="text-muted" />
+                                ) : (
+                                  <ChevronDown size={18} className="text-muted" />
                                 )}
                               </div>
-                              {!(step.title === 'Date') && (
-                                <div className="d-flex align-items-center">
-                                  <span className="text-muted small me-2">
-                                    {isExpanded ? 'Hide Details' : 'Show Details'}
-                                  </span>
-                                  {isExpanded ? (
-                                    <ChevronUp size={18} className="text-muted" />
-                                  ) : (
-                                    <ChevronDown size={18} className="text-muted" />
-                                  )}
-                                </div>
-                              )}
-                              {step.title === 'Date' && (
-                                <div>
-                                  <button
-                                    className="btn btn-outline-primary clr-hover btn-sm"
-                                    onClick={() => handleStepClick(index)}
-                                  >
-                                    <ChevronLeft size={16} className="me-1" />
-                                    Go back to edit this step
-                                  </button>
-                                </div>
-                              )}
                             </button>
 
-                            {isExpanded && !(step.title === 'Date') && (
+                            {isExpanded && (
                               <div className="border-top p-3">
                                 <div className="row g-3">
                                   {step.fields
                                     .filter((field) => field.type !== 'header')
                                     .map((field) => {
                                       const value = formData[step.id][field.name]
-                                      const displayValue = value || ''
+                                      let displayValue = ''
+
+                                      if (Array.isArray(value)) {
+                                        displayValue = value.join(', ')
+                                      } else {
+                                        displayValue = value || ''
+                                      }
 
                                       return (
                                         <div key={field.name} className="col-12">
@@ -689,14 +1039,12 @@ const MultiStepWizard = () => {
                 </div>
               )}
 
-              {/* Current Form */}
               <div className="card shadow-sm">
                 <div className="card-body p-5">
                   <h2 className="h4 fw-semibold text-dark mb-4 text-center">
                     {formSteps[currentStep].title}
                   </h2>
 
-                  {/* Form Fields */}
                   <div className="row justify-content-center">
                     <div className="col-md-10">
                       <div className="form-field-column">
@@ -709,7 +1057,6 @@ const MultiStepWizard = () => {
                     </div>
                   </div>
 
-                  {/* Navigation Buttons */}
                   <div className="d-flex justify-content-between mt-5 pt-4 border-top">
                     <button
                       onClick={handlePrev}
@@ -734,7 +1081,7 @@ const MultiStepWizard = () => {
                         } d-flex align-items-center px-4 py-2`}
                       >
                         <Check size={22} className="me-2" />
-                        Submit
+                        Submit & Generate Job Number
                       </button>
                     ) : (
                       <button
@@ -756,341 +1103,9 @@ const MultiStepWizard = () => {
         </div>
       </div>
 
-      {/* Bootstrap JS */}
       <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     </>
   )
 }
 
 export default MultiStepWizard
-
-// import React, { useState } from 'react';
-// import { ChevronLeft, ChevronRight, Check, User, Mail, Phone, MapPin, CreditCard, ChevronDown, ChevronUp } from 'lucide-react';
-
-// const MultiFormHandler = () => {
-//   const [currentStep, setCurrentStep] = useState(0);
-//   const [formData, setFormData] = useState({
-//     personal: {
-//       firstName: '',
-//       lastName: '',
-//       email: '',
-//       phone: ''
-//     },
-//     address: {
-//       street: '',
-//       city: '',
-//       state: '',
-//       zipCode: ''
-//     },
-//     payment: {
-//       cardNumber: '',
-//       expiryDate: '',
-//       cvv: '',
-//       cardholderName: ''
-//     }
-//   });
-
-//   const [completedSteps, setCompletedSteps] = useState(new Set());
-//   const [expandedSteps, setExpandedSteps] = useState(new Set());
-
-//   const formSteps = [
-//     {
-//       id: 'personal',
-//       title: 'Personal Information',
-//       icon: User,
-//       fields: [
-//         { name: 'firstName', label: 'First Name', type: 'text', required: true },
-//         { name: 'lastName', label: 'Last Name', type: 'text', required: true },
-//         { name: 'email', label: 'Email', type: 'email', required: true },
-//         { name: 'phone', label: 'Phone', type: 'tel', required: true }
-//       ]
-//     },
-//     {
-//       id: 'address',
-//       title: 'Address Information',
-//       icon: MapPin,
-//       fields: [
-//         { name: 'street', label: 'Street Address', type: 'text', required: true },
-//         { name: 'city', label: 'City', type: 'text', required: true },
-//         { name: 'state', label: 'State', type: 'text', required: true },
-//         { name: 'zipCode', label: 'ZIP Code', type: 'text', required: true }
-//       ]
-//     },
-//     {
-//       id: 'payment',
-//       title: 'Payment Information',
-//       icon: CreditCard,
-//       fields: [
-//         { name: 'cardNumber', label: 'Card Number', type: 'text', required: true },
-//         { name: 'expiryDate', label: 'Expiry Date (MM/YY)', type: 'text', required: true },
-//         { name: 'cvv', label: 'CVV', type: 'text', required: true },
-//         { name: 'cardholderName', label: 'Cardholder Name', type: 'text', required: true }
-//       ]
-//     }
-//   ];
-
-//   const handleInputChange = (stepId, fieldName, value) => {
-//     setFormData(prev => ({
-//       ...prev,
-//       [stepId]: {
-//         ...prev[stepId],
-//         [fieldName]: value
-//       }
-//     }));
-//   };
-
-//   const validateStep = (stepIndex) => {
-//     const step = formSteps[stepIndex];
-//     const stepData = formData[step.id];
-
-//     return step.fields.every(field => {
-//       if (field.required) {
-//         return stepData[field.name] && stepData[field.name].trim() !== '';
-//       }
-//       return true;
-//     });
-//   };
-
-//   const handleNext = () => {
-//     if (validateStep(currentStep)) {
-//       setCompletedSteps(prev => new Set([...prev, currentStep]));
-//       if (currentStep < formSteps.length - 1) {
-//         setCurrentStep(currentStep + 1);
-//       }
-//     }
-//   };
-
-//   const handlePrev = () => {
-//     if (currentStep > 0) {
-//       setCurrentStep(currentStep - 1);
-//     }
-//   };
-
-//   const handleStepClick = (stepIndex) => {
-//     setCurrentStep(stepIndex);
-//   };
-
-//   const toggleStepExpansion = (stepIndex) => {
-//     setExpandedSteps(prev => {
-//       const newExpanded = new Set(prev);
-//       if (newExpanded.has(stepIndex)) {
-//         newExpanded.delete(stepIndex);
-//       } else {
-//         newExpanded.add(stepIndex);
-//       }
-//       return newExpanded;
-//     });
-//   };
-
-//   const handleSubmit = () => {
-//     if (validateStep(currentStep)) {
-//       setCompletedSteps(prev => new Set([...prev, currentStep]));
-//       alert('Form submitted successfully!\n\n' + JSON.stringify(formData, null, 2));
-//     }
-//   };
-
-//   const isStepValid = (stepIndex) => validateStep(stepIndex);
-//   const isCurrentStepValid = isStepValid(currentStep);
-//   const allStepsCompleted = formSteps.every((_, index) => completedSteps.has(index));
-
-//   return (
-//     <div className="max-w-4xl mx-auto p-6 bg-white">
-//       <div className="mb-8">
-//         <h1 className="text-3xl font-bold text-gray-900 mb-2">Multi-Step Form</h1>
-//         <p className="text-gray-600">Complete all steps to submit your information</p>
-//       </div>
-
-//       {/* Progress Steps */}
-//       <div className="mb-8">
-//         <div className="flex items-center justify-between">
-//           {formSteps.map((step, index) => {
-//             const Icon = step.icon;
-//             const isCompleted = completedSteps.has(index);
-//             const isCurrent = index === currentStep;
-//             const isClickable = index <= currentStep || completedSteps.has(index);
-
-//             return (
-//               <div key={step.id} className="flex items-center">
-//                 <button
-//                   onClick={() => isClickable && handleStepClick(index)}
-//                   disabled={!isClickable}
-//                   className={`flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-200 ${
-//                     isCompleted
-//                       ? 'bg-green-500 border-green-500 text-white'
-//                       : isCurrent
-//                       ? 'bg-blue-500 border-blue-500 text-white'
-//                       : isClickable
-//                       ? 'bg-white border-gray-300 text-gray-400 hover:border-blue-300'
-//                       : 'bg-gray-100 border-gray-200 text-gray-300 cursor-not-allowed'
-//                   }`}
-//                 >
-//                   {isCompleted ? <Check size={20} /> : <Icon size={20} />}
-//                 </button>
-//                 <div className="ml-3 text-left">
-//                   <p className={`text-sm font-medium ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-500'}`}>
-//                     Step {index + 1}
-//                   </p>
-//                   <p className={`text-xs ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'}`}>
-//                     {step.title}
-//                   </p>
-//                 </div>
-//                 {index < formSteps.length - 1 && (
-//                   <div className={`mx-4 h-0.5 w-16 ${isCompleted ? 'bg-green-500' : 'bg-gray-300'}`} />
-//                 )}
-//               </div>
-//             );
-//           })}
-//         </div>
-//       </div>
-
-//       {/* Previous Steps Content - Above Current Form */}
-//       {currentStep > 0 && (
-//         <div className="mb-8 bg-white border border-gray-200 rounded-lg p-6">
-//           <h3 className="text-lg font-semibold text-gray-900 mb-4">Previous Steps Summary</h3>
-
-//           <div className="space-y-4">
-//             {formSteps.slice(0, currentStep).map((step, index) => {
-//               const isExpanded = expandedSteps.has(index);
-//               return (
-//                 <div key={step.id} className="border border-gray-200 rounded-lg overflow-hidden">
-//                   {/* Clickable Header */}
-//                   <button
-//                     onClick={() => toggleStepExpansion(index)}
-//                     className="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors duration-200 flex items-center justify-between text-left"
-//                   >
-//                     <div className="flex items-center">
-//                       <div className={`w-4 h-4 rounded-full mr-3 ${
-//                         completedSteps.has(index) ? 'bg-green-500' : 'bg-gray-300'
-//                       }`} />
-//                       <h4 className={`font-medium ${
-//                         completedSteps.has(index) ? 'text-green-700' : 'text-gray-500'
-//                       }`}>
-//                         {step.title}
-//                       </h4>
-//                       <span className="ml-2 text-xs text-gray-400">
-//                         (Step {index + 1})
-//                       </span>
-//                     </div>
-
-//                     <div className="flex items-center">
-//                       <span className="text-xs text-gray-500 mr-2">
-//                         {isExpanded ? 'Hide Details' : 'Show Details'}
-//                       </span>
-//                       {isExpanded ? (
-//                         <ChevronUp size={16} className="text-gray-400" />
-//                       ) : (
-//                         <ChevronDown size={16} className="text-gray-400" />
-//                       )}
-//                     </div>
-//                   </button>
-
-//                   {/* Expandable Content */}
-//                   {isExpanded && (
-//                     <div className="px-4 py-3 bg-white border-t border-gray-100">
-//                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//                         {step.fields.map((field) => {
-//                           const value = formData[step.id][field.name];
-//                           return (
-//                             <div key={field.name} className="text-sm">
-//                               <span className="font-medium text-gray-700">{field.label}:</span>{' '}
-//                               {value ? (
-//                                 <span className="text-gray-900">{value}</span>
-//                               ) : (
-//                                 <span className="text-gray-400 italic">Not filled</span>
-//                               )}
-//                             </div>
-//                           );
-//                         })}
-//                       </div>
-
-//                       {/* Edit Button */}
-//                       <div className="mt-3 pt-3 border-t border-gray-100">
-//                         <button
-//                           onClick={() => handleStepClick(index)}
-//                           className="text-blue-600 hover:text-blue-800 text-xs font-medium transition-colors duration-200"
-//                         >
-//                           ← Go back to edit this step
-//                         </button>
-//                       </div>
-//                     </div>
-//                   )}
-//                 </div>
-//               );
-//             })}
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Current Form */}
-//       <div className="bg-gray-50 rounded-lg p-6">
-//         <h2 className="text-xl font-semibold text-gray-900 mb-4">
-//           {formSteps[currentStep].title}
-//         </h2>
-
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//           {formSteps[currentStep].fields.map((field) => (
-//             <div key={field.name} className="space-y-2">
-//               <label className="block text-sm font-medium text-gray-700">
-//                 {field.label}
-//                 {field.required && <span className="text-red-500 ml-1">*</span>}
-//               </label>
-//               <input
-//                 type={field.type}
-//                 value={formData[formSteps[currentStep].id][field.name]}
-//                 onChange={(e) => handleInputChange(formSteps[currentStep].id, field.name, e.target.value)}
-//                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-//                 placeholder={`Enter ${field.label.toLowerCase()}`}
-//               />
-//             </div>
-//           ))}
-//         </div>
-
-//         {/* Navigation Buttons */}
-//         <div className="flex justify-between mt-8">
-//           <button
-//             onClick={handlePrev}
-//             disabled={currentStep === 0}
-//             className={`flex items-center px-4 py-2 rounded-md ${
-//               currentStep === 0
-//                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-//                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-//             }`}
-//           >
-//             <ChevronLeft size={20} className="mr-1" />
-//             Previous
-//           </button>
-
-//           {currentStep === formSteps.length - 1 ? (
-//             <button
-//               onClick={handleSubmit}
-//               disabled={!isCurrentStepValid}
-//               className={`flex items-center px-6 py-2 rounded-md ${
-//                 isCurrentStepValid
-//                   ? 'bg-green-600 text-white hover:bg-green-700'
-//                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-//               }`}
-//             >
-//               <Check size={20} className="mr-1" />
-//               Submit
-//             </button>
-//           ) : (
-//             <button
-//               onClick={handleNext}
-//               disabled={!isCurrentStepValid}
-//               className={`flex items-center px-4 py-2 rounded-md ${
-//                 isCurrentStepValid
-//                   ? 'bg-blue-600 text-white hover:bg-blue-700'
-//                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-//               }`}
-//             >
-//               Next
-//               <ChevronRight size={20} className="ml-1" />
-//             </button>
-//           )}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default MultiFormHandler
