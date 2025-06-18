@@ -136,7 +136,7 @@ const MultiStepWizard = () => {
           name: 'billingStreetAddress',
           label: 'Street Address',
           type: 'text',
-          required: true,
+          required: false,
         },
         {
           name: 'billingStreetAddress2',
@@ -148,21 +148,21 @@ const MultiStepWizard = () => {
           name: 'billingCity',
           label: 'City',
           type: 'text',
-          required: true,
+          required: false,
           width: 'half',
         },
         {
           name: 'billingState',
           label: 'State / Province',
           type: 'text',
-          required: true,
+          required: false,
           width: 'half',
         },
         {
           name: 'billingPostalCode',
           label: 'Postal / Zip Code',
           type: 'text',
-          required: true,
+          required: false,
         },
 
         // Delivery Address Section
@@ -672,7 +672,7 @@ const MultiStepWizard = () => {
 
                                 <div className="mt-3 pt-3 border-top">
                                   <button
-                                    className="btn btn-outline-primary btn-sm"
+                                    className="btn btn-outline-primary clr-hover btn-sm"
                                     onClick={() => handleStepClick(index)}
                                   >
                                     <ChevronLeft size={16} className="me-1" />
