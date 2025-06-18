@@ -33,9 +33,9 @@ import AdvancedRichTextEditor from '../Textarea'
 const MultiStepWizard = () => {
   const [currentStep, setCurrentStep] = useState(0)
   const [formData, setFormData] = useState({
-    date: {
-      date: '',
-    },
+    // date: {
+    //   date: '',
+    // },
     jobDetails: {
       jobOwner: '',
       jobQty: '',
@@ -67,12 +67,12 @@ const MultiStepWizard = () => {
   const [expandedSteps, setExpandedSteps] = useState(new Set())
 
   const formSteps = [
-    {
-      id: 'date',
-      title: 'Date',
-      icon: Calendar,
-      fields: [{ name: 'date', label: 'Date', type: 'date', required: true }],
-    },
+    // {
+    //   id: 'date',
+    //   title: 'Date',
+    //   icon: Calendar,
+    //   fields: [{ name: 'date', label: 'Date', type: 'date', required: true }],
+    // },
     {
       id: 'jobDetails',
       title: 'Job Details',
@@ -432,8 +432,8 @@ const MultiStepWizard = () => {
         }
 
         .step-indicator.current {
-          background-color: #0d6efd;
-          border-color: #0d6efd;
+          background-color: #0061ed;
+          border-color: #0061ed;
           color: white;
         }
 
@@ -535,22 +535,14 @@ const MultiStepWizard = () => {
                           <div className="text-center">
                             <p
                               className={`small fw-medium mb-1 ${
-                                isCurrent
-                                  ? 'text-primary'
-                                  : isCompleted
-                                    ? 'text-success'
-                                    : 'text-muted'
+                                isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
                               }`}
                             >
                               Step {index + 1}
                             </p>
                             <p
                               className={`small mb-0 ${
-                                isCurrent
-                                  ? 'text-primary'
-                                  : isCompleted
-                                    ? 'text-success'
-                                    : 'text-muted'
+                                isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
                               }`}
                             >
                               {step.title}
@@ -749,7 +741,7 @@ const MultiStepWizard = () => {
                         onClick={handleNext}
                         disabled={!isCurrentStepValid}
                         className={`btn ${
-                          isCurrentStepValid ? 'btn-primary' : 'btn-outline-primary'
+                          isCurrentStepValid ? 'bg-blue clr-white' : 'btn-outline-primary'
                         } d-flex align-items-center px-4 py-2`}
                       >
                         Next

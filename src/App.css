@@ -8,6 +8,10 @@ a {
   color: #242336;
 }
 
+.clr-white {
+  color: white !important;
+}
+
 /* .bg-blue {
   background-color: #0061ed;
   color: white !important;
@@ -15,7 +19,7 @@ a {
 } */
 
 .bg-blue {
-  background-color: #0061ed;
+  background-color: #0061ed !important;
 }
 
 .button-sizing {

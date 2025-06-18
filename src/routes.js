@@ -15,6 +15,8 @@ const DepartmentForm = React.lazy(() => import('./views/pages/masters/department
 const RolesList = React.lazy(() => import('./views/pages/masters/roles/List'))
 const RoleForm = React.lazy(() => import('./views/pages/masters/roles/Form'))
 
+const JobsList = React.lazy(() => import('./views/pages/masters/jobs/List'))
+
 const ProductionPlanning = React.lazy(() => import('./views/pages/Productionplanning'))
 const SalesOrderForm = React.lazy(() => import('./views/pages/sales/Salesorderform'))
 
@@ -89,6 +91,8 @@ const routes = [
   { path: '/departments', name: 'Departments List', element: DepartmentsList },
   { path: '/departments/add', name: 'Add', element: DepartmentForm },
   { path: '/departments/:departmentId', name: 'Edit', element: DepartmentForm },
+  { path: '/jobs', name: 'Jobs List', element: JobsList },
+
   { path: '/productionplanning', name: 'Production Planning', element: ProductionPlanning },
   { path: '/salesorder', name: 'Sales Order Form', element: SalesOrderForm },
   { path: '/users', name: 'Users List', element: UsersList },
@@ -97,7 +101,7 @@ const routes = [
   { path: '/roles', name: 'Roles List', element: RolesList },
   { path: '/roles/add', name: 'Add', element: RoleForm },
   { path: '/roles/:roleId', name: 'Edit', element: RoleForm },
-    { path: '/profile', name: '', element: UserProfile },
+  { path: '/profile', name: '', element: UserProfile },
 
 
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
