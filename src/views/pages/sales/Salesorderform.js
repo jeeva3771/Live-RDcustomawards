@@ -37,7 +37,7 @@ const MultiStepWizard = () => {
     //   date: '',
     // },
     jobDetails: {
-      jobOwner: '',
+      // jobOwner: '',
       jobQty: '',
       jobCompletionDate: '',
     },
@@ -78,13 +78,13 @@ const MultiStepWizard = () => {
       title: 'Job Details',
       icon: Briefcase,
       fields: [
-        {
-          name: 'jobOwner',
-          label: 'Job Owner',
-          type: 'select',
-          required: true,
-          options: ['Please Select', 'John Doe', 'RD', 'Mike Johnson', 'David Chen'],
-        },
+        // {
+        //   name: 'jobOwner',
+        //   label: 'Job Owner',
+        //   type: 'select',
+        //   required: true,
+        //   options: ['Please Select', 'John Doe', 'RD', 'Mike Johnson', 'David Chen'],
+        // },
         { name: 'jobQty', label: 'Job QTY', type: 'number', required: true },
         {
           name: 'jobCompletionDate',
@@ -632,7 +632,7 @@ const MultiStepWizard = () => {
                               {step.title === 'Date' && (
                                 <div>
                                   <button
-                                    className="btn btn-outline-primary btn-sm"
+                                    className="btn btn-outline-primary clr-hover btn-sm"
                                     onClick={() => handleStepClick(index)}
                                   >
                                     <ChevronLeft size={16} className="me-1" />

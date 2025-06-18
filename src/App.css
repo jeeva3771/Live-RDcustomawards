@@ -12,6 +12,10 @@ a {
   color: white !important;
 }
 
+.clr-hover:hover {
+  background-color: #0061ed !important;
+}
+
 /* .bg-blue {
   background-color: #0061ed;
   color: white !important;
