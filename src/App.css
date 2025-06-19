@@ -16,6 +16,7 @@ a {
   background-color: #0061ed !important;
 }
 
+
 /* .bg-blue {
   background-color: #0061ed;
   color: white !important;
@@ -44,11 +45,34 @@ a {
 
 input[type="password"]:focus,
 input[type="text"]:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+input[type="checkbox"]:focus,
+input[type="radio"]:focus,
+input[type="date"]:focus,
+input[type="tel"]:focus,
+input[type="email"]:focus,
+input[type="radio"]:focus,
+textarea:focus {
+  outline: none !important;
+  border-color: #0061ed !important;
+  box-shadow: 0 0 0 2px rgba(0, 97, 237, 0.1) !important;
+}
+
+/* input:focus,
+select:focus,
+textarea:focus {
   outline: none;
   border-color: #0061ed;
   box-shadow: 0 0 0 2px rgba(0, 97, 237, 0.1);
 }
+
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 97, 237, 0.3);
+  border-color: #0061ed;
+} */
+
 
 .clr-white {
   color: white;
@@ -677,6 +701,11 @@ input[type="number"]:focus {
   transform: scale(0.95);
 }
 
+.btn-outline-primary {
+  border-color: #0061ed;
+  color: #0061ed;
+}
+
 .bold-btn:active,
 .italic-btn:active,
 .underline-btn:active,
@@ -1132,6 +1161,11 @@ input[type="number"]:focus {
 
 /*checkbox*/
 .checkbox-blue .form-check-input:checked {
+  background-color: #0061ed;
+  border-color: #0061ed;
+}
+
+.form-check-input:checked {
   background-color: #0061ed;
   border-color: #0061ed;
 }

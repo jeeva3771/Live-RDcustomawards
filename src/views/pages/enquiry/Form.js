@@ -2,94 +2,41 @@ import React, { useState, useRef } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
-  Calendar,
-  Camera,
   Upload,
-  Clock,
-  Bold,
-  Italic,
-  Underline,
-  Link,
-  List,
-  Image,
-  Smile,
   Check,
-  Edit,
-  Briefcase,
   ChevronDown,
   ChevronUp,
   User,
   Package,
-  Gift,
-  Settings,
-  Award,
-  CreditCard,
-  Building,
   Truck,
-  FileText,
   X,
-  Box,
-  Shield,
-  Layers,
+  Image,
 } from 'lucide-react'
 
-const MultiStepWizard = () => {
+const SimpleOrderWizard = () => {
   const [currentStep, setCurrentStep] = useState(0)
   const [uploadedImages, setUploadedImages] = useState([])
   const fileInputRef = useRef(null)
   const [dragActive, setDragActive] = useState(false)
 
   const [formData, setFormData] = useState({
-    jobDetails: {
-      jobQty: '',
-      jobCompletionDate: '',
-    },
     clientDetails: {
-      clientName: '',
-      contactPerson: '',
-      phoneNumber: '',
+      client: '',
       email: '',
-      billingStreetAddress: '',
-      billingStreetAddress2: '',
-      billingCity: '',
-      billingState: '',
-      billingPostalCode: '',
-      deliveryStreetAddress: '',
-      deliveryStreetAddress2: '',
-      deliveryCity: '',
-      deliveryState: '',
-      deliveryPostalCode: '',
-      deliveryType: 'Single Point',
-      courier: 'RD Courier',
+      contactNo: '',
+    },
+    imageUpload: {
+      productImages: [],
+    },
+    productDetails: {
       productName: '',
-      productSize: '',
-      pricePerPc: '',
+      quantity: '',
+      size: '',
     },
-    packaging: {
-      packingType: '',
-      innerPackingType: '',
-      premiumPackingOptions: [],
-      packingInstructions: '',
-      packingMode: '',
-    },
-    payment: {
-      paymentType: '',
-    },
-    productImages: {
-      images: [],
-    },
-    timeDetails: {
-      time: '',
-    },
-    bankDetails: {
-      bankName: '',
-      accountNumber: '',
-      ifscCode: '',
-      accountHolderName: '',
-      branch: '',
-    },
-    remarks: {
-      remarks: '',
+    deliveryDetails: {
+      deliveryDate: '',
+      deliveryLocation: '',
+      deliveryMode: '',
     },
   })
 
@@ -98,326 +45,104 @@ const MultiStepWizard = () => {
 
   const formSteps = [
     {
-      id: 'jobDetails',
-      title: 'Job Details',
-      icon: Briefcase,
-      fields: [
-        { name: 'jobQty', label: 'Job QTY', type: 'number', required: true },
-        {
-          name: 'jobCompletionDate',
-          label: 'Job Completion Date',
-          type: 'date',
-          required: true,
-        },
-      ],
-    },
-    {
       id: 'clientDetails',
       title: 'Client Details',
       icon: User,
       fields: [
+
         {
-          name: 'clientName',
+          name: 'client',
           label: 'Client Name',
           type: 'text',
           required: true,
-        },
-        {
-          name: 'contactPerson',
-          label: 'Contact Person',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'phoneNumber',
-          label: 'Phone Number',
-          type: 'tel',
-          required: true,
-          placeholder: 'Enter phone number',
+          placeholder: 'Enter client name',
         },
         {
           name: 'email',
           label: 'Email',
           type: 'email',
           required: true,
-          placeholder: 'example@example.com',
+          placeholder: 'Enter email',
         },
         {
-          name: 'billingAddressHeader',
-          label: 'Billing Address',
-          type: 'header',
-        },
-        {
-          name: 'billingStreetAddress',
-          label: 'Street Address',
-          type: 'text',
-          required: false,
-        },
-        {
-          name: 'billingStreetAddress2',
-          label: 'Street Address Line 2',
-          type: 'text',
-          required: false,
-        },
-        {
-          name: 'billingCity',
-          label: 'City',
-          type: 'text',
-          required: false,
-          width: 'half',
-        },
-        {
-          name: 'billingState',
-          label: 'State / Province',
-          type: 'text',
-          required: false,
-          width: 'half',
-        },
-        {
-          name: 'billingPostalCode',
-          label: 'Postal / Zip Code',
-          type: 'text',
-          required: false,
-        },
-        {
-          name: 'deliveryAddressHeader',
-          label: 'Delivery Address',
-          type: 'header',
-        },
-        {
-          name: 'deliveryStreetAddress',
-          label: 'Street Address',
-          type: 'text',
+          name: 'contactNo',
+          label: 'Contact Number',
+          type: 'tel',
           required: true,
-        },
-        {
-          name: 'deliveryStreetAddress2',
-          label: 'Street Address Line 2',
-          type: 'text',
-          required: false,
-        },
-        {
-          name: 'deliveryCity',
-          label: 'City',
-          type: 'text',
-          required: true,
-          width: 'half',
-        },
-        {
-          name: 'deliveryState',
-          label: 'State / Province',
-          type: 'text',
-          required: true,
-          width: 'half',
-        },
-        {
-          name: 'deliveryPostalCode',
-          label: 'Postal / Zip Code',
-          type: 'text',
-          required: true,
-        },
-        { name: 'deliveryTypeHeader', label: 'Delivery Type', type: 'header' },
-        {
-          name: 'deliveryType',
-          label: 'Delivery Type',
-          type: 'radio',
-          required: true,
-          options: [
-            { value: 'Single Point', label: 'Single Point' },
-            { value: 'Multi Point', label: 'Multi Point' },
-          ],
-        },
-        { name: 'courierHeader', label: 'Courier', type: 'header' },
-        {
-          name: 'courier',
-          label: 'Courier',
-          type: 'radio',
-          required: true,
-          options: [
-            { value: 'Client Courier', label: 'Client Courier' },
-            { value: 'RD Courier', label: 'RD Courier' },
-            { value: 'Hand Delivery', label: 'Hand Delivery' },
-          ],
-        },
-        { name: 'productHeader', label: 'Product Information', type: 'header' },
-        {
-          name: 'productName',
-          label: 'Product Name',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'productSize',
-          label: 'Product Size',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'pricePerPc',
-          label: 'Price Per Piece',
-          type: 'number',
-          required: true,
-          placeholder: 'Enter price per piece',
+          placeholder: 'Enter contact number',
         },
       ],
     },
     {
-      id: 'packaging',
-      title: 'Packaging Details',
-      icon: Package,
-      fields: [
-        {
-          name: 'packingType',
-          label: 'Select Type of Packing',
-          type: 'radio',
-          required: true,
-          options: [
-            { value: 'Standard', label: 'Standard' },
-            { value: 'Premium', label: 'Premium' },
-            { value: 'Custom', label: 'Custom' },
-            { value: 'Gift Box', label: 'Gift Box' },
-          ],
-        },
-        {
-          name: 'innerPackingType',
-          label: 'Inner Packing Type',
-          type: 'select',
-          required: true,
-          options: [
-            'Please Select',
-            'Foam Padding',
-            'Tissue Paper',
-            'Bubble Wrap',
-            'Velvet Pouch',
-            'Air Cushions',
-            'None',
-          ],
-        },
-        {
-          name: 'premiumPackingOptions',
-          label: 'Premium Packing Options',
-          type: 'checkbox-group',
-          required: false,
-          options: [
-            { value: 'Certificate', label: 'Certificate' },
-            { value: 'Gift Card', label: 'Gift Card' },
-            { value: 'Ribbon', label: 'Ribbon' },
-            { value: 'Custom Tag', label: 'Custom Tag' },
-            { value: 'Instruction Manual', label: 'Instruction Manual' },
-          ],
-        },
-        {
-          name: 'packingInstructions',
-          label: 'Packing Instructions',
-          type: 'textarea',
-          required: false,
-          placeholder: 'Enter detailed packing instructions...',
-        },
-        {
-          name: 'packingMode',
-          label: 'Packing Mode',
-          type: 'radio',
-          required: true,
-          options: [
-            { value: 'Individual', label: 'Individual' },
-            { value: 'Consolidated', label: 'Consolidated' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'payment',
-      title: 'Payment',
-      icon: CreditCard,
-      fields: [
-        {
-          name: 'paymentType',
-          label: 'Payment Type',
-          type: 'radio',
-          required: true,
-          options: [
-            { value: '100% Advance', label: '100% Advance' },
-            { value: '50% Advance & Balance when Material is Ready', label: '50% Advance & Balance when Material is Ready' },
-            { value: 'Corporate Credit', label: 'Corporate Credit' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'productImages',
-      title: 'Product Images',
+      id: 'imageUpload',
+      title: 'Image Upload',
       icon: Image,
       fields: [
         {
-          name: 'images',
-          label: '',
+          name: 'productImages',
+          label: 'Product Images',
           type: 'image-upload',
           required: false,
         },
       ],
     },
     {
-      id: 'timeDetails',
-      title: 'Time',
-      icon: Clock,
+      id: 'productDetails',
+      title: 'Product Details',
+      icon: Package,
       fields: [
         {
-          name: 'time',
-          label: 'Time',
-          type: 'time',
+          name: 'productName',
+          label: 'Product Name',
+          type: 'text',
           required: true,
+          placeholder: 'Enter product details',
+        },
+        {
+          name: 'quantity',
+          label: 'Quantity',
+          type: 'number',
+          required: true,
+          placeholder: 'Enter quantity',
+        },
+        {
+          name: 'size',
+          label: 'Size',
+          type: 'text',
+          required: true,
+          placeholder: 'Enter size',
         },
       ],
     },
     {
-      id: 'bankDetails',
-      title: 'Bank Details',
-      icon: Building,
+      id: 'deliveryDetails',
+      title: 'Delivery Details',
+      icon: Truck,
       fields: [
         {
-          name: 'bankName',
-          label: 'Bank Name',
-          type: 'text',
+          name: 'deliveryDate',
+          label: 'Delivery Date',
+          type: 'date',
           required: true,
         },
         {
-          name: 'accountNumber',
-          label: 'Account Number',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'ifscCode',
-          label: 'IFSC Code',
-          type: 'text',
-          required: true,
-          placeholder: 'Enter IFSC code',
-        },
-        {
-          name: 'accountHolderName',
-          label: 'Account Holder Name',
-          type: 'text',
-          required: true,
-        },
-        {
-          name: 'branch',
-          label: 'Branch',
-          type: 'text',
-          required: true,
-        },
-      ],
-    },
-    {
-      id: 'remarks',
-      title: 'Remarks',
-      icon: FileText,
-      fields: [
-        {
-          name: 'remarks',
-          label: 'Remarks',
+          name: 'deliveryLocation',
+          label: 'Delivery Location',
           type: 'textarea',
-          required: false,
-          placeholder: 'Additional remarks or notes...',
+          required: true,
+          placeholder: 'Enter delivery location...',
+        },
+        {
+          name: 'deliveryMode',
+          label: 'Delivery Mode',
+          type: 'radio',
+          required: true,
+          options: [
+            { value: 'HAND DELIVERY', label: 'Hand Delivery' },
+            { value: 'COURIER', label: 'Courier' },
+            { value: 'PICKUP', label: 'Self Pickup' },
+            { value: 'EXPRESS DELIVERY', label: 'Express Delivery' },
+          ],
         },
       ],
     },
@@ -434,10 +159,10 @@ const MultiStepWizard = () => {
   }
 
   const handleImageUpload = (files) => {
-    const newImages = Array.from(files).slice(0, 3 - uploadedImages.length)
-    const imageUrls = newImages.map(file => URL.createObjectURL(file))
-    setUploadedImages(prev => [...prev, ...imageUrls])
-    handleInputChange('productImages', 'images', [...uploadedImages, ...imageUrls])
+    const newImages = Array.from(files).slice(0, 5 - uploadedImages.length)
+    const imageUrls = newImages.map((file) => URL.createObjectURL(file))
+    setUploadedImages((prev) => [...prev, ...imageUrls])
+    handleInputChange('imageUpload', 'productImages', [...uploadedImages, ...imageUrls])
   }
 
   const handleDrag = (e) => {
@@ -463,21 +188,20 @@ const MultiStepWizard = () => {
   const removeImage = (index) => {
     const newImages = uploadedImages.filter((_, i) => i !== index)
     setUploadedImages(newImages)
-    handleInputChange('productImages', 'images', newImages)
+    handleInputChange('imageUpload', 'productImages', newImages)
   }
 
   const validateStep = (stepIndex) => {
     const step = formSteps[stepIndex]
-    const stepData = formData[step.id]
+    if (!step) return true
+
+    const stepData = formData[step.id] || {}
 
     return step.fields.every((field) => {
-      if (field.type === 'header' || field.type === 'checkbox-group' || field.type === 'image-upload') return true
+      if (!field || field.type === 'header' || field.type === 'image-upload') return true
 
       if (field.required) {
         const value = stepData[field.name]
-        if (field.type === 'select') {
-          return value && value.trim() !== '' && value !== 'Please Select'
-        }
         return value && value.toString().trim() !== ''
       }
       return true
@@ -520,22 +244,16 @@ const MultiStepWizard = () => {
   const handleSubmit = () => {
     if (validateStep(currentStep)) {
       setCompletedSteps((prev) => new Set([...prev, currentStep]))
-      alert('Sales Order Form submitted successfully!\n\nJob Number will be generated.')
+      alert('Form submitted successfully!')
     }
   }
 
   const isCurrentStepValid = validateStep(currentStep)
 
   const renderField = (field, stepId) => {
-    if (field.type === 'header') {
-      return (
-        <div key={field.name} className="col-12 mb-4 mt-5 first:mt-0">
-          <h3 className="h5 fw-semibold text-dark mb-3 pb-2 border-bottom d-flex align-items-center">
-            {field.label}
-          </h3>
-        </div>
-      )
-    }
+    if (!field || !stepId) return null
+
+    const stepData = formData[stepId] || {}
 
     if (field.type === 'radio') {
       return (
@@ -545,69 +263,30 @@ const MultiStepWizard = () => {
             {field.required && <span className="text-danger ms-1">*</span>}
           </label>
           <div className="row g-2">
-            {field.options.map((option) => (
-              <div key={option.value} className="col-12 col-sm-6 col-md-4">
-                <div className="form-check border rounded p-3 h-100">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name={field.name}
-                    id={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
-                    value={option.value}
-                    checked={formData[stepId][field.name] === option.value}
-                    onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
-                    required={field.required}
-                  />
+            {field.options &&
+              field.options.map((option) => (
+                <div key={option.value} className="col-12 col-sm-6 col-md-4">
                   <label
-                    className="form-check-label fw-medium"
+                    className="form-check-container border rounded p-3 h-100 d-block"
                     htmlFor={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
+                    style={{ cursor: 'pointer' }}
                   >
-                    {option.label}
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name={field.name}
+                        id={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
+                        value={option.value}
+                        checked={stepData[field.name] === option.value}
+                        onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
+                        required={field.required}
+                      />
+                      <span className="form-check-label fw-medium">{option.label}</span>
+                    </div>
                   </label>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )
-    }
-
-    if (field.type === 'checkbox-group') {
-      return (
-        <div key={field.name} className="col-12 mb-4">
-          <label className="form-label fw-medium fs-6 mb-3">
-            {field.label}
-            {field.required && <span className="text-danger ms-1">*</span>}
-          </label>
-          <div className="row g-2">
-            {field.options.map((option) => (
-              <div key={option.value} className="col-12 col-sm-6 col-lg-4">
-                <div className="form-check border rounded p-3 h-100">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
-                    checked={
-                      formData[stepId][field.name] &&
-                      formData[stepId][field.name].includes(option.value)
-                    }
-                    onChange={(e) => {
-                      const currentValues = formData[stepId][field.name] || []
-                      const newValues = e.target.checked
-                        ? [...currentValues, option.value]
-                        : currentValues.filter((v) => v !== option.value)
-                      handleInputChange(stepId, field.name, newValues)
-                    }}
-                  />
-                  <label
-                    className="form-check-label fw-medium"
-                    htmlFor={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
-                  >
-                    {option.label}
-                  </label>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       )
@@ -616,22 +295,26 @@ const MultiStepWizard = () => {
     if (field.type === 'image-upload') {
       return (
         <div key={field.name} className="col-12 mb-4">
-          <label className="form-label fw-medium fs-6 mb-3">
-            {field.label}
-            {field.required && <span className="text-danger ms-1">*</span>}
-          </label>
-
           <div
-            className={`border-2 border-dashed rounded-lg p-4 text-center ${
+            className={`upload-area border-2 border-dashed rounded-lg p-4 text-center position-relative ${
               dragActive ? 'border-primary bg-light' : 'border-muted'
             }`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            style={{
+              cursor: 'pointer',
+              minHeight: '200px',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: dragActive ? '#f8f9fa' : '#ffffff',
+              transition: 'all 0.3s ease',
+            }}
           >
-            <Upload size={48} className="mx-auto mb-3 text-muted" />
-            <p className="mb-3">Drag and drop images here, or click to browse</p>
             <input
               ref={fileInputRef}
               type="file"
@@ -640,22 +323,35 @@ const MultiStepWizard = () => {
               onChange={(e) => handleImageUpload(e.target.files)}
               className="d-none"
             />
+
             <button
               type="button"
-              className="btn btn-outline-primary"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadedImages.length >= 3}
+              className="btn btn-primary px-4 py-2 mb-3"
+              style={{
+                fontSize: '1rem',
+                fontWeight: '600',
+                backgroundColor: '#0d6efd',
+                border: 'none',
+              }}
+              disabled={uploadedImages.length >= 5}
             >
-              Choose Images
+              BROWSE & UPLOAD
             </button>
-            <p className="small text-muted mt-2">Maximum 3 images allowed</p>
+
+            <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
+              Click to browse files or drag and drop
+            </p>
+            <p className="small text-muted mt-2">
+              Maximum 5 images allowed • Supported formats: JPG, PNG, GIF
+            </p>
           </div>
 
           {uploadedImages.length > 0 && (
-            <div className="mt-3">
+            <div className="mt-4">
+              <h5 className="fw-semibold mb-3">Uploaded Images ({uploadedImages.length})</h5>
               <div className="row g-3">
                 {uploadedImages.map((image, index) => (
-                  <div key={index} className="col-4">
+                  <div key={index} className="col-6 col-md-4 col-lg-3">
                     <div className="position-relative">
                       <img
                         src={image}
@@ -666,10 +362,13 @@ const MultiStepWizard = () => {
                       <button
                         type="button"
                         className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
-                        onClick={() => removeImage(index)}
-                        style={{ padding: '2px 6px' }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          removeImage(index)
+                        }}
+                        style={{ padding: '4px 8px' }}
                       >
-                        <X size={12} />
+                        <X size={14} />
                       </button>
                     </div>
                   </div>
@@ -693,7 +392,7 @@ const MultiStepWizard = () => {
             id={field.name}
             name={field.name}
             rows="4"
-            value={formData[stepId][field.name]}
+            value={stepData[field.name] || ''}
             onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
             placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
             required={field.required}
@@ -702,52 +401,25 @@ const MultiStepWizard = () => {
       )
     }
 
-    const isHalfWidth = field.width === 'half'
-    const containerClass = isHalfWidth ? 'col-md-6' : 'col-12'
+    const containerClass = 'col-12 mb-4'
 
     return (
-      <div key={field.name} className={`${containerClass} mb-4`}>
+      <div key={field.name} className={containerClass}>
         <label htmlFor={field.name} className="form-label fw-medium fs-6">
           {field.label}
           {field.required && <span className="text-danger ms-1">*</span>}
         </label>
-        {field.type === 'select' ? (
-          <select
-            className="form-select form-select-lg"
-            id={field.name}
-            name={field.name}
-            value={formData[stepId][field.name]}
-            onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
-            required={field.required}
-          >
-            {field.options.map((option, index) => (
-              <option key={index} value={option}
-              // disabled={option === 'Please Select'}
-              >
-                {option}
-              </option>
-            ))}
-          </select>
-        ) : (
-          <input
-            type={field.type}
-            className="form-control form-control-lg"
-            id={field.name}
-            name={field.name}
-            value={formData[stepId][field.name]}
-            onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
-            placeholder={
-              field.placeholder ||
-              (field.type === 'date'
-                ? 'yyyy-mm-dd'
-                : field.type === 'time'
-                ? 'HH:MM'
-                : `Enter ${field.label.toLowerCase()}`)
-            }
-            required={field.required}
-            step={field.type === 'number' ? '0.01' : undefined}
-          />
-        )}
+        <input
+          type={field.type}
+          className="form-control form-control-lg"
+          id={field.name}
+          name={field.name}
+          value={stepData[field.name] || ''}
+          onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
+          placeholder={field.placeholder}
+          required={field.required}
+          step={field.type === 'number' ? '0.01' : undefined}
+        />
       </div>
     )
   }
@@ -756,8 +428,8 @@ const MultiStepWizard = () => {
     <>
       <style>{`
         .step-indicator {
-          width: 50px;
-          height: 50px;
+          width: 65px;
+          height: 65px;
           border-radius: 50%;
           display: flex;
           align-items: center;
@@ -831,7 +503,7 @@ const MultiStepWizard = () => {
           display: flex;
           flex-wrap: wrap;
           justify-content: center;
-          gap: 0.5rem;
+          gap: 0.8rem;
           max-width: 100%;
           overflow-x: auto;
           padding: 0 10px;
@@ -841,7 +513,7 @@ const MultiStepWizard = () => {
           display: flex;
           flex-direction: column;
           align-items: center;
-          min-width: 80px;
+          min-width: 100px;
           flex-shrink: 0;
         }
 
@@ -857,52 +529,64 @@ const MultiStepWizard = () => {
           color: #0061ed;
         }
 
-        .clr-hover:hover {
-          background-color: #0061ed;
-          color: white;
+        // .clr-hover:hover {
+        //   background-color: #0061ed !important;
+        //   color: white;
+        // }
+
+        .border-dashed {
+          border-style: dashed !important;
         }
 
-        /* Enhanced mobile responsiveness */
+        .bg-light {
+          background-color: #f8f9fa !important;
+        }
+
+        .form-check-container {
+          transition: all 0.2s ease;
+        }
+
+        .form-check-container:hover {
+          background-color: #f8f9fa;
+        }
+
+        .form-check-container input:checked + span {
+          color: #0061ed;
+          font-weight: 600;
+        }
+
+        .form-check-container input:checked {
+          background-color: #0061ed;
+          border-color: #0061ed;
+        }
+
+        .upload-area:hover {
+          background-color: #f8f9fa !important;
+          border-color: #0d6efd !important;
+        }
+
+        .upload-area:active {
+          transform: scale(0.98);
+        }
+
         @media (max-width: 768px) {
           .step-indicator {
-            width: 40px;
-            height: 40px;
+            width: 55px;
+            height: 55px;
           }
 
           .steps-container {
-            // gap: 0.3rem;
+            gap: 0.6rem;
             justify-content: flex-start;
             padding: 0 5px;
           }
 
           .step-item {
-            min-width: 70px;
-          }
-
-          .container-fluid {
-            padding-left: 15px;
-            padding-right: 15px;
+            min-width: 90px;
           }
 
           .card-body {
             padding: 1.5rem !important;
-          }
-
-          .form-control-lg, .form-select-lg {
-            font-size: 1rem;
-            padding: 0.75rem;
-          }
-
-          .btn {
-            padding: 0.5rem 1rem;
-          }
-
-          .h4 {
-            font-size: 1.25rem;
-          }
-
-          .display-5 {
-            font-size: 2rem;
           }
 
           .col-sm-6 {
@@ -913,41 +597,6 @@ const MultiStepWizard = () => {
           .col-md-4 {
             flex: 0 0 auto;
             width: 50%;
-          }
-
-          .col-lg-4 {
-            flex: 0 0 auto;
-            width: 100%;
-          }
-        }
-
-        @media (max-width: 576px) {
-          .step-indicator {
-            width: 35px;
-            height: 35px;
-          }
-
-          .step-item {
-            min-width: 60px;
-          }
-
-          .card-body {
-            padding: 1rem !important;
-          }
-
-          .btn {
-            font-size: 0.875rem;
-            padding: 0.375rem 0.75rem;
-          }
-
-          .col-4 {
-            flex: 0 0 auto;
-            width: 100%;
-          }
-
-          .col-md-4, .col-sm-6 {
-            flex: 0 0 auto;
-            width: 100%;
           }
 
           .d-flex.justify-content-between {
@@ -961,38 +610,29 @@ const MultiStepWizard = () => {
           }
         }
 
-        @media (min-width: 769px) and (max-width: 1024px) {
-          .col-md-4 {
-            flex: 0 0 auto;
-            width: 50%;
+        @media (max-width: 576px) {
+          .step-indicator {
+            width: 50px;
+            height: 50px;
           }
 
-          .col-lg-4 {
-            flex: 0 0 auto;
-            width: 33.333333%;
+          .step-item {
+            min-width: 80px;
           }
-        }
 
-        /* Enhanced form styling */
-        .form-check {
-          transition: all 0.2s ease;
-        }
+          .card-body {
+            padding: 1rem !important;
+          }
 
-        .form-check:hover {
-          background-color: #f8f9fa;
-        }
+          .col-6 {
+            flex: 0 0 auto;
+            width: 100%;
+          }
 
-        .form-check input:checked + label {
-          color: #0061ed;
-          font-weight: 600;
-        }
-
-        .border-dashed {
-          border-style: dashed !important;
-        }
-
-        .bg-light {
-          background-color: #f8f9fa !important;
+          .col-md-4, .col-sm-6 {
+            flex: 0 0 auto;
+            width: 100%;
+          }
         }
       `}</style>
 
@@ -1001,8 +641,8 @@ const MultiStepWizard = () => {
           <div className="row justify-content-center">
             <div className="col-lg-8">
               <div className="mb-4 mb-md-5 text-center">
-                <h1 className="display-5 fw-bold text-dark mb-3">Sales Order Form</h1>
-                <p className="text-muted fs-5">Complete all steps to generate job number</p>
+                <h1 className="display-5 fw-bold text-dark mb-3">Enquiry Form</h1>
+                <p className="text-muted fs-5">Complete all steps to submit your order</p>
               </div>
 
               <div className="mb-4 mb-md-5">
@@ -1020,16 +660,16 @@ const MultiStepWizard = () => {
                           disabled={!isClickable}
                           className={`step-indicator ${
                             isCompleted ? 'completed' : isCurrent ? 'current' : 'pending'
-                          } ${isClickable ? 'clickable' : ''} mb-2`}
+                          } ${isClickable ? 'clickable' : ''} mb-3`}
                         >
-                          {isCompleted ? <Check size={22} /> : <Icon size={22} />}
+                          {isCompleted ? <Check size={20} /> : <Icon size={20} />}
                         </button>
                         <div className="text-center">
                           <p
-                            className={`small fw-medium mb-1 ${
+                            className={`fw-medium mb-1 ${
                               isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
                             }`}
-                            style={{ fontSize: '10px' }}
+                            style={{ fontSize: '13px' }}
                           >
                             Step {index + 1}
                           </p>
@@ -1037,7 +677,7 @@ const MultiStepWizard = () => {
                             className={`small mb-0 ${
                               isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
                             }`}
-                            style={{ fontSize: '9px', lineHeight: '1.2' }}
+                            style={{ fontSize: '12px', lineHeight: '1.3', fontWeight: '500' }}
                           >
                             {step.title}
                           </p>
@@ -1093,15 +733,40 @@ const MultiStepWizard = () => {
 
                             {isExpanded && (
                               <div className="border-top p-3">
+                                {/* Show uploaded images if this is the image upload step */}
+                                {step.id === 'imageUpload' && uploadedImages.length > 0 && (
+                                  <div className="mb-4">
+                                    <h6 className="fw-semibold mb-3">
+                                      Uploaded Images ({uploadedImages.length})
+                                    </h6>
+                                    <div className="row g-2">
+                                      {uploadedImages.map((image, index) => (
+                                        <div key={index} className="col-6 col-sm-4 col-md-3">
+                                          <img
+                                            src={image}
+                                            alt={`Product ${index + 1}`}
+                                            className="img-fluid rounded border"
+                                            style={{ aspectRatio: '1/1', objectFit: 'cover' }}
+                                          />
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
                                 <div className="row g-3">
                                   {step.fields
-                                    .filter((field) => field.type !== 'header')
+                                    .filter(
+                                      (field) =>
+                                        field.type !== 'header' && field.type !== 'image-upload',
+                                    )
                                     .map((field) => {
                                       const value = formData[step.id][field.name]
                                       let displayValue = ''
 
                                       if (Array.isArray(value)) {
-                                        displayValue = value.length > 0 ? value.join(', ') : 'None selected'
+                                        displayValue =
+                                          value.length > 0 ? value.join(', ') : 'None selected'
                                       } else {
                                         displayValue = value || ''
                                       }
@@ -1182,11 +847,11 @@ const MultiStepWizard = () => {
                         onClick={handleSubmit}
                         disabled={!isCurrentStepValid}
                         className={`btn ${
-                          isCurrentStepValid ? 'btn-success' : 'btn-outline-success'
+                          isCurrentStepValid ? 'btn-success clr-white' : 'btn-outline-success'
                         } d-flex align-items-center justify-content-center px-4 py-2`}
                       >
                         <Check size={22} className="me-2" />
-                        Submit & Generate Job Number
+                        Submit
                       </button>
                     ) : (
                       <button
@@ -1211,4 +876,4 @@ const MultiStepWizard = () => {
   )
 }
 
-export default MultiStepWizard
+export default SimpleOrderWizard

@@ -15,6 +15,9 @@ const DepartmentForm = React.lazy(() => import('./views/pages/masters/department
 const RolesList = React.lazy(() => import('./views/pages/masters/roles/List'))
 const RoleForm = React.lazy(() => import('./views/pages/masters/roles/Form'))
 
+const EnquiryForm = React.lazy(() => import('./views/pages/enquiry/Form'))
+
+
 const JobsList = React.lazy(() => import('./views/pages/masters/jobs/List'))
 
 const ProductionPlanning = React.lazy(() => import('./views/pages/Productionplanning'))
@@ -91,6 +94,8 @@ const routes = [
   { path: '/departments', name: 'Departments List', element: DepartmentsList },
   { path: '/departments/add', name: 'Add', element: DepartmentForm },
   { path: '/departments/:departmentId', name: 'Edit', element: DepartmentForm },
+  { path: '/enquirys', name: 'Enquiry Form', element: EnquiryForm },
+
   { path: '/jobs', name: 'Jobs List', element: JobsList },
 
   { path: '/productionplanning', name: 'Production Planning', element: ProductionPlanning },
