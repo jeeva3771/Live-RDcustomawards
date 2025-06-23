@@ -16,6 +16,7 @@ import {
   cilPeople,
   cilEnvelopeOpen,
   cilCart,
+  cilList,
 } from '@coreui/icons'
 import { CNavGroup, CNavItem, CNavTitle } from '@coreui/react'
 
@@ -399,10 +400,16 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Enquiry Form',
-    to: '/enquirys',
+    name: 'Enquiries',
+    to: '/enquiries',
     icon: <CIcon icon={cilEnvelopeOpen} customClassName="nav-icon" />,
   },
+  // {
+  //   component: CNavItem,
+  //   name: 'Enquiry Form',
+  //   to: '/enquiryform',
+  //   icon: <CIcon icon={cilEnvelopeOpen} customClassName="nav-icon" />,
+  // },
   {
     component: CNavItem,
     name: 'Jobs',

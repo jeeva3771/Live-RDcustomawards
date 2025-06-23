@@ -11,6 +11,7 @@ import {
   Truck,
   X,
   Image,
+  CreditCard,
 } from 'lucide-react'
 
 const SimpleOrderWizard = () => {
@@ -38,6 +39,10 @@ const SimpleOrderWizard = () => {
       deliveryLocation: '',
       deliveryMode: '',
     },
+    payment: {
+      paymentType: '',
+    },
+
   })
 
   const [completedSteps, setCompletedSteps] = useState(new Set())
@@ -71,6 +76,13 @@ const SimpleOrderWizard = () => {
           required: true,
           placeholder: 'Enter contact number',
         },
+        {
+          name: 'enquiryOrigin',
+          label: 'Enquiry Origin',
+          type: 'text',
+          required: true,
+          placeholder: 'Enter enquiry origin',
+        },
       ],
     },
     {
@@ -93,10 +105,10 @@ const SimpleOrderWizard = () => {
       fields: [
         {
           name: 'productName',
-          label: 'Product Name',
+          label: 'Product Name / Theme',
           type: 'text',
           required: true,
-          placeholder: 'Enter product details',
+          placeholder: 'Enter product name',
         },
         {
           name: 'quantity',
@@ -111,6 +123,20 @@ const SimpleOrderWizard = () => {
           type: 'text',
           required: true,
           placeholder: 'Enter size',
+        },
+        {
+          name: 'budget',
+          label: 'Budget',
+          type: 'number',
+          required: true,
+          placeholder: 'Enter budget',
+        },
+        {
+          name: 'preferedMaterial',
+          label: 'Prefered Material',
+          type: 'text',
+          required: true,
+          placeholder: 'Enter prefered material',
         },
       ],
     },
@@ -142,6 +168,31 @@ const SimpleOrderWizard = () => {
             { value: 'COURIER', label: 'Courier' },
             { value: 'PICKUP', label: 'Self Pickup' },
             { value: 'EXPRESS DELIVERY', label: 'Express Delivery' },
+          ],
+        },
+        {
+          name: 'briefing',
+          label: 'Briefing',
+          type: 'textarea',
+          required: true,
+          placeholder: 'Enter briefing...',
+        },
+      ],
+    },
+    {
+      id: 'payment',
+      title: 'Payment',
+      icon: CreditCard,
+      fields: [
+        {
+          name: 'paymentType',
+          label: 'Payment Terms',
+          type: 'radio',
+          required: true,
+          options: [
+            { value: '100% Advance', label: '100% Advance' },
+            { value: '50% advance & Bal before dispatch & delivery', label: '50% Advance & Bal before dispatch & delivery' },
+            { value: 'Corporate Credit', label: 'Corporate Credit' },
           ],
         },
       ],
