@@ -7,6 +7,7 @@ import award6 from '../../../../public/award6.jpeg'
 import { CButton, CCol } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
+import noImage from '../../../../public/noimage.jpg'
 // import { CInfo } from '@coreui/icons'
 import {
   cilSearch,
@@ -15,11 +16,16 @@ import {
   cilInfo,
   cilSortAscending,
   cilSortDescending,
+  cilCloudUpload,
+  cilShare,
+  cilEnvelopeClosed,
 } from '@coreui/icons'
 
 const EnhancedProductCards = () => {
   const [expandedCards, setExpandedCards] = useState(new Set())
   const [searchTerm, setSearchTerm] = useState('')
+  const [productImages, setProductImages] = useState({}) // New state to store uploaded images
+  const [modalProduct, setModalProduct] = useState(null) // New state for modal
   const navigate = useNavigate()
 
   // Product data with additional fields
@@ -34,6 +40,7 @@ const EnhancedProductCards = () => {
       product: 'MIC TROPHY',
       quantity: 46,
       size: '10 Inches',
+      status: 'ENQUIRY',
       deliveryDate: '19-03-2025',
       deliveryLocation: 'ITC Central - Parel - MUMBAI',
       deliveryMode: 'HAND DELIVERY',
@@ -52,6 +59,7 @@ const EnhancedProductCards = () => {
       client: 'CORPORATE SOLUTIONS',
       email: 'info@corpsol.com',
       contactNo: '98765 43210',
+      status: 'DESIGN',
       product: 'CRYSTAL AWARD',
       quantity: 25,
       size: '8 Inches',
@@ -73,6 +81,7 @@ const EnhancedProductCards = () => {
       client: 'SPORTS FEDERATION',
       email: 'awards@sports.com',
       contactNo: '91234 56789',
+      status: 'SAMPLING',
       product: 'GOLD MEDAL',
       quantity: 100,
       size: '3 Inches',
@@ -96,11 +105,12 @@ const EnhancedProductCards = () => {
       contactNo: '87654 32109',
       product: 'ACRYLIC PLAQUE',
       quantity: 15,
+      status: 'PRODUCTION',
       size: '12 Inches',
       deliveryDate: '19-09-2025',
       deliveryLocation: 'Powai - MUMBAI',
       deliveryMode: 'HAND DELIVERY',
-      mainImage: award5,
+      mainImage: null, // No image for this product
       enquiryOrigin: 'WhatsApp',
       budget: '₹30,000',
       preferedMaterial: 'Clear Acrylic',
@@ -117,6 +127,7 @@ const EnhancedProductCards = () => {
       contactNo: '99887 76543',
       product: 'WOODEN SHIELD',
       quantity: 30,
+      status: 'PRINTING',
       size: '14 Inches',
       deliveryDate: '19-02-2025',
       deliveryLocation: 'Fort - MUMBAI',
@@ -139,10 +150,11 @@ const EnhancedProductCards = () => {
       product: 'GLASS TROPHY',
       quantity: 12,
       size: '16 Inches',
+      status: 'BILLING',
       deliveryDate: '11-01-2025',
       deliveryLocation: 'Andheri - MUMBAI',
       deliveryMode: 'EXPRESS DELIVERY',
-      mainImage: award2,
+      mainImage: null, // No image for this product
       enquiryOrigin: 'LinkedIn',
       budget: '₹85,000',
       preferedMaterial: 'Borosilicate Glass',
@@ -163,14 +175,20 @@ const EnhancedProductCards = () => {
 
   const getDeliveryModeClass = (mode) => {
     switch (mode) {
-      case 'HAND DELIVERY':
+      case 'PRINTING':
         return { backgroundColor: '#059669', color: 'white' }
-      case 'COURIER':
+      case 'DESIGN':
         return { backgroundColor: '#2563EB', color: 'white' }
-      case 'PICKUP':
-        return { backgroundColor: '#EA580C', color: 'white' }
-      case 'EXPRESS DELIVERY':
-        return { backgroundColor: '#7C3AED', color: 'white' }
+      case 'ENQUIRY':
+        return { backgroundColor: '#944949', color: 'white' }
+      case 'PRODUCTION':
+        return { backgroundColor: 'rgb(112 90 149)', color: 'white' }
+      case 'SAMPLING':
+        return { backgroundColor: '#3d983d', color: 'white' }
+      case 'DISPATCH':
+        return { backgroundColor: 'red', color: 'white' }
+      case 'BILLING':
+        return { backgroundColor: 'grey', color: 'white' }
       default:
         return { backgroundColor: '#EA580C', color: 'white' }
     }
@@ -188,39 +206,318 @@ const EnhancedProductCards = () => {
     })
   }
 
+  const openModal = (product) => {
+    setModalProduct(product)
+    document.body.style.overflow = 'hidden' // Prevent background scrolling
+  }
+
+  const closeModal = () => {
+    setModalProduct(null)
+    document.body.style.overflow = 'unset' // Restore scrolling
+  }
+
+  const handleImageUpload = (productId, event) => {
+    const file = event.target.files[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.')
+        return
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size should be less than 5MB.')
+        return
+      }
+
+      // Create a FileReader to convert the file to a data URL
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        // Update the productImages state with the new image
+        setProductImages((prev) => ({
+          ...prev,
+          [productId]: e.target.result,
+        }))
+
+        console.log('Image uploaded successfully for product:', productId)
+        // You can also send this to your backend API here
+        // uploadImageToServer(productId, file)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  // Function to trigger file input click
+  const triggerFileInput = (productId) => {
+    const fileInput = document.getElementById(`file-input-${productId}`)
+    if (fileInput) {
+      fileInput.click()
+    }
+  }
+
+  const handleWhatsAppShare = (product) => {
+    const currentImage = productImages[product.id] || product.mainImage
+
+    // Create comprehensive message with all details
+    const message = `🏆 *${product.name}* (Job No: ${product.jobNo})
+
+👤 *Client Details:*
+• Client: ${product.client}
+• Email: ${product.email}
+• Contact: ${product.contactNo}
+
+📦 *Product Information:*
+• Product: ${product.product}
+• Quantity: ${product.quantity}
+• Size: ${product.size}
+• Status: ${product.status}
+
+💰 *Financial Details:*
+• Budget: ${product.budget}
+• Payment Terms: ${product.paymentTerms}
+
+🚚 *Delivery Information:*
+• Delivery Date: ${product.deliveryDate}
+• Delivery Location: ${product.deliveryLocation}
+• Delivery Mode: ${product.deliveryMode}
+
+📋 *Additional Details:*
+• Enquiry Origin: ${product.enquiryOrigin}
+• Preferred Material: ${product.preferedMaterial}
+• Briefing: ${product.briefing}
+
+${currentImage ? '📸 Product image is available for reference.' : ''}
+
+Best regards,
+Your Team`
+
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
+  }
+
+  const handleEmailShare = (product) => {
+    const subject = `Complete Product Details - ${product.name} (Job No: ${product.jobNo})`
+    const body = `Dear Client,
+
+Please find the complete details of your order:
+
+=== PRODUCT DETAILS ===
+Product Name: ${product.name}
+Job Number: ${product.jobNo}
+Client: ${product.client}
+Quantity: ${product.quantity}
+Size: ${product.size}
+Status: ${product.status}
+
+=== CONTACT INFORMATION ===
+Email: ${product.email}
+Contact Number: ${product.contactNo}
+
+=== FINANCIAL DETAILS ===
+Budget: ${product.budget}
+Payment Terms: ${product.paymentTerms}
+
+=== DELIVERY INFORMATION ===
+Delivery Date: ${product.deliveryDate}
+Delivery Location: ${product.deliveryLocation}
+Delivery Mode: ${product.deliveryMode}
+
+=== ADDITIONAL INFORMATION ===
+Enquiry Origin: ${product.enquiryOrigin}
+Preferred Material: ${product.preferedMaterial}
+Briefing: ${product.briefing}
+
+${productImages[product.id] || product.mainImage ? 'Product image is available for reference.' : 'Product image will be shared separately.'}
+
+If you have any questions or need further clarification, please don't hesitate to contact us.
+
+Best regards,
+Your Team`
+
+    const mailtoUrl = `mailto:${product.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    window.location.href = mailtoUrl
+  }
+
+  // Modal Component
+  const Modal = ({ product, onClose }) => {
+    if (!product) return null
+
+    const currentImage = productImages[product.id] || product.mainImage
+    const hasImage = currentImage !== null && currentImage !== undefined
+
+    return (
+      <div style={styles.modalOverlay} onClick={onClose}>
+        <div
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '0.75rem',
+            width: '100%',
+            maxWidth: '900px',
+            maxHeight: '80vh',
+            overflow: 'hidden',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            flexDirection: 'column',
+            margin: '6% auto 0 auto',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Modal Header */}
+          <div style={styles.modalHeader}>
+            <h2 style={styles.modalTitle}>{product.name}</h2>
+            <button style={styles.closeButton} onClick={onClose}>
+              ×
+            </button>
+          </div>
+          {/* Modal Body */}
+          <div style={styles.modalBody}>
+            {/* Product Image */}
+            <div style={styles.modalImageSection}>
+              <img src={currentImage || noImage} alt={product.name} style={styles.modalImage} />
+            </div>
+
+            {/* Product Details Grid */}
+            <div style={styles.modalDetailsGrid}>
+              {/* Basic Information */}
+              <div style={styles.modalSection}>
+                <h3 style={styles.modalSectionTitle}>Product Information</h3>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Job Number:</span>
+                  <span style={styles.modalValue}>{product.jobNo}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Product:</span>
+                  <span style={styles.modalValue}>{product.product}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Quantity:</span>
+                  <span style={styles.modalValue}>{product.quantity}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Size:</span>
+                  <span style={styles.modalValue}>{product.size}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Status:</span>
+                  <span style={{ ...styles.modalBadge, ...getDeliveryModeClass(product.status) }}>
+                    {product.status}
+                  </span>
+                </div>
+              </div>
+
+              {/* Client Information */}
+              <div style={styles.modalSection}>
+                <h3 style={styles.modalSectionTitle}>Client Information</h3>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Client:</span>
+                  <span style={styles.modalValue}>{product.client}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Email:</span>
+                  <a href={`mailto:${product.email}`} style={styles.modalLink}>
+                    {product.email}
+                  </a>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Contact:</span>
+                  <a href={`tel:${product.contactNo}`} style={styles.modalLink}>
+                    {product.contactNo}
+                  </a>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Enquiry Origin:</span>
+                  <span style={styles.modalValue}>{product.enquiryOrigin}</span>
+                </div>
+              </div>
+
+              {/* Financial Information */}
+              <div style={styles.modalSection}>
+                <h3 style={styles.modalSectionTitle}>Financial Details</h3>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Budget:</span>
+                  <span style={styles.modalValue}>{product.budget}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Payment Terms:</span>
+                  <span style={styles.modalValue}>{product.paymentTerms}</span>
+                </div>
+              </div>
+
+              {/* Delivery Information */}
+              <div style={styles.modalSection}>
+                <h3 style={styles.modalSectionTitle}>Delivery Information</h3>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Delivery Date:</span>
+                  <span style={styles.modalValue}>{product.deliveryDate}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Delivery Location:</span>
+                  <span style={styles.modalValue}>{product.deliveryLocation}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Delivery Mode:</span>
+                  <span style={styles.modalValue}>{product.deliveryMode}</span>
+                </div>
+              </div>
+
+              {/* Product Specifications */}
+              <div style={styles.modalSection}>
+                <h3 style={styles.modalSectionTitle}>Product Specifications</h3>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Preferred Material:</span>
+                  <span style={styles.modalValue}>{product.preferedMaterial}</span>
+                </div>
+                <div style={styles.modalDetailItem}>
+                  <span style={styles.modalLabel}>Briefing:</span>
+                  <span style={styles.modalValue}>{product.briefing}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Modal Footer with Action Buttons */}
+          <div style={styles.modalFooter}>
+            {hasImage && (
+              <>
+                <button
+                  style={styles.modalActionButton}
+                  onClick={() => handleWhatsAppShare(product)}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.516" />
+                  </svg>
+                </button>
+                <button style={styles.modalActionButton} onClick={() => handleEmailShare(product)}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" />
+                  </svg>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const ProductCard = ({ product }) => {
     const isExpanded = expandedCards.has(product.id)
+    // Check if product has image (either original or uploaded)
+    const currentImage = productImages[product.id] || product.mainImage
+    const hasImage = currentImage !== null && currentImage !== undefined
 
     return (
       <div style={styles.card}>
         {/* Main Image Section */}
         <div style={styles.imageContainer}>
-          <img src={product.mainImage} alt={product.name} style={styles.image} />
-          {/* <div style={styles.imageOverlay}>
-            <div style={styles.dimensionText}>
-              384
-              <div style={styles.timesText}>×</div>
-              288
-            </div>
-          </div> */}
+          <img src={currentImage || noImage} alt={product.name} style={styles.image} />
         </div>
 
         {/* Content Section */}
         <div style={styles.content}>
           {/* Header */}
           <div style={styles.header1}>
-            <h2 style={styles.productName}>
-              {product.name}{' '}
-              <CButton
-                variant="outline"
-                size="sm"
-                className="me-1"
-                // onClick={() => handleAction('info', process)}
-                title="View Details"
-              >
-                <CIcon icon={cilInfo} size="sm" />
-              </CButton>
-            </h2>
+            <h2 style={styles.productName}>{product.name}</h2>
             <div style={styles.jobNo}>
               Job No: <span style={{ color: 'black' }}>{product.jobNo}</span>
             </div>
@@ -240,129 +537,153 @@ const EnhancedProductCards = () => {
               <span style={styles.label}>QUANTITY: </span>
               <span style={styles.value}>{product.quantity}</span>
             </div>
+
             <div style={styles.detailRow}>
               <span style={styles.label}>DELIVERY DATE: </span>
               <span style={styles.value}>{product.deliveryDate}</span>
             </div>
             <div style={styles.detailRow}>
               <span style={styles.label}>DELIVERY MODE: </span>
+              <span style={styles.value}>{product.deliveryMode}</span>
+            </div>
+            <div style={styles.detailRow}>
+              <span style={styles.label}>STATUS: </span>
               <span
                 style={{
                   ...styles.badge,
-                  ...getDeliveryModeClass(product.deliveryMode),
+                  ...getDeliveryModeClass(product.status),
                 }}
               >
-                {product.deliveryMode}
+                {product.status}
               </span>
             </div>
-          </div>
 
-          {/* Additional Details (Expandable) - Only in View Details */}
-          {isExpanded && (
-            <div style={styles.expandedSection}>
-              <h3 style={styles.expandedTitle}>Additional Details</h3>
-              <div style={styles.detailsContainer}>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>EMAIL: </span>
-                  <a href={`mailto:${product.email}`} style={styles.link}>
-                    {product.email}
-                  </a>
-                </div>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>CONTACT NO: </span>
-                  <a href={`tel:${product.contactNo}`} style={styles.link}>
-                    {product.contactNo}
-                  </a>
-                </div>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>SIZE: </span>
-                  <span style={styles.value}>{product.size}</span>
-                </div>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>ENQUIRY ORIGIN: </span>
-                  <span style={styles.value}>{product.enquiryOrigin}</span>
-                </div>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>BUDGET: </span>
-                  <span style={styles.value}>{product.budget}</span>
-                </div>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>PREFERRED MATERIAL: </span>
-                  <span style={styles.value}>{product.preferedMaterial}</span>
-                </div>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>DELIVERY LOCATION: </span>
-                  <span style={styles.value}>{product.deliveryLocation}</span>
-                </div>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>BRIEFING: </span>
-                  <span style={styles.value}>{product.briefing}</span>
-                </div>
-                <div style={styles.detailRow}>
-                  <span style={styles.label}>PAYMENT TERMS: </span>
-                  <span style={styles.value}>{product.paymentTerms}</span>
-                </div>
+            {/* Action Icons Row */}
+            <div style={styles.actionIconsContainer}>
+              {/* Eye Icon (View Details) - always show first */}
+              <div
+                style={styles.actionIcon}
+                onClick={() => openModal(product)}
+                title="View All Details"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                </svg>
               </div>
-            </div>
-          )}
 
-          {/* View Details Button */}
-          {/* <div style={styles.buttonContainer}>
-            <button
-              onClick={() => toggleCardExpansion(product.id)}
-              style={styles.button}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = '#0052cc')}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = '#0061ed')}
-            >
-              {isExpanded ? '▲ Hide Details' : '▼ View Details'}
-            </button>
-          </div> */}
+              {/* Upload Icon - show only for products without original image AND no uploaded image */}
+              {!product.mainImage && !productImages[product.id] && (
+                <div
+                  style={styles.actionIcon}
+                  title="Upload Image"
+                  onClick={() => triggerFileInput(product.id)}
+                >
+                  <input
+                    id={`file-input-${product.id}`}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(product.id, e)}
+                    style={styles.hiddenInput}
+                  />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    fill="currentColor"
+                    className="bi bi-cloud-arrow-up"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"
+                    />
+                    <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+                  </svg>
+                </div>
+              )}
+
+              {/* WhatsApp Icon - only show when image exists */}
+              {hasImage && (
+                <div
+                  style={styles.actionIcon}
+                  onClick={() => handleWhatsAppShare(product)}
+                  title="Share on WhatsApp"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.516" />
+                  </svg>
+                </div>
+              )}
+
+              {/* Email Icon - only show when image exists */}
+              {hasImage && (
+                <div
+                  style={styles.actionIcon}
+                  onClick={() => handleEmailShare(product)}
+                  title="Share via Email"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" />
+                  </svg>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     )
   }
 
+  // Get screen size for responsive design
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+  React.useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Responsive breakpoints
+  const isMobile = windowWidth <= 480
+  const isTablet = windowWidth <= 768
+  const isSmallDesktop = windowWidth <= 1024
+
   const styles = {
     container: {
       minHeight: '100vh',
-      // backgroundColor: '#374151',
-      padding: '1rem',
+      padding: isMobile ? '0.5rem' : isTablet ? '0.75rem' : '1rem',
     },
     innerContainer: {
       maxWidth: '1400px',
       margin: '0 auto',
     },
     header: {
-      marginBottom: '2rem',
+      marginBottom: isMobile ? '1rem' : '2rem',
       textAlign: 'center',
     },
     header1: {
       marginBottom: '2px',
-      // textAlign: 'center',
     },
     title: {
-      fontSize: '2.5rem',
+      fontSize: isMobile ? '1.75rem' : isTablet ? '2rem' : '2.5rem',
       fontWeight: 'bold',
       color: 'black',
       marginBottom: '0.5rem',
     },
-    subtitle: {
-      color: '#9CA3AF',
-      fontSize: '1.125rem',
-    },
     searchContainer: {
-      marginBottom: '2rem',
+      marginBottom: isMobile ? '1rem' : '2rem',
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      gap: '1rem',
+      gap: isMobile ? '0.5rem' : '1rem',
       flexWrap: 'wrap',
+      flexDirection: isMobile ? 'column' : 'row',
     },
     addButton: {
       backgroundColor: '#0061ed',
       color: 'white',
-      padding: '0.875rem 2rem',
-      fontSize: '1rem',
+      padding: isMobile ? '0.75rem 1.5rem' : '0.875rem 2rem',
+      fontSize: isMobile ? '0.875rem' : '1rem',
       fontWeight: '600',
       border: 'none',
       borderRadius: '0.5rem',
@@ -370,46 +691,28 @@ const EnhancedProductCards = () => {
       transition: 'background-color 0.3s ease',
       whiteSpace: 'nowrap',
       flexShrink: 0,
+      width: isMobile ? '100%' : 'auto',
     },
     searchInput: {
       width: '100%',
-      maxWidth: '600px',
-      padding: '0.875rem 1.25rem',
-      fontSize: '1rem',
+      maxWidth: isMobile ? '100%' : '600px',
+      padding: isMobile ? '0.75rem 1rem' : '0.875rem 1.25rem',
+      fontSize: isMobile ? '0.875rem' : '1rem',
       border: '2px solid #374151',
       borderRadius: '0.5rem',
       backgroundColor: 'white',
-      // color: 'white',
       outline: 'none',
       transition: 'border-color 0.3s ease',
     },
-    statsContainer: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-      gap: '1rem',
-      marginBottom: '2rem',
-    },
-    statCard: {
-      backgroundColor: '#111827',
-      padding: '1rem',
-      borderRadius: '0.5rem',
-      border: '1px solid #374151',
-      textAlign: 'center',
-    },
-    statNumber: {
-      fontSize: '1.875rem',
-      fontWeight: 'bold',
-      color: '#F97316',
-    },
-    statLabel: {
-      color: '#9CA3AF',
-      fontSize: '0.875rem',
-      marginTop: '0.25rem',
-    },
     grid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))',
-      gap: '1.5rem',
+      gridTemplateColumns: isMobile
+        ? '1fr'
+        : isTablet
+          ? 'repeat(auto-fit, minmax(350px, 1fr))'
+          : 'repeat(auto-fit, minmax(450px, 1fr))',
+      gap: isMobile ? '1rem' : '1.5rem',
+      justifyContent: 'center',
     },
     card: {
       backgroundColor: 'white',
@@ -418,68 +721,78 @@ const EnhancedProductCards = () => {
       overflow: 'hidden',
       boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: isMobile || isTablet ? 'column' : 'row',
       transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+      height: 'fit-content',
     },
     imageContainer: {
-      width: '180px',
-      height: '250px',
+      width: isMobile || isTablet ? '100%' : '180px',
+      height: isMobile || isTablet ? '200px' : 'initial',
       backgroundColor: '#E5E7EB',
       position: 'relative',
       flexShrink: 0,
       overflow: 'hidden',
-      alignSelf: 'flex-start',
-    },
-    image: {
-      width: '100%',
-      height: '100%',
-      objectFit: 'cover',
-    },
-    imageOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    },
-    dimensionText: {
-      color: 'white',
-      fontSize: '1.5rem',
-      fontWeight: '300',
-      textAlign: 'center',
-      textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-    },
-    timesText: {
-      fontSize: '1rem',
-    },
-    content: {
-      padding: '1.25rem',
-      flex: 1,
+      alignSelf: 'stretch',
       display: 'flex',
       flexDirection: 'column',
     },
+    image: {
+      width: '100%',
+      height: isMobile || isTablet ? '200px' : 'auto',
+      flex: isMobile || isTablet ? 'none' : 1,
+      objectFit: 'fill',
+    },
+    actionIconsContainer: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      marginTop: '0.5rem',
+      gap: '0.5rem',
+      flexWrap: 'wrap',
+    },
+    actionIcon: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: isMobile ? '2.5rem' : '1.9rem',
+      height: isMobile ? '2rem' : '1.5rem',
+      borderRadius: '0.25rem',
+      backgroundColor: 'transparent',
+      border: '1px solid #0061ed',
+      color: '#0061ed',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      flexShrink: 0,
+    },
+    hiddenInput: {
+      display: 'none',
+    },
+    content: {
+      padding: isMobile ? '1rem' : '0.7rem',
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      height: '100%',
+    },
     productName: {
-      fontSize: '1.375rem',
+      fontSize: isMobile ? '1.125rem' : '1.375rem',
       fontWeight: 'bold',
       color: 'black',
       marginBottom: '0.25rem',
     },
     jobNo: {
-      fontSize: '0.875rem',
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
       fontWeight: 'bold',
       color: 'rgb(0, 97, 237)',
-      marginBottom: '1rem',
+      marginBottom: '0.4rem',
     },
     detailsContainer: {
       marginBottom: '1rem',
     },
     detailRow: {
       marginBottom: '0.625rem',
-      fontSize: '0.8rem',
+      fontSize: isMobile ? '0.75rem' : '0.8rem',
       lineHeight: '1.4',
     },
     label: {
@@ -496,23 +809,17 @@ const EnhancedProductCards = () => {
     badge: {
       padding: '0.25rem 0.5rem',
       borderRadius: '0.25rem',
-      fontSize: '0.75rem',
+      fontSize: isMobile ? '0.625rem' : '0.75rem',
       fontWeight: '600',
       display: 'inline-block',
     },
-    expandedSection: {
-      marginTop: '1rem',
-      paddingTop: '1rem',
-      borderTop: '1px solid #374151',
-    },
-    expandedTitle: {
-      color: 'black',
-      fontWeight: 'bold',
-      fontSize: '0.875rem',
-      marginBottom: '0.75rem',
-    },
-    buttonContainer: {
-      marginTop: 'auto',
+    noResults: {
+      gridColumn: '1 / -1',
+      textAlign: 'center',
+      color: '#9CA3AF',
+      fontSize: '1.125rem',
+      padding: '3rem 1rem',
+      borderRadius: '0.5rem',
     },
     button: {
       width: '100%',
@@ -526,40 +833,167 @@ const EnhancedProductCards = () => {
       cursor: 'pointer',
       transition: 'background-color 0.3s ease',
     },
-    noResults: {
-      gridColumn: '1 / -1',
-      textAlign: 'center',
-      color: '#9CA3AF',
-      fontSize: '1.125rem',
-      padding: '3rem 1rem',
-      borderRadius: '0.5rem',
-      // border: '1px solid #374151',
+    // Modal Styles
+    modalOverlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: isMobile ? '0.5rem' : '1rem',
     },
-    // Media Queries implemented via window.innerWidth checks
+    modalHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: isMobile ? '1rem' : '1.5rem',
+      borderBottom: '1px solid #E5E7EB',
+      backgroundColor: '#F9FAFB',
+    },
+    modalTitle: {
+      fontSize: isMobile ? '1.25rem' : '1.5rem',
+      fontWeight: 'bold',
+      color: '#111827',
+      margin: 0,
+    },
+    closeButton: {
+      background: 'none',
+      border: 'none',
+      color: '#6B7280',
+      cursor: 'pointer',
+      padding: '0.5rem',
+      borderRadius: '0.25rem',
+      transition: 'all 0.2s ease',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: isMobile ? '1.75rem' : '1.5rem',
+      fontWeight: 'bold',
+      width: '2rem',
+      height: '2rem',
+    },
+    modalBody: {
+      padding: isMobile ? '1rem' : '1.5rem',
+      overflow: 'auto',
+      flex: 1,
+    },
+    modalImageSection: {
+      marginBottom: isMobile ? '1rem' : '2rem',
+      textAlign: 'center',
+    },
+    modalImage: {
+      maxWidth: isMobile ? '100%' : '300px',
+      maxHeight: isMobile ? '200px' : '300px',
+      objectFit: 'contain',
+      borderRadius: '0.5rem',
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      width: isMobile ? '100%' : 'auto',
+    },
+    modalDetailsGrid: {
+      display: 'grid',
+      gridTemplateColumns: isMobile
+        ? '1fr'
+        : isTablet
+          ? '1fr'
+          : 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: isMobile ? '1rem' : '1.5rem',
+    },
+    modalSection: {
+      backgroundColor: '#F9FAFB',
+      padding: isMobile ? '0.75rem' : '1rem',
+      borderRadius: '0.5rem',
+      border: '1px solid #E5E7EB',
+    },
+    modalSectionTitle: {
+      fontSize: isMobile ? '0.875rem' : '1rem',
+      fontWeight: 'bold',
+      color: '#0061ed',
+      marginBottom: '0.75rem',
+      margin: '0 0 0.75rem 0',
+    },
+    modalDetailItem: {
+      marginBottom: '0.75rem',
+      display: 'flex',
+      flexDirection: isMobile ? 'column' : 'row',
+      gap: isMobile ? '0.25rem' : '0.5rem',
+      alignItems: 'flex-start',
+    },
+    modalLabel: {
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      fontWeight: '600',
+      color: '#374151',
+      minWidth: isMobile ? 'auto' : '100px',
+      flexShrink: 0,
+    },
+    modalValue: {
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      color: '#111827',
+      lineHeight: '1.4',
+      flex: 1,
+    },
+    modalLink: {
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      color: '#0061ed',
+      textDecoration: 'underline',
+      cursor: 'pointer',
+      flex: 1,
+    },
+    modalBadge: {
+      padding: '0.25rem 0.75rem',
+      borderRadius: '0.375rem',
+      fontSize: isMobile ? '0.625rem' : '0.75rem',
+      fontWeight: '600',
+      display: 'inline-block',
+    },
+    modalFooter: {
+      padding: isMobile ? '1rem' : '1rem 1.5rem',
+      borderTop: '1px solid #E5E7EB',
+      backgroundColor: '#F9FAFB',
+      display: 'flex',
+      gap: isMobile ? '0.5rem' : '1rem',
+      justifyContent: 'flex-end',
+      flexDirection: isMobile ? 'column' : 'row',
+    },
+    modalActionButton: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '0.5rem',
+      padding: isMobile ? '0.875rem 1rem' : '0.75rem 1.5rem',
+      backgroundColor: '#0061ed',
+      color: 'white',
+      border: 'none',
+      borderRadius: '0.5rem',
+      cursor: 'pointer',
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      fontWeight: '500',
+      transition: 'background-color 0.2s ease',
+      width: isMobile ? '100%' : 'auto',
+    },
   }
 
-  // Add responsive styles based on screen size
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-
-  React.useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  // Responsive adjustments
-  if (windowWidth <= 768) {
+  // When only one search result, center it and limit width
+  if (filteredProducts.length === 1 && !isMobile) {
     styles.grid.gridTemplateColumns = '1fr'
-    styles.card.flexDirection = 'column'
-    styles.imageContainer.width = '100%'
-    styles.imageContainer.height = '200px'
-    styles.imageContainer.alignSelf = 'stretch'
-    styles.title.fontSize = '2rem'
-    styles.container.padding = '0.75rem'
-    styles.searchInput.padding = '0.75rem 1rem'
-  } else if (windowWidth <= 1024) {
-    styles.grid.gridTemplateColumns = 'repeat(auto-fit, minmax(400px, 1fr))'
+    styles.grid.maxWidth = '600px'
+    styles.grid.margin = '0 auto'
   }
+
+  // Close modal on Escape key
+  React.useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && modalProduct) {
+        closeModal()
+      }
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [modalProduct])
 
   return (
     <div style={styles.container}>
@@ -567,7 +1001,6 @@ const EnhancedProductCards = () => {
         {/* Header */}
         <div style={styles.header}>
           <h1 style={styles.title}>Enquiries List</h1>
-          {/* <p style={styles.subtitle}>Track and manage your product deliveries</p> */}
         </div>
 
         {/* Global Search */}
@@ -585,37 +1018,11 @@ const EnhancedProductCards = () => {
             style={styles.addButton}
             onMouseEnter={(e) => (e.target.style.backgroundColor = '#0052cc')}
             onMouseLeave={(e) => (e.target.style.backgroundColor = '#0061ed')}
-            onClick={() => navigate('/enquiryform')}
+            onClick={() => navigate('/enquiry/add')}
           >
             Add
           </button>
         </div>
-
-        {/* Stats */}
-        {/* <div style={styles.statsContainer}>
-          <div style={styles.statCard}>
-            <div style={styles.statNumber}>{filteredProducts.length}</div>
-            <div style={styles.statLabel}>{searchTerm ? 'Search Results' : 'Total Orders'}</div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={styles.statNumber}>
-              {filteredProducts.filter((p) => p.deliveryMode === 'HAND DELIVERY').length}
-            </div>
-            <div style={styles.statLabel}>Hand Delivery</div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={styles.statNumber}>
-              {filteredProducts.filter((p) => p.deliveryMode === 'COURIER').length}
-            </div>
-            <div style={styles.statLabel}>Courier</div>
-          </div>
-          <div style={styles.statCard}>
-            <div style={styles.statNumber}>
-              {filteredProducts.filter((p) => p.deliveryMode === 'EXPRESS DELIVERY').length}
-            </div>
-            <div style={styles.statLabel}>Express</div>
-          </div>
-        </div> */}
 
         {/* Product Cards Grid */}
         <div style={styles.grid}>
@@ -640,6 +1047,9 @@ const EnhancedProductCards = () => {
           )}
         </div>
       </div>
+
+      {/* Modal */}
+      {modalProduct && <Modal product={modalProduct} onClose={closeModal} />}
     </div>
   )
 }

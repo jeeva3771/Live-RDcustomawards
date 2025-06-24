@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
@@ -47,6 +47,14 @@ const SimpleOrderWizard = () => {
 
   const [completedSteps, setCompletedSteps] = useState(new Set())
   const [expandedSteps, setExpandedSteps] = useState(new Set())
+
+  // Effect to expand all previous steps by default
+  useEffect(() => {
+    if (currentStep > 0) {
+      const previousSteps = Array.from({ length: currentStep }, (_, i) => i)
+      setExpandedSteps(new Set(previousSteps))
+    }
+  }, [currentStep])
 
   const formSteps = [
     {
@@ -164,10 +172,10 @@ const SimpleOrderWizard = () => {
           type: 'radio',
           required: true,
           options: [
-            { value: 'HAND DELIVERY', label: 'Hand Delivery' },
-            { value: 'COURIER', label: 'Courier' },
-            { value: 'PICKUP', label: 'Self Pickup' },
-            { value: 'EXPRESS DELIVERY', label: 'Express Delivery' },
+            { value: 'Hand Delivery', label: 'Hand Delivery' },
+            { value: 'Courier', label: 'Courier' },
+            { value: 'Self Pickup', label: 'Self Pickup' },
+            { value: 'Express Delivery', label: 'Express Delivery' },
           ],
         },
         {
@@ -417,7 +425,7 @@ const SimpleOrderWizard = () => {
                           e.stopPropagation()
                           removeImage(index)
                         }}
-                        style={{ padding: '4px 8px' }}
+                        style={{ padding: '2px 4px', color: 'white', display: 'flex' }}
                       >
                         <X size={14} />
                       </button>
@@ -580,10 +588,10 @@ const SimpleOrderWizard = () => {
           color: #0061ed;
         }
 
-        // .clr-hover:hover {
-        //   background-color: #0061ed !important;
-        //   color: white;
-        // }
+        .clr-hover:hover {
+          background-color: #0061ed !important;
+          color: white !important;
+        }
 
         .border-dashed {
           border-style: dashed !important;
@@ -618,6 +626,13 @@ const SimpleOrderWizard = () => {
 
         .upload-area:active {
           transform: scale(0.98);
+        }
+
+        .summary-header-actions {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          flex-wrap: wrap;
         }
 
         @media (max-width: 768px) {
@@ -658,6 +673,12 @@ const SimpleOrderWizard = () => {
           .d-flex.justify-content-between > button {
             width: 100%;
             justify-content: center;
+          }
+
+          .summary-header-actions {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
           }
         }
 
@@ -770,8 +791,18 @@ const SimpleOrderWizard = () => {
                                 </span>
                                 <span className="text-muted small ms-2">(Step {index + 1})</span>
                               </div>
-                              <div className="d-flex align-items-center">
-                                <span className="text-muted small me-2 d-none d-sm-inline">
+                              <div className="summary-header-actions">
+                                <button
+                                  className="btn btn-outline-primary btn-sm clr-hover"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleStepClick(index)
+                                  }}
+                                >
+                                  <ChevronLeft size={16} className="me-1" />
+                                  Go back to edit this step
+                                </button>
+                                <span className="text-muted small d-none d-sm-inline">
                                   {isExpanded ? 'Hide Details' : 'Show Details'}
                                 </span>
                                 {isExpanded ? (
@@ -839,16 +870,6 @@ const SimpleOrderWizard = () => {
                                         </div>
                                       )
                                     })}
-                                </div>
-
-                                <div className="mt-3 pt-3 border-top">
-                                  <button
-                                    className="btn btn-outline-primary clr-hover btn-sm"
-                                    onClick={() => handleStepClick(index)}
-                                  >
-                                    <ChevronLeft size={16} className="me-1" />
-                                    Go back to edit this step
-                                  </button>
                                 </div>
                               </div>
                             )}
