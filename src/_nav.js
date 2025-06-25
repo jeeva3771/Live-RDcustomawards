@@ -404,12 +404,6 @@ const _nav = [
     to: '/enquiries',
     icon: <CIcon icon={cilEnvelopeOpen} customClassName="nav-icon" />,
   },
-  // {
-  //   component: CNavItem,
-  //   name: 'Enquiry Form',
-  //   to: '/enquiryform',
-  //   icon: <CIcon icon={cilEnvelopeOpen} customClassName="nav-icon" />,
-  // },
   {
     component: CNavItem,
     name: 'Jobs',

@@ -91,6 +91,13 @@ const SimpleOrderWizard = () => {
           required: true,
           placeholder: 'Enter enquiry origin',
         },
+        {
+          name: 'noOfOptionsRequired',
+          label: 'Number of Options Required',
+          type: 'number',
+          required: true,
+          placeholder: 'Enter number of options required',
+        },
       ],
     },
     {

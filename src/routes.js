@@ -95,8 +95,7 @@ const routes = [
   { path: '/departments', name: 'Departments List', element: DepartmentsList },
   { path: '/departments/add', name: 'Add', element: DepartmentForm },
   { path: '/departments/:departmentId', name: 'Edit', element: DepartmentForm },
-  { path: '/enquiries', name: 'Enquirys List', element: EnquiriesList },
-
+  { path: '/enquiries', name: 'Enquiries List', element: EnquiriesList },
   { path: '/enquiry/add', name: 'Add', element: EnquiryForm },
 
   { path: '/jobs', name: 'Jobs List', element: JobsList },

@@ -1,963 +1,10 @@
-import React, { useState, useRef } from 'react'
-import {
-  ChevronLeft,
-  ChevronRight,
-  Upload,
-  Check,
-  ChevronDown,
-  ChevronUp,
-  User,
-  Package,
-  Truck,
-  X,
-  Image,
-  CreditCard,
-} from 'lucide-react'
-
-const SimpleOrderWizard = () => {
-  const [currentStep, setCurrentStep] = useState(0)
-  const [uploadedImages, setUploadedImages] = useState([])
-  const fileInputRef = useRef(null)
-  const [dragActive, setDragActive] = useState(false)
-
-  const [formData, setFormData] = useState({
-    clientDetails: {
-      client: '',
-      email: '',
-      contactNo: '',
-    },
-    imageUpload: {
-      productImages: [],
-    },
-    productDetails: {
-      productName: '',
-      quantity: '',
-      size: '',
-    },
-    deliveryDetails: {
-      deliveryDate: '',
-      deliveryLocation: '',
-      deliveryMode: '',
-    },
-    payment: {
-      paymentType: '',
-    },
-
-  })
-
-  const [completedSteps, setCompletedSteps] = useState(new Set())
-  const [expandedSteps, setExpandedSteps] = useState(new Set())
-
-  const formSteps = [
-    {
-      id: 'clientDetails',
-      title: 'Client Details',
-      icon: User,
-      fields: [
-
-        {
-          name: 'client',
-          label: 'Client Name',
-          type: 'text',
-          required: true,
-          placeholder: 'Enter client name',
-        },
-        {
-          name: 'email',
-          label: 'Email',
-          type: 'email',
-          required: true,
-          placeholder: 'Enter email',
-        },
-        {
-          name: 'contactNo',
-          label: 'Contact Number',
-          type: 'tel',
-          required: true,
-          placeholder: 'Enter contact number',
-        },
-        {
-          name: 'enquiryOrigin',
-          label: 'Enquiry Origin',
-          type: 'text',
-          required: true,
-          placeholder: 'Enter enquiry origin',
-        },
-      ],
-    },
-    {
-      id: 'imageUpload',
-      title: 'Image Upload',
-      icon: Image,
-      fields: [
-        {
-          name: 'productImages',
-          label: 'Product Images',
-          type: 'image-upload',
-          required: false,
-        },
-      ],
-    },
-    {
-      id: 'productDetails',
-      title: 'Product Details',
-      icon: Package,
-      fields: [
-        {
-          name: 'productName',
-          label: 'Product Name / Theme',
-          type: 'text',
-          required: true,
-          placeholder: 'Enter product name',
-        },
-        {
-          name: 'quantity',
-          label: 'Quantity',
-          type: 'number',
-          required: true,
-          placeholder: 'Enter quantity',
-        },
-        {
-          name: 'size',
-          label: 'Size',
-          type: 'text',
-          required: true,
-          placeholder: 'Enter size',
-        },
-        {
-          name: 'budget',
-          label: 'Budget',
-          type: 'number',
-          required: true,
-          placeholder: 'Enter budget',
-        },
-        {
-          name: 'preferedMaterial',
-          label: 'Prefered Material',
-          type: 'text',
-          required: true,
-          placeholder: 'Enter prefered material',
-        },
-      ],
-    },
-    {
-      id: 'deliveryDetails',
-      title: 'Delivery Details',
-      icon: Truck,
-      fields: [
-        {
-          name: 'deliveryDate',
-          label: 'Delivery Date',
-          type: 'date',
-          required: true,
-        },
-        {
-          name: 'deliveryLocation',
-          label: 'Delivery Location',
-          type: 'textarea',
-          required: true,
-          placeholder: 'Enter delivery location...',
-        },
-        {
-          name: 'deliveryMode',
-          label: 'Delivery Mode',
-          type: 'radio',
-          required: true,
-          options: [
-            { value: 'HAND DELIVERY', label: 'Hand Delivery' },
-            { value: 'COURIER', label: 'Courier' },
-            { value: 'PICKUP', label: 'Self Pickup' },
-            { value: 'EXPRESS DELIVERY', label: 'Express Delivery' },
-          ],
-        },
-        {
-          name: 'briefing',
-          label: 'Briefing',
-          type: 'textarea',
-          required: true,
-          placeholder: 'Enter briefing...',
-        },
-      ],
-    },
-    {
-      id: 'payment',
-      title: 'Payment',
-      icon: CreditCard,
-      fields: [
-        {
-          name: 'paymentType',
-          label: 'Payment Terms',
-          type: 'radio',
-          required: true,
-          options: [
-            { value: '100% Advance', label: '100% Advance' },
-            { value: '50% advance & Bal before dispatch & delivery', label: '50% Advance & Bal before dispatch & delivery' },
-            { value: 'Corporate Credit', label: 'Corporate Credit' },
-          ],
-        },
-      ],
-    },
-  ]
-
-  const handleInputChange = (stepId, fieldName, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [stepId]: {
-        ...prev[stepId],
-        [fieldName]: value,
-      },
-    }))
-  }
-
-  const handleImageUpload = (files) => {
-    const newImages = Array.from(files).slice(0, 5 - uploadedImages.length)
-    const imageUrls = newImages.map((file) => URL.createObjectURL(file))
-    setUploadedImages((prev) => [...prev, ...imageUrls])
-    handleInputChange('imageUpload', 'productImages', [...uploadedImages, ...imageUrls])
-  }
-
-  const handleDrag = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true)
-    } else if (e.type === 'dragleave') {
-      setDragActive(false)
-    }
-  }
-
-  const handleDrop = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setDragActive(false)
-
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleImageUpload(e.dataTransfer.files)
-    }
-  }
-
-  const removeImage = (index) => {
-    const newImages = uploadedImages.filter((_, i) => i !== index)
-    setUploadedImages(newImages)
-    handleInputChange('imageUpload', 'productImages', newImages)
-  }
-
-  const validateStep = (stepIndex) => {
-    const step = formSteps[stepIndex]
-    if (!step) return true
-
-    const stepData = formData[step.id] || {}
-
-    return step.fields.every((field) => {
-      if (!field || field.type === 'header' || field.type === 'image-upload') return true
-
-      if (field.required) {
-        const value = stepData[field.name]
-        return value && value.toString().trim() !== ''
-      }
-      return true
-    })
-  }
-
-  const handleNext = () => {
-    if (validateStep(currentStep)) {
-      setCompletedSteps((prev) => new Set([...prev, currentStep]))
-      if (currentStep < formSteps.length - 1) {
-        setCurrentStep(currentStep + 1)
-      }
-    }
-  }
-
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
-    }
-  }
-
-  const handleStepClick = (stepIndex) => {
-    if (stepIndex <= currentStep || completedSteps.has(stepIndex)) {
-      setCurrentStep(stepIndex)
-    }
-  }
-
-  const toggleStepExpansion = (stepIndex) => {
-    setExpandedSteps((prev) => {
-      const newExpanded = new Set(prev)
-      if (newExpanded.has(stepIndex)) {
-        newExpanded.delete(stepIndex)
-      } else {
-        newExpanded.add(stepIndex)
-      }
-      return newExpanded
-    })
-  }
-
-  const handleSubmit = () => {
-    if (validateStep(currentStep)) {
-      setCompletedSteps((prev) => new Set([...prev, currentStep]))
-      alert('Form submitted successfully!')
-    }
-  }
-
-  const isCurrentStepValid = validateStep(currentStep)
-
-  const renderField = (field, stepId) => {
-    if (!field || !stepId) return null
-
-    const stepData = formData[stepId] || {}
-
-    if (field.type === 'radio') {
-      return (
-        <div key={field.name} className="col-12 mb-4">
-          <label className="form-label fw-medium fs-6 mb-3">
-            {field.label}
-            {field.required && <span className="text-danger ms-1">*</span>}
-          </label>
-          <div className="row g-2">
-            {field.options &&
-              field.options.map((option) => (
-                <div key={option.value} className="col-12 col-sm-6 col-md-4">
-                  <label
-                    className="form-check-container border rounded p-3 h-100 d-block"
-                    htmlFor={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name={field.name}
-                        id={`${field.name}_${option.value.replace(/\s+/g, '_')}`}
-                        value={option.value}
-                        checked={stepData[field.name] === option.value}
-                        onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
-                        required={field.required}
-                      />
-                      <span className="form-check-label fw-medium">{option.label}</span>
-                    </div>
-                  </label>
-                </div>
-              ))}
-          </div>
-        </div>
-      )
-    }
-
-    if (field.type === 'image-upload') {
-      return (
-        <div key={field.name} className="col-12 mb-4">
-          <div
-            className={`upload-area border-2 border-dashed rounded-lg p-4 text-center position-relative ${
-              dragActive ? 'border-primary bg-light' : 'border-muted'
-            }`}
-            onDragEnter={handleDrag}
-            onDragLeave={handleDrag}
-            onDragOver={handleDrag}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-            style={{
-              cursor: 'pointer',
-              minHeight: '200px',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: dragActive ? '#f8f9fa' : '#ffffff',
-              transition: 'all 0.3s ease',
-            }}
-          >
-            <input
-              ref={fileInputRef}
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => handleImageUpload(e.target.files)}
-              className="d-none"
-            />
-
-            <button
-              type="button"
-              className="btn btn-primary px-4 py-2 mb-3"
-              style={{
-                fontSize: '1rem',
-                fontWeight: '600',
-                backgroundColor: '#0d6efd',
-                border: 'none',
-              }}
-              disabled={uploadedImages.length >= 5}
-            >
-              BROWSE & UPLOAD
-            </button>
-
-            <p className="text-muted mb-0" style={{ fontSize: '0.9rem' }}>
-              Click to browse files or drag and drop
-            </p>
-            <p className="small text-muted mt-2">
-              Maximum 5 images allowed • Supported formats: JPG, PNG, GIF
-            </p>
-          </div>
-
-          {uploadedImages.length > 0 && (
-            <div className="mt-4">
-              <h5 className="fw-semibold mb-3">Uploaded Images ({uploadedImages.length})</h5>
-              <div className="row g-3">
-                {uploadedImages.map((image, index) => (
-                  <div key={index} className="col-6 col-md-4 col-lg-3">
-                    <div className="position-relative">
-                      <img
-                        src={image}
-                        alt={`Product ${index + 1}`}
-                        className="img-fluid rounded border"
-                        style={{ aspectRatio: '1/1', objectFit: 'cover' }}
-                      />
-                      <button
-                        type="button"
-                        className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          removeImage(index)
-                        }}
-                        style={{ padding: '4px 8px' }}
-                      >
-                        <X size={14} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      )
-    }
-
-    if (field.type === 'textarea') {
-      return (
-        <div key={field.name} className="col-12 mb-4">
-          <label htmlFor={field.name} className="form-label fw-medium fs-6">
-            {field.label}
-            {field.required && <span className="text-danger ms-1">*</span>}
-          </label>
-          <textarea
-            className="form-control form-control-lg"
-            id={field.name}
-            name={field.name}
-            rows="4"
-            value={stepData[field.name] || ''}
-            onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
-            placeholder={field.placeholder || `Enter ${field.label.toLowerCase()}`}
-            required={field.required}
-          />
-        </div>
-      )
-    }
-
-    const containerClass = 'col-12 mb-4'
-
-    return (
-      <div key={field.name} className={containerClass}>
-        <label htmlFor={field.name} className="form-label fw-medium fs-6">
-          {field.label}
-          {field.required && <span className="text-danger ms-1">*</span>}
-        </label>
-        <input
-          type={field.type}
-          className="form-control form-control-lg"
-          id={field.name}
-          name={field.name}
-          value={stepData[field.name] || ''}
-          onChange={(e) => handleInputChange(stepId, field.name, e.target.value)}
-          placeholder={field.placeholder}
-          required={field.required}
-          step={field.type === 'number' ? '0.01' : undefined}
-        />
-      </div>
-    )
-  }
-
-  return (
-    <>
-      <style>{`
-        .step-indicator {
-          width: 65px;
-          height: 65px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 3px solid;
-          transition: all 0.3s ease;
-          cursor: pointer;
-        }
-
-        .step-indicator.completed {
-          background-color: #198754;
-          border-color: #198754;
-          color: white;
-        }
-
-        .step-indicator.current {
-          background-color: #0061ed;
-          border-color: #0061ed;
-          color: white;
-        }
-
-        .step-indicator.pending {
-          background-color: #f8f9fa;
-          border-color: #dee2e6;
-          color: #6c757d;
-          cursor: not-allowed;
-        }
-
-        .step-indicator.clickable:hover:not(.pending) {
-          transform: scale(1.0);
-        }
-
-        .previous-step-header {
-          background-color: #f8f9fa;
-          border: none;
-          width: 100%;
-          text-align: left;
-          cursor: pointer;
-          transition: background-color 0.2s ease;
-        }
-
-        .previous-step-header:hover {
-          background-color: #e9ecef;
-        }
-
-        .status-dot {
-          width: 14px;
-          height: 14px;
-          border-radius: 50%;
-          display: inline-block;
-          margin-right: 0.5rem;
-        }
-
-        .status-dot.completed {
-          background-color: #198754;
-        }
-
-        .status-dot.pending {
-          background-color: #6c757d;
-        }
-
-        .form-field-column .mb-4:last-child {
-          margin-bottom: 0 !important;
-        }
-
-        .card {
-          height: fit-content;
-        }
-
-        .steps-container {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
-          gap: 0.8rem;
-          max-width: 100%;
-          overflow-x: auto;
-          padding: 0 10px;
-        }
-
-        .step-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          min-width: 100px;
-          flex-shrink: 0;
-        }
-
-        .bg-blue {
-          background-color: #0061ed;
-        }
-
-        .clr-white {
-          color: white;
-        }
-
-        .clr-blue {
-          color: #0061ed;
-        }
-
-        // .clr-hover:hover {
-        //   background-color: #0061ed !important;
-        //   color: white;
-        // }
-
-        .border-dashed {
-          border-style: dashed !important;
-        }
-
-        .bg-light {
-          background-color: #f8f9fa !important;
-        }
-
-        .form-check-container {
-          transition: all 0.2s ease;
-        }
-
-        .form-check-container:hover {
-          background-color: #f8f9fa;
-        }
-
-        .form-check-container input:checked + span {
-          color: #0061ed;
-          font-weight: 600;
-        }
-
-        .form-check-container input:checked {
-          background-color: #0061ed;
-          border-color: #0061ed;
-        }
-
-        .upload-area:hover {
-          background-color: #f8f9fa !important;
-          border-color: #0d6efd !important;
-        }
-
-        .upload-area:active {
-          transform: scale(0.98);
-        }
-
-        @media (max-width: 768px) {
-          .step-indicator {
-            width: 55px;
-            height: 55px;
-          }
-
-          .steps-container {
-            gap: 0.6rem;
-            justify-content: flex-start;
-            padding: 0 5px;
-          }
-
-          .step-item {
-            min-width: 90px;
-          }
-
-          .card-body {
-            padding: 1.5rem !important;
-          }
-
-          .col-sm-6 {
-            flex: 0 0 auto;
-            width: 100%;
-          }
-
-          .col-md-4 {
-            flex: 0 0 auto;
-            width: 50%;
-          }
-
-          .d-flex.justify-content-between {
-            flex-direction: column;
-            gap: 1rem;
-          }
-
-          .d-flex.justify-content-between > button {
-            width: 100%;
-            justify-content: center;
-          }
-        }
-
-        @media (max-width: 576px) {
-          .step-indicator {
-            width: 50px;
-            height: 50px;
-          }
-
-          .step-item {
-            min-width: 80px;
-          }
-
-          .card-body {
-            padding: 1rem !important;
-          }
-
-          .col-6 {
-            flex: 0 0 auto;
-            width: 100%;
-          }
-
-          .col-md-4, .col-sm-6 {
-            flex: 0 0 auto;
-            width: 100%;
-          }
-        }
-      `}</style>
-
-      <div className="container-fluid bg-light min-vh-100">
-        <div className="container py-4 py-md-5">
-          <div className="row justify-content-center">
-            <div className="col-lg-8">
-              <div className="mb-4 mb-md-5 text-center">
-                <h1 className="display-5 fw-bold text-dark mb-3">Enquiry Form</h1>
-                <p className="text-muted fs-5">Complete all steps to submit your order</p>
-              </div>
-
-              <div className="mb-4 mb-md-5">
-                <div className="steps-container">
-                  {formSteps.map((step, index) => {
-                    const Icon = step.icon
-                    const isCompleted = completedSteps.has(index)
-                    const isCurrent = index === currentStep
-                    const isClickable = index <= currentStep || completedSteps.has(index)
-
-                    return (
-                      <div key={step.id} className="step-item">
-                        <button
-                          onClick={() => isClickable && handleStepClick(index)}
-                          disabled={!isClickable}
-                          className={`step-indicator ${
-                            isCompleted ? 'completed' : isCurrent ? 'current' : 'pending'
-                          } ${isClickable ? 'clickable' : ''} mb-3`}
-                        >
-                          {isCompleted ? <Check size={20} /> : <Icon size={20} />}
-                        </button>
-                        <div className="text-center">
-                          <p
-                            className={`fw-medium mb-1 ${
-                              isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
-                            }`}
-                            style={{ fontSize: '13px' }}
-                          >
-                            Step {index + 1}
-                          </p>
-                          <p
-                            className={`small mb-0 ${
-                              isCurrent ? 'clr-blue' : isCompleted ? 'text-success' : 'text-muted'
-                            }`}
-                            style={{ fontSize: '12px', lineHeight: '1.3', fontWeight: '500' }}
-                          >
-                            {step.title}
-                          </p>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {currentStep > 0 && (
-                <div className="mb-4">
-                  <div className="card shadow-sm">
-                    <div className="card-body">
-                      <h3 className="h5 fw-semibold text-dark mb-4">Previous Steps Summary</h3>
-
-                      {formSteps.slice(0, currentStep).map((step, index) => {
-                        const isExpanded = expandedSteps.has(index)
-
-                        return (
-                          <div key={step.id} className="border rounded mb-3">
-                            <button
-                              className="previous-step-header w-100 p-3 d-flex justify-content-between align-items-center"
-                              type="button"
-                              onClick={() => toggleStepExpansion(index)}
-                            >
-                              <div className="d-flex align-items-center">
-                                <span
-                                  className={`status-dot ${
-                                    completedSteps.has(index) ? 'completed' : 'pending'
-                                  }`}
-                                ></span>
-                                <span
-                                  className={`fw-medium ${
-                                    completedSteps.has(index) ? 'text-success' : 'text-muted'
-                                  }`}
-                                >
-                                  {step.title}
-                                </span>
-                                <span className="text-muted small ms-2">(Step {index + 1})</span>
-                              </div>
-                              <div className="d-flex align-items-center">
-                                <span className="text-muted small me-2 d-none d-sm-inline">
-                                  {isExpanded ? 'Hide Details' : 'Show Details'}
-                                </span>
-                                {isExpanded ? (
-                                  <ChevronUp size={18} className="text-muted" />
-                                ) : (
-                                  <ChevronDown size={18} className="text-muted" />
-                                )}
-                              </div>
-                            </button>
-
-                            {isExpanded && (
-                              <div className="border-top p-3">
-                                {/* Show uploaded images if this is the image upload step */}
-                                {step.id === 'imageUpload' && uploadedImages.length > 0 && (
-                                  <div className="mb-4">
-                                    <h6 className="fw-semibold mb-3">
-                                      Uploaded Images ({uploadedImages.length})
-                                    </h6>
-                                    <div className="row g-2">
-                                      {uploadedImages.map((image, index) => (
-                                        <div key={index} className="col-6 col-sm-4 col-md-3">
-                                          <img
-                                            src={image}
-                                            alt={`Product ${index + 1}`}
-                                            className="img-fluid rounded border"
-                                            style={{ aspectRatio: '1/1', objectFit: 'cover' }}
-                                          />
-                                        </div>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-
-                                <div className="row g-3">
-                                  {step.fields
-                                    .filter(
-                                      (field) =>
-                                        field.type !== 'header' && field.type !== 'image-upload',
-                                    )
-                                    .map((field) => {
-                                      const value = formData[step.id][field.name]
-                                      let displayValue = ''
-
-                                      if (Array.isArray(value)) {
-                                        displayValue =
-                                          value.length > 0 ? value.join(', ') : 'None selected'
-                                      } else {
-                                        displayValue = value || ''
-                                      }
-
-                                      return (
-                                        <div key={field.name} className="col-12 col-md-6">
-                                          <div>
-                                            <small className="text-muted fw-medium">
-                                              {field.label}:
-                                            </small>
-                                            <span className="fw-medium text-dark ms-2">
-                                              {displayValue ? (
-                                                displayValue
-                                              ) : (
-                                                <em className="text-muted">Not filled</em>
-                                              )}
-                                            </span>
-                                          </div>
-                                        </div>
-                                      )
-                                    })}
-                                </div>
-
-                                <div className="mt-3 pt-3 border-top">
-                                  <button
-                                    className="btn btn-outline-primary clr-hover btn-sm"
-                                    onClick={() => handleStepClick(index)}
-                                  >
-                                    <ChevronLeft size={16} className="me-1" />
-                                    Go back to edit this step
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              <div className="card shadow-sm">
-                <div className="card-body p-3 p-md-5">
-                  <h2 className="h4 fw-semibold text-dark mb-4 text-center">
-                    {formSteps[currentStep].title}
-                  </h2>
-
-                  <div className="row justify-content-center">
-                    <div className="col-12 col-md-10">
-                      <div className="form-field-column">
-                        <div className="row">
-                          {formSteps[currentStep].fields.map((field) =>
-                            renderField(field, formSteps[currentStep].id),
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="d-flex flex-column flex-md-row justify-content-between mt-4 mt-md-5 pt-4 border-top">
-                    <button
-                      onClick={handlePrev}
-                      disabled={currentStep === 0}
-                      className={`btn ${
-                        currentStep === 0 ? 'btn-outline-secondary' : 'btn-secondary'
-                      } d-flex align-items-center justify-content-center px-4 py-2 mb-3 mb-md-0`}
-                      style={{
-                        visibility: currentStep === 0 ? 'hidden' : 'visible',
-                      }}
-                    >
-                      <ChevronLeft size={22} className="me-2" />
-                      Previous
-                    </button>
-
-                    {currentStep === formSteps.length - 1 ? (
-                      <button
-                        onClick={handleSubmit}
-                        disabled={!isCurrentStepValid}
-                        className={`btn ${
-                          isCurrentStepValid ? 'btn-success clr-white' : 'btn-outline-success'
-                        } d-flex align-items-center justify-content-center px-4 py-2`}
-                      >
-                        <Check size={22} className="me-2" />
-                        Submit
-                      </button>
-                    ) : (
-                      <button
-                        onClick={handleNext}
-                        disabled={!isCurrentStepValid}
-                        className={`btn ${
-                          isCurrentStepValid ? 'bg-blue clr-white' : 'btn-outline-primary'
-                        } d-flex align-items-center justify-content-center px-4 py-2`}
-                      >
-                        Next
-                        <ChevronRight size={22} className="ms-2" />
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  )
-}
-
-export default SimpleOrderWizard
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useState } from 'react'
 import award1 from '../../../../public/award1.avif'
 import award2 from '../../../../public/awards3.webp'
 import award4 from '../../../../public/award4.webp'
 import award5 from '../../../../public/award5.jpg'
 import award6 from '../../../../public/award6.jpeg'
-import { CButton, CCol } from '@coreui/react'
+import { CButton, CCol, CFormLabel, CFormSelect } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
 import noImage from '../../../../public/noimage.jpg'
@@ -979,7 +26,13 @@ const EnhancedProductCards = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [productImages, setProductImages] = useState({}) // New state to store uploaded images
   const [modalProduct, setModalProduct] = useState(null) // New state for modal
+  const [assignedPersons, setAssignedPersons] = useState({}) // New state to store assigned persons
+  const [personModalProduct, setPersonModalProduct] = useState(null) // New state for person modal
+  const [selectedPerson, setSelectedPerson] = useState('') // New state for selected person
   const navigate = useNavigate()
+
+  // Available persons list
+  const availablePersons = ['Ronald', 'Melroy', 'Kaushal', 'Priya', 'Arun', 'Neha', 'Vikram']
 
   // Product data with additional fields
   const products = [
@@ -993,7 +46,7 @@ const EnhancedProductCards = () => {
       product: 'MIC TROPHY',
       quantity: 46,
       size: '10 Inches',
-      status: 'COMPLETED',
+      status: 'ENQUIRY',
       deliveryDate: '19-03-2025',
       deliveryLocation: 'ITC Central - Parel - MUMBAI',
       deliveryMode: 'HAND DELIVERY',
@@ -1012,7 +65,7 @@ const EnhancedProductCards = () => {
       client: 'CORPORATE SOLUTIONS',
       email: 'info@corpsol.com',
       contactNo: '98765 43210',
-      status: 'PENDING',
+      status: 'DESIGN',
       product: 'CRYSTAL AWARD',
       quantity: 25,
       size: '8 Inches',
@@ -1034,7 +87,7 @@ const EnhancedProductCards = () => {
       client: 'SPORTS FEDERATION',
       email: 'awards@sports.com',
       contactNo: '91234 56789',
-      status: 'IN PROGRESS',
+      status: 'SAMPLING',
       product: 'GOLD MEDAL',
       quantity: 100,
       size: '3 Inches',
@@ -1058,7 +111,7 @@ const EnhancedProductCards = () => {
       contactNo: '87654 32109',
       product: 'ACRYLIC PLAQUE',
       quantity: 15,
-      status: 'IN PROGRESS',
+      status: 'PRODUCTION',
       size: '12 Inches',
       deliveryDate: '19-09-2025',
       deliveryLocation: 'Powai - MUMBAI',
@@ -1080,7 +133,7 @@ const EnhancedProductCards = () => {
       contactNo: '99887 76543',
       product: 'WOODEN SHIELD',
       quantity: 30,
-      status: 'ON HOLD',
+      status: 'PRINTING',
       size: '14 Inches',
       deliveryDate: '19-02-2025',
       deliveryLocation: 'Fort - MUMBAI',
@@ -1103,7 +156,7 @@ const EnhancedProductCards = () => {
       product: 'GLASS TROPHY',
       quantity: 12,
       size: '16 Inches',
-      status: 'COMPLETED',
+      status: 'BILLING',
       deliveryDate: '11-01-2025',
       deliveryLocation: 'Andheri - MUMBAI',
       deliveryMode: 'EXPRESS DELIVERY',
@@ -1128,14 +181,20 @@ const EnhancedProductCards = () => {
 
   const getDeliveryModeClass = (mode) => {
     switch (mode) {
-      case 'COMPLETED':
+      case 'PRINTING':
         return { backgroundColor: '#059669', color: 'white' }
-      case 'PENDING':
+      case 'DESIGN':
         return { backgroundColor: '#2563EB', color: 'white' }
-      case 'ON HOLD':
-        return { backgroundColor: '#EA580C', color: 'white' }
-      case 'IN PROGRESS':
-        return { backgroundColor: '#7C3AED', color: 'white' }
+      case 'ENQUIRY':
+        return { backgroundColor: '#944949', color: 'white' }
+      case 'PRODUCTION':
+        return { backgroundColor: 'rgb(112 90 149)', color: 'white' }
+      case 'SAMPLING':
+        return { backgroundColor: '#3d983d', color: 'white' }
+      case 'DISPATCH':
+        return { backgroundColor: 'red', color: 'white' }
+      case 'BILLING':
+        return { backgroundColor: 'grey', color: 'white' }
       default:
         return { backgroundColor: '#EA580C', color: 'white' }
     }
@@ -1195,41 +254,74 @@ const EnhancedProductCards = () => {
     }
   }
 
+  // Function to trigger file input click
+  const triggerFileInput = (productId) => {
+    const fileInput = document.getElementById(`file-input-${productId}`)
+    if (fileInput) {
+      fileInput.click()
+    }
+  }
+
+  // Function to open person assignment modal
+  const openPersonModal = (product) => {
+    setPersonModalProduct(product)
+    setSelectedPerson('')
+    document.body.style.overflow = 'hidden'
+  }
+
+  // Function to close person assignment modal
+  const closePersonModal = () => {
+    setPersonModalProduct(null)
+    setSelectedPerson('')
+    document.body.style.overflow = 'unset'
+  }
+
+  // Function to confirm person assignment
+  const confirmPersonAssignment = () => {
+    if (selectedPerson && personModalProduct) {
+      setAssignedPersons((prev) => ({
+        ...prev,
+        [personModalProduct.id]: selectedPerson,
+      }))
+      closePersonModal()
+    }
+  }
+
   const handleWhatsAppShare = (product) => {
     const currentImage = productImages[product.id] || product.mainImage
 
     // Create comprehensive message with all details
     const message = `🏆 *${product.name}* (Job No: ${product.jobNo})
 
-👤 *Client Details:*
-• Client: ${product.client}
-• Email: ${product.email}
-• Contact: ${product.contactNo}
+    👤 *Client Details:*
+    • Client: ${product.client}
+    • Email: ${product.email}
+    • Contact: ${product.contactNo}
 
-📦 *Product Information:*
-• Product: ${product.product}
-• Quantity: ${product.quantity}
-• Size: ${product.size}
-• Status: ${product.status}
+    📦 *Product Information:*
+    • Product: ${product.product}
+    • Quantity: ${product.quantity}
+    • Size: ${product.size}
+    • Status: ${product.status}
 
-💰 *Financial Details:*
-• Budget: ${product.budget}
-• Payment Terms: ${product.paymentTerms}
+    💰 *Financial Details:*
+    • Budget: ${product.budget}
+    • Payment Terms: ${product.paymentTerms}
 
-🚚 *Delivery Information:*
-• Delivery Date: ${product.deliveryDate}
-• Delivery Location: ${product.deliveryLocation}
-• Delivery Mode: ${product.deliveryMode}
+    🚚 *Delivery Information:*
+    • Delivery Date: ${product.deliveryDate}
+    • Delivery Location: ${product.deliveryLocation}
+    • Delivery Mode: ${product.deliveryMode}
 
-📋 *Additional Details:*
-• Enquiry Origin: ${product.enquiryOrigin}
-• Preferred Material: ${product.preferedMaterial}
-• Briefing: ${product.briefing}
+    📋 *Additional Details:*
+    • Enquiry Origin: ${product.enquiryOrigin}
+    • Preferred Material: ${product.preferedMaterial}
+    • Briefing: ${product.briefing}
 
-${currentImage ? '📸 Product image is available for reference.' : ''}
+    ${currentImage ? '📸 Product image is available for reference.' : ''}
 
-Best regards,
-Your Team`
+    Best regards,
+    Your Team`
 
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
@@ -1239,43 +331,154 @@ Your Team`
     const subject = `Complete Product Details - ${product.name} (Job No: ${product.jobNo})`
     const body = `Dear Client,
 
-Please find the complete details of your order:
+    Please find the complete details of your order:
 
-=== PRODUCT DETAILS ===
-Product Name: ${product.name}
-Job Number: ${product.jobNo}
-Client: ${product.client}
-Quantity: ${product.quantity}
-Size: ${product.size}
-Status: ${product.status}
+    === PRODUCT DETAILS ===
+    Product Name: ${product.name}
+    Job Number: ${product.jobNo}
+    Client: ${product.client}
+    Quantity: ${product.quantity}
+    Size: ${product.size}
+    Status: ${product.status}
 
-=== CONTACT INFORMATION ===
-Email: ${product.email}
-Contact Number: ${product.contactNo}
+    === CONTACT INFORMATION ===
+    Email: ${product.email}
+    Contact Number: ${product.contactNo}
 
-=== FINANCIAL DETAILS ===
-Budget: ${product.budget}
-Payment Terms: ${product.paymentTerms}
+    === FINANCIAL DETAILS ===
+    Budget: ${product.budget}
+    Payment Terms: ${product.paymentTerms}
 
-=== DELIVERY INFORMATION ===
-Delivery Date: ${product.deliveryDate}
-Delivery Location: ${product.deliveryLocation}
-Delivery Mode: ${product.deliveryMode}
+    === DELIVERY INFORMATION ===
+    Delivery Date: ${product.deliveryDate}
+    Delivery Location: ${product.deliveryLocation}
+    Delivery Mode: ${product.deliveryMode}
 
-=== ADDITIONAL INFORMATION ===
-Enquiry Origin: ${product.enquiryOrigin}
-Preferred Material: ${product.preferedMaterial}
-Briefing: ${product.briefing}
+    === ADDITIONAL INFORMATION ===
+    Enquiry Origin: ${product.enquiryOrigin}
+    Preferred Material: ${product.preferedMaterial}
+    Briefing: ${product.briefing}
 
-${productImages[product.id] || product.mainImage ? 'Product image is available for reference.' : 'Product image will be shared separately.'}
+    ${productImages[product.id] || product.mainImage ? 'Product image is available for reference.' : 'Product image will be shared separately.'}
 
-If you have any questions or need further clarification, please don't hesitate to contact us.
+    If you have any questions or need further clarification, please don't hesitate to contact us.
 
-Best regards,
-Your Team`
+    Best regards,
+    Your Team`
 
     const mailtoUrl = `mailto:${product.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     window.location.href = mailtoUrl
+  }
+
+  // Person Assignment Modal Component
+  const PersonModal = ({ product, onClose }) => {
+    if (!product) return null
+
+    return (
+      <div style={styles.modalOverlay} onClick={onClose}>
+        <div
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '0.75rem',
+            width: '100%',
+            maxWidth: '400px',
+            padding: '1.5rem',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            margin: 'auto',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h3
+            style={{
+              marginBottom: '1rem',
+              color: '#111827',
+              fontSize: '1.25rem',
+              fontWeight: 'bold',
+            }}
+          >
+            Assign Person to {product.name}
+          </h3>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <CCol className="position-relative mb-2">
+              <CFormLabel
+                htmlFor="status"
+                className="clr-black fw-medium"
+                style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontWeight: '500',
+                }}
+              >
+                Select Person:
+              </CFormLabel>
+              <CFormSelect
+                id="status"
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  backgroundColor: 'white',
+                  color: '#111827',
+                  outline: 'none',
+                  cursor: 'pointer',
+                }}
+                value={selectedPerson}
+                onChange={(e) => setSelectedPerson(e.target.value)}
+              >
+                <option value="">Choose a person</option>
+                {availablePersons.map((person) => (
+                  <option key={person} value={person}>
+                    {person}
+                  </option>
+                ))}
+                {/* <option>...</option> */}
+              </CFormSelect>
+              {/* <CFormFeedback tooltip invalid>
+                      Please provide a valid city.
+                    </CFormFeedback> */}
+            </CCol>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+            <button
+              onClick={onClose}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: '#6B7280',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmPersonAssignment}
+              disabled={!selectedPerson}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: selectedPerson ? '#0061ed' : 'rgb(129 170 240)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                cursor: selectedPerson ? 'pointer' : 'not-allowed',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+              }}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // Modal Component
@@ -1298,11 +501,10 @@ Your Team`
             boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
             display: 'flex',
             flexDirection: 'column',
-            margin: '8% auto 0 auto',
+            margin: '6% auto 0 auto',
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {' '}
           {/* Modal Header */}
           <div style={styles.modalHeader}>
             <h2 style={styles.modalTitle}>{product.name}</h2>
@@ -1483,10 +685,6 @@ Your Team`
               <span style={styles.value}>{product.deliveryDate}</span>
             </div>
             <div style={styles.detailRow}>
-              <span style={styles.label}>DELIVERY MODE: </span>
-              <span style={styles.value}>{product.deliveryMode}</span>
-            </div>
-            <div style={styles.detailRow}>
               <span style={styles.label}>STATUS: </span>
               <span
                 style={{
@@ -1511,10 +709,28 @@ Your Team`
                 </svg>
               </div>
 
-              {/* Upload Icon - show only for products without original image AND no uploaded image */}
-              {!product.mainImage && !productImages[product.id] && (
-                <div style={styles.actionIcon} title="Upload Image">
+              {/* Person Icon - show only when no image exists and no person assigned */}
+              {!product.mainImage && !productImages[product.id] && !assignedPersons[product.id] && (
+                <div
+                  style={styles.actionIcon}
+                  title="Assign Person"
+                  onClick={() => openPersonModal(product)}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  </svg>
+                </div>
+              )}
+
+              {/* Upload Icon - show only for products without original image AND no uploaded image AND person is assigned */}
+              {!product.mainImage && !productImages[product.id] && assignedPersons[product.id] && (
+                <div
+                  style={styles.actionIcon}
+                  title="Upload Image"
+                  onClick={() => triggerFileInput(product.id)}
+                >
                   <input
+                    id={`file-input-${product.id}`}
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleImageUpload(product.id, e)}
@@ -1675,7 +891,7 @@ Your Team`
       width: '100%',
       height: isMobile || isTablet ? '200px' : 'auto',
       flex: isMobile || isTablet ? 'none' : 1,
-      objectFit: 'fit',
+      objectFit: 'fill',
     },
     actionIconsContainer: {
       display: 'flex',
@@ -1781,18 +997,6 @@ Your Team`
       justifyContent: 'center',
       zIndex: 1000,
       padding: isMobile ? '0.5rem' : '1rem',
-    },
-    modalContent: {
-      backgroundColor: 'white',
-      borderRadius: '0.75rem',
-      width: '100%',
-      maxWidth: isMobile ? '100%' : isTablet ? '700px' : '900px',
-      maxHeight: isMobile ? '95vh' : '90vh',
-      overflow: 'hidden',
-      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      flexDirection: 'column',
-      margin: isMobile ? '0' : 'auto',
     },
     modalHeader: {
       display: 'flex',
@@ -1937,10 +1141,13 @@ Your Team`
       if (e.key === 'Escape' && modalProduct) {
         closeModal()
       }
+      if (e.key === 'Escape' && personModalProduct) {
+        closePersonModal()
+      }
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [modalProduct])
+  }, [modalProduct, personModalProduct])
 
   return (
     <div style={styles.container}>
@@ -1994,6 +1201,11 @@ Your Team`
           )}
         </div>
       </div>
+
+      {/* Person Assignment Modal */}
+      {personModalProduct && (
+        <PersonModal product={personModalProduct} onClose={closePersonModal} />
+      )}
 
       {/* Modal */}
       {modalProduct && <Modal product={modalProduct} onClose={closeModal} />}
