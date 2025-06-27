@@ -18,6 +18,11 @@ const RoleForm = React.lazy(() => import('./views/pages/masters/roles/Form'))
 const EnquiriesList = React.lazy(() => import('./views/pages/enquiry/List'))
 const EnquiryForm = React.lazy(() => import('./views/pages/enquiry/Form'))
 
+//admin
+const AdminEnquiriesList = React.lazy(() => import('./views/pages/enquiry/AdminList'))
+
+
+
 
 const JobsList = React.lazy(() => import('./views/pages/masters/jobs/List'))
 
@@ -95,7 +100,10 @@ const routes = [
   { path: '/departments', name: 'Departments List', element: DepartmentsList },
   { path: '/departments/add', name: 'Add', element: DepartmentForm },
   { path: '/departments/:departmentId', name: 'Edit', element: DepartmentForm },
-  { path: '/enquiries', name: 'Enquiries List', element: EnquiriesList },
+  { path: '/enquiriesdesigner', name: 'Enquiries List', element: EnquiriesList },
+
+  { path: '/enquiriesadmin', name: 'Enquiries List', element: AdminEnquiriesList },//Admin
+
   { path: '/enquiry/add', name: 'Add', element: EnquiryForm },
 
   { path: '/jobs', name: 'Jobs List', element: JobsList },

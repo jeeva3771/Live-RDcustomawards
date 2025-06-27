@@ -398,12 +398,22 @@ const _nav = [
     to: '/users',
     icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
   },
-  {
+    {
     component: CNavItem,
-    name: 'Enquiries',
-    to: '/enquiries',
+    name: 'Admin Enquiries',
+    // to: '/enquiries',
+    to: '/enquiriesadmin',
     icon: <CIcon icon={cilEnvelopeOpen} customClassName="nav-icon" />,
   },
+
+  {
+    component: CNavItem,
+    name: 'Designer Enquiries ',
+    // to: '/enquiries',
+    to: '/enquiriesdesigner',
+    icon: <CIcon icon={cilEnvelopeOpen} customClassName="nav-icon" />,
+  },
+
   {
     component: CNavItem,
     name: 'Jobs',

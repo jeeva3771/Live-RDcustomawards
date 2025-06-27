@@ -27,13 +27,13 @@ const EnhancedProductCards = () => {
   const [productImages, setProductImages] = useState({}) // New state to store uploaded images
   const [modalProduct, setModalProduct] = useState(null) // New state for modal
   const [assignedPersons, setAssignedPersons] = useState({}) // New state to store assigned persons
+  const [productRemarks, setProductRemarks] = useState({}) // New state to store remarks for each product
   const [personModalProduct, setPersonModalProduct] = useState(null) // New state for person modal
-  const [selectedPerson, setSelectedPerson] = useState('') // New state for selected person
-  const [remarks, setRemarks] = useState('') // New state for remarks
+  const [tempSelectedPerson, setTempSelectedPerson] = useState('') // Temporary state for selected person
+  const [tempRemarks, setTempRemarks] = useState('') // Temporary state for remarks
   const [uploadModalProduct, setUploadModalProduct] = useState(null) // New state for upload modal
-  const [startTime, setStartTime] = useState('') // New state for start time
-  const [endTime, setEndTime] = useState('') // New state for end time
   const [selectedFile, setSelectedFile] = useState(null) // New state for selected file
+  const [acceptedProducts, setAcceptedProducts] = useState(new Set()) // New state to track accepted products
   const navigate = useNavigate()
 
   // Available persons list
@@ -41,6 +41,54 @@ const EnhancedProductCards = () => {
 
   // Product data with additional fields
   const products = [
+    {
+      id: 4,
+      name: 'ACRYLIC PLAQUE',
+      jobNo: '14891',
+      client: 'TECH INNOVATIONS',
+      email: 'contact@techinno.com',
+      contactNo: '87654 32109',
+      product: 'ACRYLIC PLAQUE',
+      quantity: 15,
+      startTime: '2025-02-09 09:10 AM',
+      endTime: '2025-02-10 10:10 AM',
+      status: 'PRODUCTION',
+      size: '12 Inches',
+      deliveryDate: '19-09-2025',
+      deliveryLocation: 'Powai - MUMBAI',
+      deliveryMode: 'HAND DELIVERY',
+      mainImage: null, // No image for this product
+      enquiryOrigin: 'WhatsApp',
+      budget: '₹30,000',
+      preferedMaterial: 'Clear Acrylic',
+      briefing:
+        'Modern acrylic plaques for startup milestone celebration. Minimalist design preferred.',
+      paymentTerms: '50% Advance & Balance when Material is Ready',
+    },
+    {
+      id: 6,
+      name: 'GLASS TROPHY',
+      jobNo: '14893',
+      client: 'EXCELLENCE AWARDS',
+      email: 'awards@excellence.com',
+      contactNo: '98123 45678',
+      product: 'GLASS TROPHY',
+      startTime: '2025-02-09 09:10 AM',
+      endTime: '2025-02-10 10:10 AM',
+      quantity: 12,
+      size: '16 Inches',
+      status: 'BILLING',
+      deliveryDate: '11-01-2025',
+      deliveryLocation: 'Andheri - MUMBAI',
+      deliveryMode: 'EXPRESS DELIVERY',
+      mainImage: null, // No image for this product
+      enquiryOrigin: 'LinkedIn',
+      budget: '₹85,000',
+      preferedMaterial: 'Borosilicate Glass',
+      briefing:
+        'Premium glass trophies for annual excellence awards ceremony. LED base lighting required.',
+      paymentTerms: 'Corporate Credit',
+    },
     {
       id: 1,
       name: 'MIC TROPHY',
@@ -51,6 +99,8 @@ const EnhancedProductCards = () => {
       product: 'MIC TROPHY',
       quantity: 46,
       size: '10 Inches',
+      startTime: '2025-02-09 09:10 AM',
+      endTime: '2025-02-10 10:10 AM',
       status: 'ENQUIRY',
       deliveryDate: '19-03-2025',
       deliveryLocation: 'ITC Central - Parel - MUMBAI',
@@ -77,6 +127,8 @@ const EnhancedProductCards = () => {
       deliveryDate: '17-04-2025',
       deliveryLocation: 'Bandra Kurla Complex - MUMBAI',
       deliveryMode: 'COURIER',
+      startTime: '2025-02-09 09:10 AM',
+      endTime: '2025-02-10 10:10 AM',
       mainImage: award2,
       enquiryOrigin: 'Direct Call',
       budget: '₹75,000',
@@ -92,6 +144,8 @@ const EnhancedProductCards = () => {
       client: 'SPORTS FEDERATION',
       email: 'awards@sports.com',
       contactNo: '91234 56789',
+      startTime: '2025-02-09 09:10 AM',
+      endTime: '2025-02-10 10:10 AM',
       status: 'SAMPLING',
       product: 'GOLD MEDAL',
       quantity: 100,
@@ -107,28 +161,7 @@ const EnhancedProductCards = () => {
         'Olympic-style gold medals for inter-school sports competition. Different sports icons required.',
       paymentTerms: 'Corporate Credit',
     },
-    {
-      id: 4,
-      name: 'ACRYLIC PLAQUE',
-      jobNo: '14891',
-      client: 'TECH INNOVATIONS',
-      email: 'contact@techinno.com',
-      contactNo: '87654 32109',
-      product: 'ACRYLIC PLAQUE',
-      quantity: 15,
-      status: 'PRODUCTION',
-      size: '12 Inches',
-      deliveryDate: '19-09-2025',
-      deliveryLocation: 'Powai - MUMBAI',
-      deliveryMode: 'HAND DELIVERY',
-      mainImage: null, // No image for this product
-      enquiryOrigin: 'WhatsApp',
-      budget: '₹30,000',
-      preferedMaterial: 'Clear Acrylic',
-      briefing:
-        'Modern acrylic plaques for startup milestone celebration. Minimalist design preferred.',
-      paymentTerms: '50% Advance & Balance when Material is Ready',
-    },
+
     {
       id: 5,
       name: 'WOODEN SHIELD',
@@ -138,6 +171,8 @@ const EnhancedProductCards = () => {
       contactNo: '99887 76543',
       product: 'WOODEN SHIELD',
       quantity: 30,
+      startTime: '2025-02-09 09:10 AM',
+      endTime: '2025-02-10 10:10 AM',
       status: 'PRINTING',
       size: '14 Inches',
       deliveryDate: '19-02-2025',
@@ -151,28 +186,7 @@ const EnhancedProductCards = () => {
         'Traditional wooden shields for cultural event awards. Intricate carving work required.',
       paymentTerms: '50% advance & Bal before dispatch & delivery',
     },
-    {
-      id: 6,
-      name: 'GLASS TROPHY',
-      jobNo: '14893',
-      client: 'EXCELLENCE AWARDS',
-      email: 'awards@excellence.com',
-      contactNo: '98123 45678',
-      product: 'GLASS TROPHY',
-      quantity: 12,
-      size: '16 Inches',
-      status: 'BILLING',
-      deliveryDate: '11-01-2025',
-      deliveryLocation: 'Andheri - MUMBAI',
-      deliveryMode: 'EXPRESS DELIVERY',
-      mainImage: null, // No image for this product
-      enquiryOrigin: 'LinkedIn',
-      budget: '₹85,000',
-      preferedMaterial: 'Borosilicate Glass',
-      briefing:
-        'Premium glass trophies for annual excellence awards ceremony. LED base lighting required.',
-      paymentTerms: 'Corporate Credit',
-    },
+
   ]
 
   // Filter products based on search term
@@ -256,8 +270,9 @@ const EnhancedProductCards = () => {
     // Get scrollbar width before hiding it
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
     setPersonModalProduct(product)
-    setSelectedPerson('')
-    setRemarks('')
+    // Pre-fill with existing values if available
+    setTempSelectedPerson(assignedPersons[product.id] || '')
+    setTempRemarks(productRemarks[product.id] || '')
     document.body.style.overflow = 'hidden'
     document.body.style.paddingRight = `${scrollbarWidth}px`
   }
@@ -265,8 +280,8 @@ const EnhancedProductCards = () => {
   // Function to close person assignment modal
   const closePersonModal = () => {
     setPersonModalProduct(null)
-    setSelectedPerson('')
-    setRemarks('')
+    setTempSelectedPerson('')
+    setTempRemarks('')
     document.body.style.overflow = 'unset'
     document.body.style.paddingRight = '0px'
   }
@@ -275,8 +290,6 @@ const EnhancedProductCards = () => {
   const openUploadModal = (product) => {
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
     setUploadModalProduct(product)
-    setStartTime('')
-    setEndTime('')
     setSelectedFile(null)
     document.body.style.overflow = 'hidden'
     document.body.style.paddingRight = `${scrollbarWidth}px`
@@ -285,8 +298,6 @@ const EnhancedProductCards = () => {
   // Function to close upload modal
   const closeUploadModal = () => {
     setUploadModalProduct(null)
-    setStartTime('')
-    setEndTime('')
     setSelectedFile(null)
     document.body.style.overflow = 'unset'
     document.body.style.paddingRight = '0px'
@@ -294,18 +305,32 @@ const EnhancedProductCards = () => {
 
   // Function to confirm person assignment
   const confirmPersonAssignment = () => {
-    if (selectedPerson && personModalProduct) {
+    if (tempSelectedPerson && personModalProduct) {
       setAssignedPersons((prev) => ({
         ...prev,
-        [personModalProduct.id]: selectedPerson,
+        [personModalProduct.id]: tempSelectedPerson,
+      }))
+      // Save remarks even if empty
+      setProductRemarks((prev) => ({
+        ...prev,
+        [personModalProduct.id]: tempRemarks,
       }))
       closePersonModal()
     }
   }
 
+  // Function to handle accept button click
+  const handleAcceptProduct = (productId) => {
+    setAcceptedProducts((prev) => {
+      const newAccepted = new Set(prev)
+      newAccepted.add(productId)
+      return newAccepted
+    })
+  }
+
   // Function to confirm upload
   const confirmUpload = () => {
-    if (selectedFile && startTime && endTime && uploadModalProduct) {
+    if (selectedFile && uploadModalProduct) {
       // Create a FileReader to convert the file to a data URL
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -316,8 +341,6 @@ const EnhancedProductCards = () => {
         }))
 
         console.log('Image uploaded successfully for product:', uploadModalProduct.id)
-        console.log('Start Time:', startTime)
-        console.log('End Time:', endTime)
 
         // You can also send this to your backend API here
         // uploadImageToServer(uploadModalProduct.id, selectedFile, startTime, endTime)
@@ -330,6 +353,8 @@ const EnhancedProductCards = () => {
 
   const handleWhatsAppShare = (product) => {
     const currentImage = productImages[product.id] || product.mainImage
+    const assignedPerson = assignedPersons[product.id]
+    const remarks = productRemarks[product.id]
 
     // Create comprehensive message with all details
     const message = `🏆 *${product.name}* (Job No: ${product.jobNo})
@@ -359,6 +384,9 @@ const EnhancedProductCards = () => {
     • Preferred Material: ${product.preferedMaterial}
     • Briefing: ${product.briefing}
 
+    ${assignedPerson ? `👨‍💼 *Assigned Person:* ${assignedPerson}` : ''}
+    ${remarks ? `📝 *Remarks:* ${remarks}` : ''}
+
     ${currentImage ? '📸 Product image is available for reference.' : ''}
 
     Best regards,
@@ -369,6 +397,9 @@ const EnhancedProductCards = () => {
   }
 
   const handleEmailShare = (product) => {
+    const assignedPerson = assignedPersons[product.id]
+    const remarks = productRemarks[product.id]
+
     const subject = `Complete Product Details - ${product.name} (Job No: ${product.jobNo})`
     const body = `Dear Client,
 
@@ -399,6 +430,15 @@ const EnhancedProductCards = () => {
     Enquiry Origin: ${product.enquiryOrigin}
     Preferred Material: ${product.preferedMaterial}
     Briefing: ${product.briefing}
+
+    ${
+      assignedPerson
+        ? `=== ASSIGNMENT DETAILS ===
+    Assigned Person: ${assignedPerson}`
+        : ''
+    }
+
+    ${remarks ? `Remarks: ${remarks}` : ''}
 
     ${productImages[product.id] || product.mainImage ? 'Product image is available for reference.' : 'Product image will be shared separately.'}
 
@@ -623,7 +663,6 @@ const EnhancedProductCards = () => {
       justifyContent: 'center',
       zIndex: 1000,
       padding: isMobile ? '0.5rem' : '1rem',
-      backdropFilter: 'blur(2px)',
     },
     modalHeader: {
       display: 'flex',
@@ -666,7 +705,7 @@ const EnhancedProductCards = () => {
       gap: isMobile ? '1rem' : '1.5rem',
       marginBottom: isMobile ? '1rem' : '1.5rem',
       alignItems: 'stretch',
-      height: isMobile ? 'auto' : '250px',
+      height: isMobile ? 'auto' : '320px',
     },
     modalImageSection: {
       flexShrink: 0,
@@ -681,7 +720,7 @@ const EnhancedProductCards = () => {
     },
     modalImage: {
       width: isMobile ? '100%' : '250px',
-      height: isMobile ? '180px' : '220px',
+      height: isMobile ? '180px' : '300px',
       objectFit: 'contain',
       borderRadius: '0.5rem',
       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
@@ -932,7 +971,7 @@ const EnhancedProductCards = () => {
                 <button
                   type="button"
                   style={{
-                    backgroundColor: '#4F46E5',
+                    backgroundColor: '#0061ed',
                     color: 'white',
                     padding: '0.75rem 1.5rem',
                     borderRadius: '0.5rem',
@@ -946,45 +985,55 @@ const EnhancedProductCards = () => {
                   BROWSE & UPLOAD
                 </button>
 
-                <p style={{
-                  color: '#6B7280',
-                  fontSize: '0.875rem',
-                  margin: '0.5rem 0',
-                  lineHeight: '1.4'
-                }}>
+                <p
+                  style={{
+                    color: '#6B7280',
+                    fontSize: '0.875rem',
+                    margin: '0.5rem 0',
+                    lineHeight: '1.4',
+                  }}
+                >
                   Click to browse files or drag and drop
                 </p>
 
-                <p style={{
-                  color: '#9CA3AF',
-                  fontSize: '0.75rem',
-                  margin: 0
-                }}>
+                <p
+                  style={{
+                    color: '#9CA3AF',
+                    fontSize: '0.75rem',
+                    margin: 0,
+                  }}
+                >
                   Maximum 1 image allowed • Supported formats: JPG, PNG, GIF
                 </p>
               </div>
 
               {/* Image Preview */}
               {previewUrl && (
-                <div style={{
-                  marginTop: '1rem',
-                  border: '1px solid #E5E7EB',
-                  borderRadius: '0.5rem',
-                  padding: '1rem',
-                  backgroundColor: 'white',
-                }}>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '0.75rem'
-                  }}>
-                    <h4 style={{
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      color: '#374151',
-                      margin: 0
-                    }}>
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    border: '1px solid #E5E7EB',
+                    borderRadius: '0.5rem',
+                    padding: '1rem',
+                    backgroundColor: 'white',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.75rem',
+                    }}
+                  >
+                    <h4
+                      style={{
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        color: '#374151',
+                        margin: 0,
+                      }}
+                    >
                       Image Preview
                     </h4>
                     <button
@@ -999,15 +1048,17 @@ const EnhancedProductCards = () => {
                         cursor: 'pointer',
                       }}
                     >
-                      Remove
+                      X
                     </button>
                   </div>
 
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1rem'
-                  }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                    }}
+                  >
                     <img
                       src={previewUrl}
                       alt="Preview"
@@ -1016,87 +1067,33 @@ const EnhancedProductCards = () => {
                         height: '80px',
                         objectFit: 'cover',
                         borderRadius: '0.375rem',
-                        border: '1px solid #E5E7EB'
+                        border: '1px solid #E5E7EB',
                       }}
                     />
                     <div>
-                      <p style={{
-                        fontSize: '0.875rem',
-                        fontWeight: '500',
-                        color: '#111827',
-                        margin: '0 0 0.25rem 0'
-                      }}>
+                      <p
+                        style={{
+                          fontSize: '0.875rem',
+                          fontWeight: '500',
+                          color: '#111827',
+                          margin: '0 0 0.25rem 0',
+                        }}
+                      >
                         {selectedFile?.name}
                       </p>
-                      <p style={{
-                        fontSize: '0.75rem',
-                        color: '#6B7280',
-                        margin: 0
-                      }}>
+                      <p
+                        style={{
+                          fontSize: '0.75rem',
+                          color: '#6B7280',
+                          margin: 0,
+                        }}
+                      >
                         {selectedFile ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB` : ''}
                       </p>
                     </div>
                   </div>
                 </div>
               )}
-            </div>
-
-            {/* Start Time */}
-            <div style={{ marginBottom: '1rem' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '0.5rem',
-                  color: '#374151',
-                  fontWeight: '500',
-                }}
-              >
-                Start Time:
-              </label>
-              <input
-                type="time"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #D1D5DB',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem',
-                  backgroundColor: 'white',
-                  color: '#111827',
-                  outline: 'none',
-                }}
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-              />
-            </div>
-
-            {/* End Time */}
-            <div style={{ marginBottom: '1rem' }}>
-              <label
-                style={{
-                  display: 'block',
-                  marginBottom: '0.5rem',
-                  color: '#374151',
-                  fontWeight: '500',
-                }}
-              >
-                End Time:
-              </label>
-              <input
-                type="time"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #D1D5DB',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem',
-                  backgroundColor: 'white',
-                  color: '#111827',
-                  outline: 'none',
-                }}
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
-              />
             </div>
           </div>
 
@@ -1119,19 +1116,18 @@ const EnhancedProductCards = () => {
             </button>
             <button
               onClick={confirmUpload}
-              disabled={!selectedFile || !startTime || !endTime}
               style={{
                 padding: '0.75rem 1.5rem',
-                backgroundColor: (selectedFile && startTime && endTime) ? '#0061ed' : '#9CA3AF',
+                backgroundColor: selectedFile ? '#24a524' : 'rgb(100 176 100)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '0.5rem',
-                cursor: (selectedFile && startTime && endTime) ? 'pointer' : 'not-allowed',
+                cursor: selectedFile ? 'pointer' : 'not-allowed',
                 fontSize: '0.875rem',
                 fontWeight: '500',
               }}
             >
-              Confirm Upload
+              Submit for Admin Approval
             </button>
           </div>
         </div>
@@ -1179,7 +1175,7 @@ const EnhancedProductCards = () => {
                   fontWeight: '500',
                 }}
               >
-                Select Person:
+                Select Person
               </CFormLabel>
               <CFormSelect
                 id="status"
@@ -1194,8 +1190,8 @@ const EnhancedProductCards = () => {
                   outline: 'none',
                   cursor: 'pointer',
                 }}
-                value={selectedPerson}
-                onChange={(e) => setSelectedPerson(e.target.value)}
+                value={tempSelectedPerson}
+                onChange={(e) => setTempSelectedPerson(e.target.value)}
               >
                 <option value="">Choose a person</option>
                 {availablePersons.map((person) => (
@@ -1222,19 +1218,19 @@ const EnhancedProductCards = () => {
                 className="form-control"
                 id="remarks"
                 rows="3"
-                value={remarks}
-                onChange={(e) => setRemarks(e.target.value)}
-                placeholder="Enter any additional remarks..."
+                value={tempRemarks}
+                onChange={(e) => setTempRemarks(e.target.value)}
+                placeholder="Enter remarks..."
                 style={{
                   width: '100%',
                   padding: '0.75rem',
                   border: '1px solid #D1D5DB',
                   borderRadius: '0.5rem',
-                  fontSize: '0.875rem',
                   backgroundColor: 'white',
                   color: '#111827',
                   outline: 'none',
                   resize: 'vertical',
+                  fontFamily: 'inherit',
                 }}
               />
             </CCol>
@@ -1258,14 +1254,13 @@ const EnhancedProductCards = () => {
             </button>
             <button
               onClick={confirmPersonAssignment}
-              disabled={!selectedPerson}
               style={{
                 padding: '0.75rem 1.5rem',
-                backgroundColor: selectedPerson ? '#0061ed' : '#9CA3AF',
+                backgroundColor: tempSelectedPerson ? '#0061ed' : 'rgb(107 156 226)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '0.5rem',
-                cursor: selectedPerson ? 'pointer' : 'not-allowed',
+                cursor: tempSelectedPerson ? 'pointer' : 'not-allowed',
                 fontSize: '0.875rem',
                 fontWeight: '500',
               }}
@@ -1284,6 +1279,8 @@ const EnhancedProductCards = () => {
 
     const currentImage = productImages[product.id] || product.mainImage
     const hasImage = currentImage !== null && currentImage !== undefined
+    const assignedPerson = assignedPersons[product.id]
+    const remarks = productRemarks[product.id]
 
     return (
       <div style={styles.modalOverlay} onClick={onClose}>
@@ -1344,11 +1341,48 @@ const EnhancedProductCards = () => {
                       {product.status}
                     </span>
                   </div>
+                  {assignedPerson ? (
+                    <div style={styles.modalDetailItem}>
+                      <span style={styles.modalLabel}>Assigned To:</span>
+                      <span style={styles.modalValue}>{assignedPerson}</span>
+                    </div>
+                  ) : ['14888', '14889', '14890', '14892'].includes(product.jobNo) ? (
+                    <div style={styles.modalDetailItem}>
+                      <span style={styles.modalLabel}>Assigned To:</span>
+                      <span style={styles.modalValue}>Ronald</span>
+                    </div>
+                  ) : null}
+                  {assignedPerson ? (
+                    <>
+                      <div style={styles.modalDetailItem}>
+                        <span style={styles.modalLabel}>Start Time:</span>
+                        <span style={styles.modalValue}>{product.startTime}</span>
+                      </div>
+                      <div style={styles.modalDetailItem}>
+                        <span style={styles.modalLabel}>End Time:</span>
+                        <span style={styles.modalValue}>{product.endTime}</span>
+                      </div>
+                    </>
+                  ) : ['14888', '14889', '14890', '14892'].includes(product.jobNo) ? (
+                    <>
+                    <div style={styles.modalDetailItem}>
+                        <span style={styles.modalLabel}>Start Time:</span>
+                        <span style={styles.modalValue}>{product.startTime}</span>
+                      </div>
+                      <div style={styles.modalDetailItem}>
+                        <span style={styles.modalLabel}>End Time:</span>
+                        <span style={styles.modalValue}>{product.endTime}</span>
+                      </div>
+
+                    </>
+                  ) : null}
+                  {/* Assignment Information */}
+
                 </div>
               </div>
             </div>
 
-            {/* Bottom Grid: Two Columns */}
+            {/* Bottom Grid: Three Columns */}
             <div style={styles.modalBottomGrid}>
               {/* Left Column */}
               <div style={styles.modalColumn}>
@@ -1422,11 +1456,28 @@ const EnhancedProductCards = () => {
                     <span style={styles.modalValue}>{product.deliveryMode}</span>
                   </div>
                 </div>
+
+                {/* Remarks Section */}
+                {remarks ? (
+                  <div style={styles.modalSection}>
+                    <h3 style={styles.modalSectionTitle}>Remarks</h3>
+                    <div style={styles.modalDetailItem}>
+                      <span style={styles.modalValue}>{remarks}</span>
+                    </div>
+                  </div>
+                ) : ['14888', '14889', '14890', '14892'].includes(product.jobNo) ? (
+                  <div style={styles.modalSection}>
+                    <h3 style={styles.modalSectionTitle}>Remarks</h3>
+                    <div style={styles.modalDetailItem}>
+                      <span style={styles.modalValue}>Special Job</span>
+                    </div>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
           {/* Modal Footer with Action Buttons */}
-          <div style={styles.modalFooter}>
+          {/* <div style={styles.modalFooter}>
             {hasImage && (
               <>
                 <button
@@ -1444,7 +1495,7 @@ const EnhancedProductCards = () => {
                 </button>
               </>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     )
@@ -1455,6 +1506,7 @@ const EnhancedProductCards = () => {
     // Check if product has image (either original or uploaded)
     const currentImage = productImages[product.id] || product.mainImage
     const hasImage = currentImage !== null && currentImage !== undefined
+    const isAccepted = acceptedProducts.has(product.id)
 
     return (
       <div style={styles.card}>
@@ -1517,21 +1569,8 @@ const EnhancedProductCards = () => {
                 </svg>
               </div>
 
-              {/* Person Icon - show only when no image exists and no person assigned */}
-              {!product.mainImage && !productImages[product.id] && !assignedPersons[product.id] && (
-                <div
-                  style={styles.actionIcon}
-                  title="Assign Person"
-                  onClick={() => openPersonModal(product)}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                  </svg>
-                </div>
-              )}
-
-              {/* Upload Icon - show only for products without original image AND no uploaded image AND person is assigned */}
-              {!product.mainImage && !productImages[product.id] && assignedPersons[product.id] && (
+              {/* Upload Icon - show only when product is accepted and has no image */}
+              {isAccepted && !product.mainImage && !productImages[product.id] && (
                 <div
                   style={styles.actionIcon}
                   title="Upload Image"
@@ -1554,30 +1593,41 @@ const EnhancedProductCards = () => {
                 </div>
               )}
 
-              {/* WhatsApp Icon - only show when image exists */}
-              {hasImage && (
-                <div
-                  style={styles.actionIcon}
-                  onClick={() => handleWhatsAppShare(product)}
-                  title="Share on WhatsApp"
+              {/* Accept Button - show only when product is not accepted and has no image */}
+              {!isAccepted && !product.mainImage && !productImages[product.id] && (
+                <button
+                  style={{
+                    width: 'auto',
+                    background: 'orange',
+                    padding: '4px 10px',
+                    fontSize: '14px',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#fff',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => handleAcceptProduct(product.id)}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.465 3.516" />
-                  </svg>
-                </div>
+                  Accept
+                </button>
               )}
 
-              {/* Email Icon - only show when image exists */}
-              {hasImage && (
-                <div
-                  style={styles.actionIcon}
-                  onClick={() => handleEmailShare(product)}
-                  title="Share via Email"
+              {/* Processing Button - show only when product is accepted and has no image */}
+              {isAccepted && !product.mainImage && !productImages[product.id] && (
+                <button
+                  style={{
+                    width: 'auto',
+                    background: 'green',
+                    padding: '4px 10px',
+                    fontSize: '14px',
+                    border: 'none',
+                    borderRadius: '4px',
+                    color: '#fff',
+                    cursor: 'pointer',
+                  }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" />
-                  </svg>
-                </div>
+                  Processing...
+                </button>
               )}
             </div>
           </div>
@@ -1622,14 +1672,14 @@ const EnhancedProductCards = () => {
             onFocus={(e) => (e.target.style.borderColor = '#F97316')}
             onBlur={(e) => (e.target.style.borderColor = '#374151')}
           />
-          <button
+          {/* <button
             style={styles.addButton}
             onMouseEnter={(e) => (e.target.style.backgroundColor = '#0052cc')}
             onMouseLeave={(e) => (e.target.style.backgroundColor = '#0061ed')}
             onClick={() => navigate('/enquiry/add')}
           >
             Add
-          </button>
+          </button> */}
         </div>
 
         {/* Product Cards Grid */}

@@ -1412,3 +1412,18 @@ input[type="radio"]:focus {
 
 
 
+
+.tick-icon-button {
+  background-color: rgb(61, 152, 61); /* WhatsApp green */
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tick-icon {
+  color: #ffffff; /* white tick */
+}

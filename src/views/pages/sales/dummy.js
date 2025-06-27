@@ -29,6 +29,11 @@ const EnhancedProductCards = () => {
   const [assignedPersons, setAssignedPersons] = useState({}) // New state to store assigned persons
   const [personModalProduct, setPersonModalProduct] = useState(null) // New state for person modal
   const [selectedPerson, setSelectedPerson] = useState('') // New state for selected person
+  const [remarks, setRemarks] = useState('') // New state for remarks
+  const [uploadModalProduct, setUploadModalProduct] = useState(null) // New state for upload modal
+  const [startTime, setStartTime] = useState('') // New state for start time
+  const [endTime, setEndTime] = useState('') // New state for end time
+  const [selectedFile, setSelectedFile] = useState(null) // New state for selected file
   const navigate = useNavigate()
 
   // Available persons list
@@ -213,69 +218,63 @@ const EnhancedProductCards = () => {
   }
 
   const openModal = (product) => {
+    // Get scrollbar width before hiding it
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
     setModalProduct(product)
-    document.body.style.overflow = 'hidden' // Prevent background scrolling
+    document.body.style.overflow = 'hidden'
+    document.body.style.paddingRight = `${scrollbarWidth}px`
   }
 
   const closeModal = () => {
     setModalProduct(null)
-    document.body.style.overflow = 'unset' // Restore scrolling
+    document.body.style.overflow = 'unset'
+    document.body.style.paddingRight = '0px'
   }
 
   const handleImageUpload = (productId, event) => {
-    const file = event.target.files[0]
-    if (file) {
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Please select a valid image file.')
-        return
-      }
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert('File size should be less than 5MB.')
-        return
-      }
-
-      // Create a FileReader to convert the file to a data URL
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        // Update the productImages state with the new image
-        setProductImages((prev) => ({
-          ...prev,
-          [productId]: e.target.result,
-        }))
-
-        console.log('Image uploaded successfully for product:', productId)
-        // You can also send this to your backend API here
-        // uploadImageToServer(productId, file)
-      }
-      reader.readAsDataURL(file)
-    }
+    // This function is no longer used, replaced by handleFileSelection in UploadModal
   }
 
-  // Function to trigger file input click
-  const triggerFileInput = (productId) => {
-    const fileInput = document.getElementById(`file-input-${productId}`)
-    if (fileInput) {
-      fileInput.click()
-    }
+  // Function to open upload modal
+  const openUploadModal = (product) => {
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+    setUploadModalProduct(product)
+    setStartTime('')
+    setEndTime('')
+    setSelectedFile(null)
+    document.body.style.overflow = 'hidden'
+    document.body.style.paddingRight = `${scrollbarWidth}px`
+  }
+
+  // Function to close upload modal
+  const closeUploadModal = () => {
+    setUploadModalProduct(null)
+    setStartTime('')
+    setEndTime('')
+    setSelectedFile(null)
+    document.body.style.overflow = 'unset'
+    document.body.style.paddingRight = '0px'
   }
 
   // Function to open person assignment modal
   const openPersonModal = (product) => {
+    // Get scrollbar width before hiding it
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
     setPersonModalProduct(product)
     setSelectedPerson('')
+    setRemarks('')
     document.body.style.overflow = 'hidden'
+    document.body.style.paddingRight = `${scrollbarWidth}px`
   }
 
   // Function to close person assignment modal
   const closePersonModal = () => {
     setPersonModalProduct(null)
     setSelectedPerson('')
+    setRemarks('')
     document.body.style.overflow = 'unset'
+    document.body.style.paddingRight = '0px'
   }
-
   // Function to confirm person assignment
   const confirmPersonAssignment = () => {
     if (selectedPerson && personModalProduct) {
@@ -284,6 +283,31 @@ const EnhancedProductCards = () => {
         [personModalProduct.id]: selectedPerson,
       }))
       closePersonModal()
+    }
+  }
+
+  // Function to confirm upload
+  const confirmUpload = () => {
+    if (selectedFile && startTime && endTime && uploadModalProduct) {
+      // Create a FileReader to convert the file to a data URL
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        // Update the productImages state with the new image
+        setProductImages((prev) => ({
+          ...prev,
+          [uploadModalProduct.id]: e.target.result,
+        }))
+
+        console.log('Image uploaded successfully for product:', uploadModalProduct.id)
+        console.log('Start Time:', startTime)
+        console.log('End Time:', endTime)
+
+        // You can also send this to your backend API here
+        // uploadImageToServer(uploadModalProduct.id, selectedFile, startTime, endTime)
+
+        closeUploadModal()
+      }
+      reader.readAsDataURL(selectedFile)
     }
   }
 
@@ -370,7 +394,933 @@ const EnhancedProductCards = () => {
     window.location.href = mailtoUrl
   }
 
-  // Person Assignment Modal Component
+  // Get screen size for responsive design
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+
+  React.useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Responsive breakpoints
+  const isMobile = windowWidth <= 480
+  const isTablet = windowWidth <= 768
+  const isSmallDesktop = windowWidth <= 1024
+
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      padding: isMobile ? '0.5rem' : isTablet ? '0.75rem' : '1rem',
+    },
+    innerContainer: {
+      maxWidth: '1400px',
+      margin: '0 auto',
+    },
+    header: {
+      marginBottom: isMobile ? '1rem' : '2rem',
+      textAlign: 'center',
+    },
+    header1: {
+      marginBottom: '2px',
+    },
+    title: {
+      fontSize: isMobile ? '1.75rem' : isTablet ? '2rem' : '2.5rem',
+      fontWeight: 'bold',
+      color: 'black',
+      marginBottom: '0.5rem',
+    },
+    searchContainer: {
+      marginBottom: isMobile ? '1rem' : '2rem',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: isMobile ? '0.5rem' : '1rem',
+      flexWrap: 'wrap',
+      flexDirection: isMobile ? 'column' : 'row',
+    },
+    addButton: {
+      backgroundColor: '#0061ed',
+      color: 'white',
+      padding: isMobile ? '0.75rem 1.5rem' : '0.875rem 2rem',
+      fontSize: isMobile ? '0.875rem' : '1rem',
+      fontWeight: '600',
+      border: 'none',
+      borderRadius: '0.5rem',
+      cursor: 'pointer',
+      transition: 'background-color 0.3s ease',
+      whiteSpace: 'nowrap',
+      flexShrink: 0,
+      width: isMobile ? '100%' : 'auto',
+    },
+    searchInput: {
+      width: '100%',
+      maxWidth: isMobile ? '100%' : '600px',
+      padding: isMobile ? '0.75rem 1rem' : '0.875rem 1.25rem',
+      fontSize: isMobile ? '0.875rem' : '1rem',
+      border: '2px solid #374151',
+      borderRadius: '0.5rem',
+      backgroundColor: 'white',
+      outline: 'none',
+      transition: 'border-color 0.3s ease',
+    },
+    grid: {
+      display: 'grid',
+      gridTemplateColumns: isMobile
+        ? '1fr'
+        : isTablet
+          ? 'repeat(auto-fit, minmax(350px, 1fr))'
+          : 'repeat(auto-fit, minmax(450px, 1fr))',
+      gap: isMobile ? '1rem' : '1.5rem',
+      justifyContent: 'center',
+    },
+    card: {
+      backgroundColor: 'white',
+      color: 'white',
+      borderRadius: '0.5rem',
+      overflow: 'hidden',
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      display: 'flex',
+      flexDirection: isMobile || isTablet ? 'column' : 'row',
+      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+      height: 'fit-content',
+    },
+    imageContainer: {
+      width: isMobile || isTablet ? '100%' : '180px',
+      height: isMobile || isTablet ? '200px' : 'initial',
+      backgroundColor: '#E5E7EB',
+      position: 'relative',
+      flexShrink: 0,
+      overflow: 'hidden',
+      alignSelf: 'stretch',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    image: {
+      width: '100%',
+      height: isMobile || isTablet ? '200px' : 'auto',
+      flex: isMobile || isTablet ? 'none' : 1,
+      objectFit: isMobile || isTablet ? 'contain' : 'fill',
+    },
+    actionIconsContainer: {
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      marginTop: '0.5rem',
+      gap: '0.5rem',
+      flexWrap: 'wrap',
+    },
+    actionIcon: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: isMobile ? '2.5rem' : '1.9rem',
+      height: isMobile ? '2rem' : '1.5rem',
+      borderRadius: '0.25rem',
+      backgroundColor: 'transparent',
+      border: '1px solid #0061ed',
+      color: '#0061ed',
+      cursor: 'pointer',
+      transition: 'all 0.2s ease',
+      flexShrink: 0,
+    },
+    hiddenInput: {
+      display: 'none',
+    },
+    content: {
+      padding: isMobile ? '1rem' : '0.7rem',
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      height: '100%',
+    },
+    productName: {
+      fontSize: isMobile ? '1.125rem' : '1.375rem',
+      fontWeight: 'bold',
+      color: 'black',
+      marginBottom: '0.25rem',
+    },
+    jobNo: {
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      fontWeight: 'bold',
+      color: 'rgb(0, 97, 237)',
+      marginBottom: '0.4rem',
+    },
+    detailsContainer: {
+      marginBottom: '1rem',
+    },
+    detailRow: {
+      marginBottom: '0.625rem',
+      fontSize: isMobile ? '0.75rem' : '0.8rem',
+      lineHeight: '1.4',
+    },
+    label: {
+      color: '#0061ed',
+      fontWeight: 'bold',
+    },
+    value: {
+      color: 'black',
+    },
+    link: {
+      color: 'blue',
+      textDecoration: 'underline',
+    },
+    badge: {
+      padding: '0.25rem 0.5rem',
+      borderRadius: '0.25rem',
+      fontSize: isMobile ? '0.625rem' : '0.75rem',
+      fontWeight: '600',
+      display: 'inline-block',
+    },
+    noResults: {
+      gridColumn: '1 / -1',
+      textAlign: 'center',
+      color: '#9CA3AF',
+      fontSize: '1.125rem',
+      padding: '3rem 1rem',
+      borderRadius: '0.5rem',
+    },
+    button: {
+      width: '100%',
+      backgroundColor: '#0061ed',
+      color: 'white',
+      padding: '0.625rem 1rem',
+      borderRadius: '0.5rem',
+      fontWeight: '500',
+      fontSize: '0.875rem',
+      border: 'none',
+      cursor: 'pointer',
+      transition: 'background-color 0.3s ease',
+    },
+    // Modal Styles
+    modalOverlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: isMobile ? '0.5rem' : '1rem',
+      backdropFilter: 'blur(2px)',
+    },
+    modalHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: isMobile ? '1rem' : '1.5rem',
+      borderBottom: '1px solid #E5E7EB',
+      backgroundColor: '#F9FAFB',
+    },
+    modalTitle: {
+      fontSize: isMobile ? '1.25rem' : '1.5rem',
+      fontWeight: 'bold',
+      color: '#111827',
+      margin: 0,
+    },
+    closeButton: {
+      background: 'none',
+      border: 'none',
+      color: '#6B7280',
+      cursor: 'pointer',
+      padding: '0.5rem',
+      borderRadius: '0.25rem',
+      transition: 'all 0.2s ease',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: isMobile ? '1.75rem' : '1.5rem',
+      fontWeight: 'bold',
+      width: '2rem',
+      height: '2rem',
+    },
+    modalBody: {
+      padding: isMobile ? '1rem' : '1.5rem',
+      overflow: 'auto',
+      flex: 1,
+    },
+    modalTopRow: {
+      display: 'flex',
+      flexDirection: isMobile ? 'column' : 'row',
+      gap: isMobile ? '1rem' : '1.5rem',
+      marginBottom: isMobile ? '1rem' : '1.5rem',
+      alignItems: 'stretch',
+      height: isMobile ? 'auto' : '250px',
+    },
+    modalImageSection: {
+      flexShrink: 0,
+      width: isMobile ? '100%' : '280px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#F9FAFB',
+      borderRadius: '0.5rem',
+      border: '1px solid #E5E7EB',
+      padding: '0.75rem',
+    },
+    modalImage: {
+      width: isMobile ? '100%' : '250px',
+      height: isMobile ? '180px' : '220px',
+      objectFit: 'contain',
+      borderRadius: '0.5rem',
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+    },
+    modalTopRightSection: {
+      flex: 1,
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+    },
+    modalBottomGrid: {
+      display: 'grid',
+      gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+      gap: isMobile ? '1rem' : '1.5rem',
+    },
+    modalColumn: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: isMobile ? '1rem' : '1.5rem',
+    },
+    modalDetailsGrid: {
+      display: 'grid',
+      gridTemplateColumns: isMobile
+        ? '1fr'
+        : isTablet
+          ? '1fr'
+          : 'repeat(auto-fit, minmax(280px, 1fr))',
+      gap: isMobile ? '1rem' : '1.5rem',
+    },
+    modalSection: {
+      backgroundColor: '#F9FAFB',
+      padding: isMobile ? '0.75rem' : '1rem',
+      borderRadius: '0.5rem',
+      border: '1px solid #E5E7EB',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    modalSectionTitle: {
+      fontSize: isMobile ? '0.875rem' : '1rem',
+      fontWeight: 'bold',
+      color: '#0061ed',
+      marginBottom: '0.75rem',
+      margin: '0 0 0.75rem 0',
+    },
+    modalDetailItem: {
+      marginBottom: '0.75rem',
+      display: 'flex',
+      flexDirection: 'row',
+      gap: '0.5rem',
+      alignItems: 'flex-start',
+    },
+    modalLabel: {
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      fontWeight: '600',
+      color: '#374151',
+      minWidth: isMobile ? '80px' : '100px',
+      flexShrink: 0,
+    },
+    modalValue: {
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      color: '#111827',
+      lineHeight: '1.4',
+      flex: 1,
+    },
+    modalLink: {
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      color: '#0061ed',
+      textDecoration: 'underline',
+      cursor: 'pointer',
+      flex: 1,
+    },
+    modalBadge: {
+      padding: '0.25rem 0.75rem',
+      borderRadius: '0.375rem',
+      fontSize: isMobile ? '0.625rem' : '0.75rem',
+      fontWeight: '600',
+      display: 'inline-block',
+    },
+    modalFooter: {
+      padding: isMobile ? '1rem' : '1rem 1.5rem',
+      borderTop: '1px solid #E5E7EB',
+      backgroundColor: '#F9FAFB',
+      display: 'flex',
+      gap: isMobile ? '0.5rem' : '1rem',
+      justifyContent: 'flex-end',
+      flexDirection: isMobile ? 'column' : 'row',
+    },
+    modalActionButton: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '0.5rem',
+      padding: isMobile ? '0.875rem 1rem' : '0.75rem 1.5rem',
+      backgroundColor: '#0061ed',
+      color: 'white',
+      border: 'none',
+      borderRadius: '0.5rem',
+      cursor: 'pointer',
+      fontSize: isMobile ? '0.75rem' : '0.875rem',
+      fontWeight: '500',
+      transition: 'background-color 0.2s ease',
+      width: isMobile ? '100%' : 'auto',
+    },
+  }
+
+  // When only one search result, center it and limit width
+  if (filteredProducts.length === 1 && !isMobile) {
+    styles.grid.gridTemplateColumns = '1fr'
+    styles.grid.maxWidth = '600px'
+    styles.grid.margin = '0 auto'
+  }
+
+  // Upload Modal Component
+  const UploadModal = ({ product, onClose }) => {
+    if (!product) return null
+
+    const [dragActive, setDragActive] = useState(false)
+    const [previewUrl, setPreviewUrl] = useState(null)
+    const [uploadedImages, setUploadedImages] = useState([])
+
+    // Check if there's already an uploaded image for this product
+    React.useEffect(() => {
+      if (productImages[product.id]) {
+        setUploadedImages([
+          {
+            id: 1,
+            url: productImages[product.id],
+            name: 'Product Image',
+            size: 'Uploaded',
+          },
+        ])
+      } else {
+        setUploadedImages([])
+      }
+    }, [productImages, product.id])
+
+    const handleDrag = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.type === 'dragenter' || e.type === 'dragover') {
+        setDragActive(true)
+      } else if (e.type === 'dragleave') {
+        setDragActive(false)
+      }
+    }
+
+    const handleDrop = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setDragActive(false)
+
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        const file = e.dataTransfer.files[0]
+        handleFileSelection(file)
+      }
+    }
+
+    const handleFileSelection = (file) => {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select a valid image file.')
+        return
+      }
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size should be less than 5MB.')
+        return
+      }
+
+      setSelectedFile(file)
+
+      // Create preview URL
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setPreviewUrl(e.target.result)
+      }
+      reader.readAsDataURL(file)
+    }
+
+    const handleFileInputChange = (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleFileSelection(e.target.files[0])
+      }
+    }
+
+    const removeFile = () => {
+      setSelectedFile(null)
+      setPreviewUrl(null)
+    }
+
+    const removeUploadedImage = (imageId) => {
+      // Remove from uploaded images list
+      setUploadedImages([])
+
+      // Also remove from productImages state
+      setProductImages((prev) => {
+        const newState = { ...prev }
+        delete newState[product.id]
+        return newState
+      })
+    }
+
+    const handleConfirmUpload = () => {
+      if (selectedFile && startTime && endTime && product) {
+        // Create a FileReader to convert the file to a data URL
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          const imageUrl = e.target.result
+
+          // Update the productImages state with the new image
+          setProductImages((prev) => ({
+            ...prev,
+            [product.id]: imageUrl,
+          }))
+
+          // Add to uploaded images list in modal
+          const newImage = {
+            id: 1,
+            url: imageUrl,
+            name: selectedFile.name,
+            size: (selectedFile.size / 1024 / 1024).toFixed(2) + ' MB',
+          }
+          setUploadedImages([newImage])
+
+          console.log('Image uploaded successfully for product:', product.id)
+          console.log('Start Time:', startTime)
+          console.log('End Time:', endTime)
+
+          // Clear the selected file and preview
+          setSelectedFile(null)
+          setPreviewUrl(null)
+
+          // Reset time fields
+          setStartTime('')
+          setEndTime('')
+
+          // You can also send this to your backend API here
+          // uploadImageToServer(product.id, selectedFile, startTime, endTime)
+        }
+        reader.readAsDataURL(selectedFile)
+      }
+    }
+
+    return (
+      <div style={styles.modalOverlay} onClick={onClose}>
+        <div
+          style={{
+            backgroundColor: 'white',
+            borderRadius: '0.75rem',
+            width: '100%',
+            maxWidth: '600px',
+            padding: '1.5rem',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            margin: 'auto',
+            maxHeight: '90vh',
+            overflow: 'auto',
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <h3
+            style={{
+              marginBottom: '1.5rem',
+              color: '#111827',
+              fontSize: '1.25rem',
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}
+          >
+            Image Upload
+          </h3>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            {/* File Upload Section */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div
+                style={{
+                  border: `2px dashed ${dragActive ? '#4F46E5' : '#D1D5DB'}`,
+                  borderRadius: '0.5rem',
+                  padding: '2rem',
+                  textAlign: 'center',
+                  backgroundColor: dragActive ? '#F3F4F6' : '#F9FAFB',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  position: 'relative',
+                }}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('fileInput').click()}
+              >
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileInputChange}
+                  style={{ display: 'none' }}
+                />
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#6B7280"
+                    strokeWidth="1.5"
+                    style={{ margin: '0 auto', display: 'block' }}
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7,10 12,15 17,10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                </div>
+
+                <button
+                  type="button"
+                  style={{
+                    backgroundColor: '#4F46E5',
+                    color: 'white',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '0.5rem',
+                    border: 'none',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    marginBottom: '1rem',
+                  }}
+                >
+                  BROWSE & UPLOAD
+                </button>
+
+                <p
+                  style={{
+                    color: '#6B7280',
+                    fontSize: '0.875rem',
+                    margin: '0.5rem 0',
+                    lineHeight: '1.4',
+                  }}
+                >
+                  Click to browse files or drag and drop
+                </p>
+
+                <p
+                  style={{
+                    color: '#9CA3AF',
+                    fontSize: '0.75rem',
+                    margin: 0,
+                  }}
+                >
+                  Maximum 1 image allowed • Supported formats: JPG, PNG, GIF
+                </p>
+              </div>
+
+              {/* Image Preview for Selected File */}
+              {previewUrl && (
+                <div
+                  style={{
+                    marginTop: '1rem',
+                    border: '1px solid #E5E7EB',
+                    borderRadius: '0.5rem',
+                    padding: '1rem',
+                    backgroundColor: 'white',
+                  }}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: '0.75rem',
+                    }}
+                  >
+                    <h4
+                      style={{
+                        fontSize: '0.875rem',
+                        fontWeight: '600',
+                        color: '#374151',
+                        margin: 0,
+                      }}
+                    >
+                      Selected Image Preview
+                    </h4>
+                    <button
+                      onClick={removeFile}
+                      style={{
+                        backgroundColor: '#EF4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '0.25rem',
+                        padding: '0.25rem 0.5rem',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '1rem',
+                    }}
+                  >
+                    <img
+                      src={previewUrl}
+                      alt="Preview"
+                      style={{
+                        width: '80px',
+                        height: '80px',
+                        objectFit: 'cover',
+                        borderRadius: '0.375rem',
+                        border: '1px solid #E5E7EB',
+                      }}
+                    />
+                    <div>
+                      <p
+                        style={{
+                          fontSize: '0.875rem',
+                          fontWeight: '500',
+                          color: '#111827',
+                          margin: '0 0 0.25rem 0',
+                        }}
+                      >
+                        {selectedFile?.name}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: '0.75rem',
+                          color: '#6B7280',
+                          margin: 0,
+                        }}
+                      >
+                        {selectedFile ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB` : ''}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Uploaded Images Section */}
+              {uploadedImages.length > 0 && (
+                <div style={{ marginTop: '1.5rem' }}>
+                  <h4
+                    style={{
+                      fontSize: '1rem',
+                      fontWeight: '600',
+                      color: '#111827',
+                      marginBottom: '1rem',
+                    }}
+                  >
+                    Uploaded Images ({uploadedImages.length})
+                  </h4>
+
+                  {uploadedImages.map((image) => (
+                    <div
+                      key={image.id}
+                      style={{
+                        border: '1px solid #E5E7EB',
+                        borderRadius: '0.5rem',
+                        padding: '1rem',
+                        backgroundColor: 'white',
+                        position: 'relative',
+                        marginBottom: '0.5rem',
+                      }}
+                    >
+                      <button
+                        onClick={() => removeUploadedImage(image.id)}
+                        style={{
+                          position: 'absolute',
+                          top: '0.5rem',
+                          right: '0.5rem',
+                          width: '24px',
+                          height: '24px',
+                          borderRadius: '50%',
+                          backgroundColor: '#EF4444',
+                          color: 'white',
+                          border: 'none',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '14px',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        ×
+                      </button>
+
+                      <div
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '1rem',
+                        }}
+                      >
+                        <img
+                          src={image.url}
+                          alt="Uploaded"
+                          style={{
+                            width: '120px',
+                            height: '120px',
+                            objectFit: 'cover',
+                            borderRadius: '0.375rem',
+                            border: '1px solid #E5E7EB',
+                          }}
+                        />
+                        <div>
+                          <p
+                            style={{
+                              fontSize: '0.875rem',
+                              fontWeight: '500',
+                              color: '#111827',
+                              margin: '0 0 0.25rem 0',
+                            }}
+                          >
+                            {image.name}
+                          </p>
+                          <p
+                            style={{
+                              fontSize: '0.75rem',
+                              color: '#6B7280',
+                              margin: 0,
+                            }}
+                          >
+                            {image.size}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Start Time */}
+            <div style={{ marginBottom: '1rem' }}>
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontWeight: '500',
+                }}
+              >
+                Start Time:
+              </label>
+              <input
+                type="time"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  backgroundColor: 'white',
+                  color: '#111827',
+                  outline: 'none',
+                }}
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+              />
+            </div>
+
+            {/* End Time */}
+            <div style={{ marginBottom: '1rem' }}>
+              <label
+                style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontWeight: '500',
+                }}
+              >
+                End Time:
+              </label>
+              <input
+                type="time"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  backgroundColor: 'white',
+                  color: '#111827',
+                  outline: 'none',
+                }}
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+              />
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+            <button
+              onClick={onClose}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: '#6B7280',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+              }}
+            >
+              Cancel
+            </button>
+            {/* <button
+              onClick={handleConfirmUpload}
+              disabled={!selectedFile || !startTime || !endTime}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: selectedFile && startTime && endTime ? '#0061ed' : '#9CA3AF',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                cursor: selectedFile && startTime && endTime ? 'pointer' : 'not-allowed',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+              }}
+            >
+              Upload Image
+            </button> */}
+            <button
+              onClick={() => {
+                onClose()
+                handleConfirmUpload()
+              }}
+              disabled={!selectedFile || !startTime || !endTime}
+              style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: '#10B981',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+              }}
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const PersonModal = ({ product, onClose }) => {
     if (!product) return null
 
@@ -435,11 +1385,40 @@ const EnhancedProductCards = () => {
                     {person}
                   </option>
                 ))}
-                {/* <option>...</option> */}
               </CFormSelect>
-              {/* <CFormFeedback tooltip invalid>
-                      Please provide a valid city.
-                    </CFormFeedback> */}
+            </CCol>
+            <CCol className="position-relative mb-2">
+              <CFormLabel
+                htmlFor="remarks"
+                className="clr-black fw-medium"
+                style={{
+                  display: 'block',
+                  marginBottom: '0.5rem',
+                  color: '#374151',
+                  fontWeight: '500',
+                }}
+              >
+                Remarks
+              </CFormLabel>
+              <textarea
+                className="form-control"
+                id="remarks"
+                rows="3"
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+                placeholder="Enter any additional remarks..."
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #D1D5DB',
+                  borderRadius: '0.5rem',
+                  fontSize: '0.875rem',
+                  backgroundColor: 'white',
+                  color: '#111827',
+                  outline: 'none',
+                  resize: 'vertical',
+                }}
+              />
             </CCol>
           </div>
 
@@ -464,7 +1443,7 @@ const EnhancedProductCards = () => {
               disabled={!selectedPerson}
               style={{
                 padding: '0.75rem 1.5rem',
-                backgroundColor: selectedPerson ? '#0061ed' : 'rgb(129 170 240)',
+                backgroundColor: selectedPerson ? '#0061ed' : '#9CA3AF',
                 color: 'white',
                 border: 'none',
                 borderRadius: '0.5rem',
@@ -514,105 +1493,116 @@ const EnhancedProductCards = () => {
           </div>
           {/* Modal Body */}
           <div style={styles.modalBody}>
-            {/* Product Image */}
-            <div style={styles.modalImageSection}>
-              <img src={currentImage || noImage} alt={product.name} style={styles.modalImage} />
+            {/* Top Row: Image + Product Information */}
+            <div style={styles.modalTopRow}>
+              {/* Left Side - Product Image */}
+              <div style={styles.modalImageSection}>
+                <img src={currentImage || noImage} alt={product.name} style={styles.modalImage} />
+              </div>
+
+              {/* Right Side - Product Information */}
+              <div style={styles.modalTopRightSection}>
+                <div style={styles.modalSection}>
+                  <h3 style={styles.modalSectionTitle}>Product Information</h3>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Job Number:</span>
+                    <span style={styles.modalValue}>{product.jobNo}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Product:</span>
+                    <span style={styles.modalValue}>{product.product}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Quantity:</span>
+                    <span style={styles.modalValue}>{product.quantity}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Size:</span>
+                    <span style={styles.modalValue}>{product.size}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Status:</span>
+                    <span style={{ ...styles.modalBadge, ...getDeliveryModeClass(product.status) }}>
+                      {product.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Product Details Grid */}
-            <div style={styles.modalDetailsGrid}>
-              {/* Basic Information */}
-              <div style={styles.modalSection}>
-                <h3 style={styles.modalSectionTitle}>Product Information</h3>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Job Number:</span>
-                  <span style={styles.modalValue}>{product.jobNo}</span>
+            {/* Bottom Grid: Two Columns */}
+            <div style={styles.modalBottomGrid}>
+              {/* Left Column */}
+              <div style={styles.modalColumn}>
+                {/* Client Information */}
+                <div style={styles.modalSection}>
+                  <h3 style={styles.modalSectionTitle}>Client Information</h3>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Client:</span>
+                    <span style={styles.modalValue}>{product.client}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Email:</span>
+                    <a href={`mailto:${product.email}`} style={styles.modalLink}>
+                      {product.email}
+                    </a>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Contact:</span>
+                    <a href={`tel:${product.contactNo}`} style={styles.modalLink}>
+                      {product.contactNo}
+                    </a>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Enquiry Origin:</span>
+                    <span style={styles.modalValue}>{product.enquiryOrigin}</span>
+                  </div>
                 </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Product:</span>
-                  <span style={styles.modalValue}>{product.product}</span>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Quantity:</span>
-                  <span style={styles.modalValue}>{product.quantity}</span>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Size:</span>
-                  <span style={styles.modalValue}>{product.size}</span>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Status:</span>
-                  <span style={{ ...styles.modalBadge, ...getDeliveryModeClass(product.status) }}>
-                    {product.status}
-                  </span>
+
+                {/* Product Specifications */}
+                <div style={styles.modalSection}>
+                  <h3 style={styles.modalSectionTitle}>Product Specifications</h3>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Preferred Material:</span>
+                    <span style={styles.modalValue}>{product.preferedMaterial}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Briefing:</span>
+                    <span style={styles.modalValue}>{product.briefing}</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Client Information */}
-              <div style={styles.modalSection}>
-                <h3 style={styles.modalSectionTitle}>Client Information</h3>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Client:</span>
-                  <span style={styles.modalValue}>{product.client}</span>
+              {/* Right Column */}
+              <div style={styles.modalColumn}>
+                {/* Financial Information */}
+                <div style={styles.modalSection}>
+                  <h3 style={styles.modalSectionTitle}>Financial Details</h3>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Budget:</span>
+                    <span style={styles.modalValue}>{product.budget}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Payment Terms:</span>
+                    <span style={styles.modalValue}>{product.paymentTerms}</span>
+                  </div>
                 </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Email:</span>
-                  <a href={`mailto:${product.email}`} style={styles.modalLink}>
-                    {product.email}
-                  </a>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Contact:</span>
-                  <a href={`tel:${product.contactNo}`} style={styles.modalLink}>
-                    {product.contactNo}
-                  </a>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Enquiry Origin:</span>
-                  <span style={styles.modalValue}>{product.enquiryOrigin}</span>
-                </div>
-              </div>
 
-              {/* Financial Information */}
-              <div style={styles.modalSection}>
-                <h3 style={styles.modalSectionTitle}>Financial Details</h3>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Budget:</span>
-                  <span style={styles.modalValue}>{product.budget}</span>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Payment Terms:</span>
-                  <span style={styles.modalValue}>{product.paymentTerms}</span>
-                </div>
-              </div>
-
-              {/* Delivery Information */}
-              <div style={styles.modalSection}>
-                <h3 style={styles.modalSectionTitle}>Delivery Information</h3>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Delivery Date:</span>
-                  <span style={styles.modalValue}>{product.deliveryDate}</span>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Delivery Location:</span>
-                  <span style={styles.modalValue}>{product.deliveryLocation}</span>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Delivery Mode:</span>
-                  <span style={styles.modalValue}>{product.deliveryMode}</span>
-                </div>
-              </div>
-
-              {/* Product Specifications */}
-              <div style={styles.modalSection}>
-                <h3 style={styles.modalSectionTitle}>Product Specifications</h3>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Preferred Material:</span>
-                  <span style={styles.modalValue}>{product.preferedMaterial}</span>
-                </div>
-                <div style={styles.modalDetailItem}>
-                  <span style={styles.modalLabel}>Briefing:</span>
-                  <span style={styles.modalValue}>{product.briefing}</span>
+                {/* Delivery Information */}
+                <div style={styles.modalSection}>
+                  <h3 style={styles.modalSectionTitle}>Delivery Information</h3>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Delivery Date:</span>
+                    <span style={styles.modalValue}>{product.deliveryDate}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Delivery Location:</span>
+                    <span style={styles.modalValue}>{product.deliveryLocation}</span>
+                  </div>
+                  <div style={styles.modalDetailItem}>
+                    <span style={styles.modalLabel}>Delivery Mode:</span>
+                    <span style={styles.modalValue}>{product.deliveryMode}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -727,15 +1717,8 @@ const EnhancedProductCards = () => {
                 <div
                   style={styles.actionIcon}
                   title="Upload Image"
-                  onClick={() => triggerFileInput(product.id)}
+                  onClick={() => openUploadModal(product)}
                 >
-                  <input
-                    id={`file-input-${product.id}`}
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(product.id, e)}
-                    style={styles.hiddenInput}
-                  />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="18"
@@ -785,356 +1768,6 @@ const EnhancedProductCards = () => {
     )
   }
 
-  // Get screen size for responsive design
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-
-  React.useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  // Responsive breakpoints
-  const isMobile = windowWidth <= 480
-  const isTablet = windowWidth <= 768
-  const isSmallDesktop = windowWidth <= 1024
-
-  const styles = {
-    container: {
-      minHeight: '100vh',
-      padding: isMobile ? '0.5rem' : isTablet ? '0.75rem' : '1rem',
-    },
-    innerContainer: {
-      maxWidth: '1400px',
-      margin: '0 auto',
-    },
-    header: {
-      marginBottom: isMobile ? '1rem' : '2rem',
-      textAlign: 'center',
-    },
-    header1: {
-      marginBottom: '2px',
-    },
-    title: {
-      fontSize: isMobile ? '1.75rem' : isTablet ? '2rem' : '2.5rem',
-      fontWeight: 'bold',
-      color: 'black',
-      marginBottom: '0.5rem',
-    },
-    searchContainer: {
-      marginBottom: isMobile ? '1rem' : '2rem',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      gap: isMobile ? '0.5rem' : '1rem',
-      flexWrap: 'wrap',
-      flexDirection: isMobile ? 'column' : 'row',
-    },
-    addButton: {
-      backgroundColor: '#0061ed',
-      color: 'white',
-      padding: isMobile ? '0.75rem 1.5rem' : '0.875rem 2rem',
-      fontSize: isMobile ? '0.875rem' : '1rem',
-      fontWeight: '600',
-      border: 'none',
-      borderRadius: '0.5rem',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-      whiteSpace: 'nowrap',
-      flexShrink: 0,
-      width: isMobile ? '100%' : 'auto',
-    },
-    searchInput: {
-      width: '100%',
-      maxWidth: isMobile ? '100%' : '600px',
-      padding: isMobile ? '0.75rem 1rem' : '0.875rem 1.25rem',
-      fontSize: isMobile ? '0.875rem' : '1rem',
-      border: '2px solid #374151',
-      borderRadius: '0.5rem',
-      backgroundColor: 'white',
-      outline: 'none',
-      transition: 'border-color 0.3s ease',
-    },
-    grid: {
-      display: 'grid',
-      gridTemplateColumns: isMobile
-        ? '1fr'
-        : isTablet
-          ? 'repeat(auto-fit, minmax(350px, 1fr))'
-          : 'repeat(auto-fit, minmax(450px, 1fr))',
-      gap: isMobile ? '1rem' : '1.5rem',
-      justifyContent: 'center',
-    },
-    card: {
-      backgroundColor: 'white',
-      color: 'white',
-      borderRadius: '0.5rem',
-      overflow: 'hidden',
-      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-      display: 'flex',
-      flexDirection: isMobile || isTablet ? 'column' : 'row',
-      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-      height: 'fit-content',
-    },
-    imageContainer: {
-      width: isMobile || isTablet ? '100%' : '180px',
-      height: isMobile || isTablet ? '200px' : 'initial',
-      backgroundColor: '#E5E7EB',
-      position: 'relative',
-      flexShrink: 0,
-      overflow: 'hidden',
-      alignSelf: 'stretch',
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    image: {
-      width: '100%',
-      height: isMobile || isTablet ? '200px' : 'auto',
-      flex: isMobile || isTablet ? 'none' : 1,
-      objectFit: 'fill',
-    },
-    actionIconsContainer: {
-      display: 'flex',
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-      marginTop: '0.5rem',
-      gap: '0.5rem',
-      flexWrap: 'wrap',
-    },
-    actionIcon: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: isMobile ? '2.5rem' : '1.9rem',
-      height: isMobile ? '2rem' : '1.5rem',
-      borderRadius: '0.25rem',
-      backgroundColor: 'transparent',
-      border: '1px solid #0061ed',
-      color: '#0061ed',
-      cursor: 'pointer',
-      transition: 'all 0.2s ease',
-      flexShrink: 0,
-    },
-    hiddenInput: {
-      display: 'none',
-    },
-    content: {
-      padding: isMobile ? '1rem' : '0.7rem',
-      flex: 1,
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-between',
-      height: '100%',
-    },
-    productName: {
-      fontSize: isMobile ? '1.125rem' : '1.375rem',
-      fontWeight: 'bold',
-      color: 'black',
-      marginBottom: '0.25rem',
-    },
-    jobNo: {
-      fontSize: isMobile ? '0.75rem' : '0.875rem',
-      fontWeight: 'bold',
-      color: 'rgb(0, 97, 237)',
-      marginBottom: '0.4rem',
-    },
-    detailsContainer: {
-      marginBottom: '1rem',
-    },
-    detailRow: {
-      marginBottom: '0.625rem',
-      fontSize: isMobile ? '0.75rem' : '0.8rem',
-      lineHeight: '1.4',
-    },
-    label: {
-      color: '#0061ed',
-      fontWeight: 'bold',
-    },
-    value: {
-      color: 'black',
-    },
-    link: {
-      color: 'blue',
-      textDecoration: 'underline',
-    },
-    badge: {
-      padding: '0.25rem 0.5rem',
-      borderRadius: '0.25rem',
-      fontSize: isMobile ? '0.625rem' : '0.75rem',
-      fontWeight: '600',
-      display: 'inline-block',
-    },
-    noResults: {
-      gridColumn: '1 / -1',
-      textAlign: 'center',
-      color: '#9CA3AF',
-      fontSize: '1.125rem',
-      padding: '3rem 1rem',
-      borderRadius: '0.5rem',
-    },
-    button: {
-      width: '100%',
-      backgroundColor: '#0061ed',
-      color: 'white',
-      padding: '0.625rem 1rem',
-      borderRadius: '0.5rem',
-      fontWeight: '500',
-      fontSize: '0.875rem',
-      border: 'none',
-      cursor: 'pointer',
-      transition: 'background-color 0.3s ease',
-    },
-    // Modal Styles
-    modalOverlay: {
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: isMobile ? '0.5rem' : '1rem',
-    },
-    modalHeader: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: isMobile ? '1rem' : '1.5rem',
-      borderBottom: '1px solid #E5E7EB',
-      backgroundColor: '#F9FAFB',
-    },
-    modalTitle: {
-      fontSize: isMobile ? '1.25rem' : '1.5rem',
-      fontWeight: 'bold',
-      color: '#111827',
-      margin: 0,
-    },
-    closeButton: {
-      background: 'none',
-      border: 'none',
-      color: '#6B7280',
-      cursor: 'pointer',
-      padding: '0.5rem',
-      borderRadius: '0.25rem',
-      transition: 'all 0.2s ease',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: isMobile ? '1.75rem' : '1.5rem',
-      fontWeight: 'bold',
-      width: '2rem',
-      height: '2rem',
-    },
-    modalBody: {
-      padding: isMobile ? '1rem' : '1.5rem',
-      overflow: 'auto',
-      flex: 1,
-    },
-    modalImageSection: {
-      marginBottom: isMobile ? '1rem' : '2rem',
-      textAlign: 'center',
-    },
-    modalImage: {
-      maxWidth: isMobile ? '100%' : '300px',
-      maxHeight: isMobile ? '200px' : '300px',
-      objectFit: 'contain',
-      borderRadius: '0.5rem',
-      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-      width: isMobile ? '100%' : 'auto',
-    },
-    modalDetailsGrid: {
-      display: 'grid',
-      gridTemplateColumns: isMobile
-        ? '1fr'
-        : isTablet
-          ? '1fr'
-          : 'repeat(auto-fit, minmax(280px, 1fr))',
-      gap: isMobile ? '1rem' : '1.5rem',
-    },
-    modalSection: {
-      backgroundColor: '#F9FAFB',
-      padding: isMobile ? '0.75rem' : '1rem',
-      borderRadius: '0.5rem',
-      border: '1px solid #E5E7EB',
-    },
-    modalSectionTitle: {
-      fontSize: isMobile ? '0.875rem' : '1rem',
-      fontWeight: 'bold',
-      color: '#0061ed',
-      marginBottom: '0.75rem',
-      margin: '0 0 0.75rem 0',
-    },
-    modalDetailItem: {
-      marginBottom: '0.75rem',
-      display: 'flex',
-      flexDirection: isMobile ? 'column' : 'row',
-      gap: isMobile ? '0.25rem' : '0.5rem',
-      alignItems: 'flex-start',
-    },
-    modalLabel: {
-      fontSize: isMobile ? '0.75rem' : '0.875rem',
-      fontWeight: '600',
-      color: '#374151',
-      minWidth: isMobile ? 'auto' : '100px',
-      flexShrink: 0,
-    },
-    modalValue: {
-      fontSize: isMobile ? '0.75rem' : '0.875rem',
-      color: '#111827',
-      lineHeight: '1.4',
-      flex: 1,
-    },
-    modalLink: {
-      fontSize: isMobile ? '0.75rem' : '0.875rem',
-      color: '#0061ed',
-      textDecoration: 'underline',
-      cursor: 'pointer',
-      flex: 1,
-    },
-    modalBadge: {
-      padding: '0.25rem 0.75rem',
-      borderRadius: '0.375rem',
-      fontSize: isMobile ? '0.625rem' : '0.75rem',
-      fontWeight: '600',
-      display: 'inline-block',
-    },
-    modalFooter: {
-      padding: isMobile ? '1rem' : '1rem 1.5rem',
-      borderTop: '1px solid #E5E7EB',
-      backgroundColor: '#F9FAFB',
-      display: 'flex',
-      gap: isMobile ? '0.5rem' : '1rem',
-      justifyContent: 'flex-end',
-      flexDirection: isMobile ? 'column' : 'row',
-    },
-    modalActionButton: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: '0.5rem',
-      padding: isMobile ? '0.875rem 1rem' : '0.75rem 1.5rem',
-      backgroundColor: '#0061ed',
-      color: 'white',
-      border: 'none',
-      borderRadius: '0.5rem',
-      cursor: 'pointer',
-      fontSize: isMobile ? '0.75rem' : '0.875rem',
-      fontWeight: '500',
-      transition: 'background-color 0.2s ease',
-      width: isMobile ? '100%' : 'auto',
-    },
-  }
-
-  // When only one search result, center it and limit width
-  if (filteredProducts.length === 1 && !isMobile) {
-    styles.grid.gridTemplateColumns = '1fr'
-    styles.grid.maxWidth = '600px'
-    styles.grid.margin = '0 auto'
-  }
-
   // Close modal on Escape key
   React.useEffect(() => {
     const handleEscape = (e) => {
@@ -1144,10 +1777,13 @@ const EnhancedProductCards = () => {
       if (e.key === 'Escape' && personModalProduct) {
         closePersonModal()
       }
+      if (e.key === 'Escape' && uploadModalProduct) {
+        closeUploadModal()
+      }
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [modalProduct, personModalProduct])
+  }, [modalProduct, personModalProduct, uploadModalProduct])
 
   return (
     <div style={styles.container}>
@@ -1207,7 +1843,12 @@ const EnhancedProductCards = () => {
         <PersonModal product={personModalProduct} onClose={closePersonModal} />
       )}
 
-      {/* Modal */}
+      {/* Upload Modal */}
+      {uploadModalProduct && (
+        <UploadModal product={uploadModalProduct} onClose={closeUploadModal} />
+      )}
+
+      {/* Detail View Modal */}
       {modalProduct && <Modal product={modalProduct} onClose={closeModal} />}
     </div>
   )
