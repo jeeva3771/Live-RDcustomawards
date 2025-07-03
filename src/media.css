@@ -1,0 +1,541 @@
+@media (max-width: 768px) {
+  .breadcrumb-container {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .breadcrumb-separator {
+    margin: 0 0.5rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .wizard-container {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .wizard-form {
+    padding: 1.5rem;
+  }
+
+  .step-title {
+    font-size: 1.25rem;
+  }
+
+  .bom-form-container {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .form-col {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .form-group {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .form-select,
+  .form-input {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .recipe-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .wizard-navigation {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .nav-spacer {
+    display: none;
+  }
+
+  .nav-button {
+    width: 100%;
+  }
+
+  .progress-steps {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .progress-step-item {
+    flex: none;
+    min-width: 80px;
+  }
+
+  .step-circle {
+    width: 30px;
+    height: 30px;
+  }
+
+  .step-label {
+    font-size: 0.65rem;
+  }
+
+  .editor-toolbar {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .toolbar-btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .editor-container {
+    position: relative;
+    overflow: visible;
+  }
+
+  .emoji-picker {
+    width: 240px;
+    right: -20px;
+  }
+
+  .emoji-grid {
+    grid-template-columns: repeat(6, 1fr);
+    padding: 0.5rem;
+  }
+
+  .emoji-item {
+    width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+  }
+
+  .uploaded-files {
+    padding: 1rem;
+  }
+
+  .file-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .file-info {
+    width: 100%;
+  }
+
+  .remove-file {
+    align-self: flex-end;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .wizard-container {
+    margin: 0.5rem;
+    padding: 0.75rem;
+  }
+
+  .wizard-form {
+    padding: 1rem;
+  }
+
+  .step-title {
+    font-size: 1.1rem;
+  }
+
+  .step-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .step-content {
+    max-width: 100%;
+  }
+
+  .bom-form-container {
+    padding: 0;
+    margin: 0;
+  }
+
+  .form-col {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-select,
+  .form-input {
+    padding: 0.75rem 0.875rem;
+    font-size: 0.9rem;
+  }
+
+  .upload-area {
+    padding: 2rem 1rem;
+  }
+
+  .upload-icon {
+    font-size: 2rem;
+  }
+
+  .job-input {
+    font-size: 1rem;
+    padding: 0.875rem 1rem;
+  }
+
+  .progress-steps {
+    justify-content: center;
+  }
+
+  .progress-step-item {
+    min-width: 70px;
+  }
+
+  .step-circle {
+    width: 28px;
+    height: 28px;
+  }
+
+  .step-icon {
+    font-size: 0.875rem;
+  }
+
+  .step-check {
+    font-size: 1rem;
+  }
+
+  .step-label {
+    font-size: 0.6rem;
+  }
+
+  .nav-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .recipe-container {
+    gap: 1rem;
+  }
+
+  .options-list,
+  .selected-list {
+    min-height: 150px;
+    padding: 0.75rem;
+  }
+
+  .option-item,
+  .selected-item {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .editor-textarea {
+    font-size: 0.9rem;
+    padding: 0.875rem;
+  }
+
+  .emoji-picker {
+    width: 200px;
+    right: -10px;
+    max-height: 250px;
+  }
+
+  .emoji-grid {
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0.5rem;
+  }
+
+  .emoji-item {
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+  }
+
+  .emoji-picker-header {
+    padding: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .toolbar-btn {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.7rem;
+  }
+
+  .file-item {
+    padding: 0.5rem;
+  }
+
+  .file-name {
+    font-size: 0.875rem;
+  }
+
+  .file-size {
+    font-size: 0.75rem;
+  }
+
+  .remove-file {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .wizard-container {
+    margin: 0.25rem;
+    padding: 0.5rem;
+  }
+
+  .progress-steps {
+    gap: 0.25rem;
+  }
+
+  .progress-step-item {
+    min-width: 60px;
+  }
+
+  .step-circle {
+    width: 24px;
+    height: 24px;
+  }
+
+  .step-icon {
+    font-size: 0.75rem;
+  }
+
+  .step-check {
+    font-size: 0.875rem;
+  }
+
+  .step-label {
+    font-size: 0.55rem;
+  }
+
+  .bom-form-container {
+    width: 100%;
+  }
+
+  .form-select,
+  .form-input {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media only screen and (max-width: 719px) {
+  .bom-entries {
+    display: flex;
+    flex-direction: column !important;
+    gap: 1.5rem;
+  }
+
+  .bom-entry-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 7px;
+    background-color: #fafafa;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .bom-entry-title {
+    margin: 0 0 1rem 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    /* padding-bottom: 0.5rem; */
+    margin: 0;
+    display: flex;
+    align-items: end;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rich-text-editor {
+    padding: 1rem;
+  }
+
+  .toolbar {
+    padding: 8px;
+    gap: 4px;
+  }
+
+  .toolbar-btn {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .toolbar-select {
+    padding: 6px 8px;
+    font-size: 12px;
+  }
+
+  .font-family-select {
+    min-width: 100px;
+  }
+
+  .font-size-select {
+    min-width: 60px;
+  }
+
+  .editor-content {
+    padding: 16px;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar > * {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .color-controls {
+    justify-content: center;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .rich-text-editor {
+    color: #e9ecef;
+  }
+
+  .toolbar {
+    background: #343a40;
+    border-color: #495057;
+  }
+
+  .toolbar-btn {
+    background: #495057;
+    border-color: #6c757d;
+    color: #e9ecef;
+  }
+
+  .toolbar-btn:hover {
+    background: #5a6268;
+    border-color: #adb5bd;
+  }
+
+  .toolbar-select {
+    background: #495057;
+    border-color: #6c757d;
+    color: #e9ecef;
+  }
+
+  .status-bar {
+    background: #343a40;
+    border-color: #495057;
+    color: #adb5bd;
+  }
+
+  .editor-content {
+    background: #212529;
+    border-color: #495057;
+    color: #e9ecef;
+  }
+
+  .form-input {
+    background: #495057;
+    border-color: #6c757d;
+    color: #e9ecef;
+  }
+}
+
+@media (max-width: 768px) {
+  .previous-content-container {
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .previous-content-title {
+    font-size: 16px;
+  }
+
+  .previous-item {
+    padding: 8px;
+  }
+
+  .previous-materials,
+  .previous-files {
+    gap: 6px;
+  }
+
+  .material-tag,
+  .file-tag {
+    font-size: 11px;
+    padding: 3px 8px;
+  }
+
+  .search-container-top {
+    margin-bottom: 1.5rem;
+    max-width: 100%;
+    padding: 0 16px;
+  }
+
+  .search-input-top {
+    padding: 10px 40px 10px 12px;
+    font-size: 18px; /* Prevents zoom on iOS */
+  }
+
+  .search-icon-top {
+    right: 28px;
+    font-size: 14px;
+  }
+
+  .no-results {
+    padding: 30px 15px;
+  }
+
+  .no-results-icon {
+    font-size: 36px;
+  }
+
+  .no-results p {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container-top {
+    margin-bottom: 1.25rem;
+    padding: 0 12px;
+  }
+
+  .search-input-top {
+    padding: 8px 35px 8px 10px;
+    font-size: 15px;
+  }
+
+  .search-icon-top {
+    right: 22px;
+    font-size: 12px;
+  }
+
+  .no-results {
+    padding: 25px 10px;
+  }
+
+  .no-results-icon {
+    font-size: 32px;
+  }
+
+  .no-results p {
+    font-size: 12px;
+  }
+}
+
