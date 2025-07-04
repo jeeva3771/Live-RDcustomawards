@@ -399,7 +399,7 @@ const _nav = [
     to: '/users',
     icon: <CIcon icon={cilPeople} customClassName="nav-icon" />,
   },
-    {
+  {
     component: CNavItem,
     name: 'Admin Enquiries',
     // to: '/enquiries',
@@ -428,20 +428,28 @@ const _nav = [
   //   icon: <CIcon icon={cilCart} customClassName="nav-icon" />,
   // },
 
-
-
-
-
-
-   {
+  {
     component: CNavItem,
-    name: 'Sample Orders ',
+    name: 'Admin Sample Orders ',
     // to: '/enquiries',
-    to: '/sampleorders',
+    to: '/sampleordersadmin',
+    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Designer Sample Orders ',
+    // to: '/enquiries',
+    to: '/sampleordersdesigner',
     icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
   },
 
-
+  {
+    component: CNavItem,
+    name: 'Accounts Sample Orders ',
+    // to: '/enquiries',
+    to: '/sampleordersaccounts',
+    icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
+  },
 
   // {
   //   component: CNavGroup,

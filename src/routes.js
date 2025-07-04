@@ -21,7 +21,10 @@ const EnquiryForm = React.lazy(() => import('./views/pages/enquiry/Form'))
 //admin
 const AdminEnquiriesList = React.lazy(() => import('./views/pages/enquiry/AdminList'))
 
-const SampleOrdersList = React.lazy(() => import('./views/pages/sample/List'))
+const SampleOrdersAdminList = React.lazy(() => import('./views/pages/sample/AdminList'))
+const SampleOrdersDesignerList = React.lazy(() => import('./views/pages/sample/DesignerList'))
+const SampleOrdersAccountList = React.lazy(() => import('./views/pages/sample/AccountantList'))
+
 
 const JobsList = React.lazy(() => import('./views/pages/masters/jobs/List'))
 
@@ -100,7 +103,10 @@ const routes = [
   { path: '/enquiriesadmin', name: 'Enquiries List', element: AdminEnquiriesList }, //Admin
 
   { path: '/enquiry/add', name: 'Add', element: EnquiryForm },
-  { path: '/sampleorders', name: 'Sample Orders List', element: SampleOrdersList },
+  { path: '/sampleordersadmin', name: 'Sample Orders List', element: SampleOrdersAdminList },
+    { path: '/sampleordersdesigner', name: 'Sample Orders List', element: SampleOrdersDesignerList },
+    { path: '/sampleordersaccounts', name: 'Sample Orders List', element: SampleOrdersAccountList },
+
   { path: '/jobs', name: 'Jobs List', element: JobsList },
 
   { path: '/productionplanning', name: 'Production Planning', element: ProductionPlanning },

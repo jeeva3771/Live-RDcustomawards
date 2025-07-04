@@ -13,13 +13,6 @@ import a2 from '../../../../public/a2.jpg'
 import a3 from '../../../../public/a3.jpg'
 import a4 from '../../../../public/a4.webp'
 
-// Placeholder images
-// const award1 = 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=400&h=300&fit=crop'
-// const award2 = 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=300&fit=crop'
-// const award4 = 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=400&h=300&fit=crop'
-// const award6 = 'https://images.unsplash.com/photo-1586953208448-b95a79798f07?w=400&h=300&fit=crop'
-// const noImage = 'https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&h=300&fit=crop'
-
 const EnhancedProductCards = () => {
   const [expandedCards, setExpandedCards] = useState(new Set())
   const [submit, setSubmit] = useState(false)
@@ -37,30 +30,43 @@ const EnhancedProductCards = () => {
   const [showUploadForProducts, setShowUploadForProducts] = useState(new Set())
   const [currentImageIndex, setCurrentImageIndex] = useState({})
   const [modalImageIndex, setModalImageIndex] = useState({})
+  const [processedProducts, setProcessedProducts] = useState(new Set([7, 8, 9])) // New state for processed products
   const navigate = useNavigate()
 
   // Available persons list
   const availablePersons = ['Ronald', 'Melroy', 'Kaushal', 'Priya', 'Arun', 'Neha', 'Vikram']
 
-  // Product data with additional fields
   const products = [
     {
       id: 1,
       name: 'MIC TROPHY',
       jobNo: '14888a',
       client: 'CLEONETT EVENTS',
+      innerPacking: 'Tissue papper',
       email: 'steffie@cleonett.com',
       contactNo: '98337 40939',
       quantity: 46,
       size: '10 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'ENQUIRY',
+      status: 'Pending',
       deliveryDate: '19-03-2025',
       deliveryLocation: 'ITC Central - Parel - MUMBAI',
       deliveryMode: 'HAND DELIVERY',
       mainImage: award1,
       enquiryOrigin: 'Website Form',
+      deliveryAddress: {
+        street: 'ITC Central, Parel',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400012',
+      },
+      billingAddress: {
+        street: '1st Floor, Cleonett House, Andheri East',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400059',
+      },
       budget: '₹50,000',
       preferedMaterial: 'Crystal Glass',
       briefing:
@@ -68,9 +74,21 @@ const EnhancedProductCards = () => {
       paymentTerms: '50% advance & Bal before dispatch & delivery',
       maxImages: 1,
       remarks: 'Special product',
+
+      time: '2025-02-08 04:00 PM',
+      phoneNumber: '98337 40939',
+      pricePerPiece: '₹1,100',
+      deliveryType: 'Express Hand Delivery',
+      billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
+      packingType: 'Bubble Wrap & Box',
+      innerPackingType: 'Foam Cutout',
+      premiumPackingOptions: 'Branded Gift Box',
+      packingInstructions: 'Keep upright, handle with care.',
+      packingMode: 'Individual Pack',
+      deliveryAddress: 'ITC Central, Parel, Mumbai, MH 400012',
     },
     {
-      id: 1,
+      id: 2,
       name: 'MIC TROPHY',
       jobNo: '14888b',
       client: 'CLEONETT EVENTS',
@@ -78,34 +96,71 @@ const EnhancedProductCards = () => {
       contactNo: '98337 40939',
       quantity: 46,
       size: '10 Inches',
+      innerPacking: 'Tissue papper',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'ENQUIRY',
+      status: 'Pending',
       deliveryDate: '19-03-2025',
       deliveryLocation: 'ITC Central - Parel - MUMBAI',
       deliveryMode: 'HAND DELIVERY',
       mainImage: award5,
       enquiryOrigin: 'Website Form',
+      deliveryAddress: {
+        street: 'ITC Central, Parel',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400012',
+      },
+      billingAddress: {
+        street: '1st Floor, Cleonett House, Andheri East',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400059',
+      },
       budget: '₹50,000',
       preferedMaterial: 'Crystal Glass',
-      briefing:
-        'High-quality microphone trophy for annual corporate event. Should include company logo engraving.',
+      briefing: 'Duplicate batch for same event — same engraving and specs.',
       paymentTerms: '50% advance & Bal before dispatch & delivery',
       maxImages: 1,
       remarks: 'Special product',
+
+      time: '2025-02-08 04:30 PM',
+      phoneNumber: '98337 40939',
+      deliveryAddress: {
+        street: 'ITC Central, Parel',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400012',
+      },
+      billingAddress: {
+        street: '1st Floor, Cleonett House, Andheri East',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400059',
+      },
+      pricePerPiece: '₹1,100',
+      deliveryType: 'Express Hand Delivery',
+      billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
+      packingType: 'Bubble Wrap & Box',
+      innerPackingType: 'Foam Cutout',
+      premiumPackingOptions: 'Branded Gift Box',
+      packingInstructions: 'Keep same as previous lot.',
+      packingMode: 'Individual Pack',
+      deliveryAddress: 'ITC Central, Parel, Mumbai, MH 400012',
     },
     {
-      id: 1,
+      id: 3,
       name: 'MIC TROPHY',
       jobNo: '14888d',
       client: 'CLEONETT EVENTS',
       email: 'steffie@cleonett.com',
+      innerPacking: 'Tissue papper',
       contactNo: '98337 40939',
       quantity: 46,
       size: '10 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'ENQUIRY',
+      status: 'Pending',
       deliveryDate: '19-03-2025',
       deliveryLocation: 'ITC Central - Parel - MUMBAI',
       deliveryMode: 'HAND DELIVERY',
@@ -113,125 +168,267 @@ const EnhancedProductCards = () => {
       enquiryOrigin: 'Website Form',
       budget: '₹50,000',
       preferedMaterial: 'Crystal Glass',
-      briefing:
-        'High-quality microphone trophy for annual corporate event. Should include company logo engraving.',
+      briefing: 'Backup set for main award shipment.',
       paymentTerms: '50% advance & Bal before dispatch & delivery',
       maxImages: 1,
       remarks: 'Special product',
-    },
-    {
-      id: 4,
-      name: 'ACRYLIC PLAQUE',
-      jobNo: '14891a',
-      client: 'TECH INNOVATIONS',
-      email: 'contact@techinno.com',
-      contactNo: '87654 32109',
-      quantity: 15,
-      startTime: '2025-02-09 09:10 AM',
-      endTime: '2025-02-10 10:10 AM',
-      status: 'PRODUCTION',
-      size: '12 Inches',
-      deliveryDate: '19-09-2025',
-      deliveryLocation: 'Powai - MUMBAI',
-      deliveryMode: 'HAND DELIVERY',
-      mainImage: a1,
-      enquiryOrigin: 'WhatsApp',
-      budget: '₹30,000',
-      preferedMaterial: 'Clear Acrylic',
-      briefing:
-        'Modern acrylic plaques for startup milestone celebration. Minimalist design preferred.',
-      paymentTerms: '50% Advance & Balance when Material is Ready',
-      maxImages: 4,
-      remarks: 'Good product',
-    },
-    {
-      id: 4,
-      name: 'ACRYLIC PLAQUE',
-      jobNo: '14891d',
-      client: 'TECH INNOVATIONS',
-      email: 'contact@techinno.com',
-      contactNo: '87654 32109',
-      quantity: 15,
-      startTime: '2025-02-09 09:10 AM',
-      endTime: '2025-02-10 10:10 AM',
-      status: 'PRODUCTION',
-      size: '12 Inches',
-      deliveryDate: '19-09-2025',
-      deliveryLocation: 'Powai - MUMBAI',
-      deliveryMode: 'HAND DELIVERY',
-      mainImage: a4,
-      enquiryOrigin: 'WhatsApp',
-      budget: '₹30,000',
-      preferedMaterial: 'Clear Acrylic',
-      briefing:
-        'Modern acrylic plaques for startup milestone celebration. Minimalist design preferred.',
-      paymentTerms: '50% Advance & Balance when Material is Ready',
-      maxImages: 4,
-      remarks: 'Good product',
-    },
-    {
-      id: 6,
-      name: 'GLASS TROPHY',
-      jobNo: '14893c',
-      client: 'EXCELLENCE AWARDS',
-      email: 'awards@excellence.com',
-      contactNo: '98123 45678',
-      startTime: '2025-02-09 09:10 AM',
-      endTime: '2025-02-10 10:10 AM',
-      quantity: 12,
-      size: '16 Inches',
-      status: 'BILLING',
-      deliveryDate: '11-01-2025',
-      deliveryLocation: 'Andheri - MUMBAI',
-      deliveryMode: 'EXPRESS DELIVERY',
-      mainImage: a2,
-      enquiryOrigin: 'LinkedIn',
-      budget: '₹85,000',
-      preferedMaterial: 'Borosilicate Glass',
-      briefing:
-        'Premium glass trophies for annual excellence awards ceremony. LED base lighting required.',
-      paymentTerms: 'Corporate Credit',
-      maxImages: 3,
-      remarks: 'Good product',
-    },
 
+      time: '2025-02-08 05:00 PM',
+      phoneNumber: '98337 40939',
+      pricePerPiece: '₹1,100',
+      deliveryType: 'Express Hand Delivery',
+      billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
+      packingType: 'Bubble Wrap & Box',
+      deliveryAddress: {
+        street: 'ITC Central, Parel',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400012',
+      },
+      billingAddress: {
+        street: '1st Floor, Cleonett House, Andheri East',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400059',
+      },
+      innerPackingType: 'Foam Cutout',
+      premiumPackingOptions: 'Branded Gift Box',
+      packingInstructions: 'Mark as backup batch.',
+      packingMode: 'Individual Pack',
+      deliveryAddress: 'ITC Central, Parel, Mumbai, MH 400012',
+    },
+    // {
+    //   id: 4,
+    //   name: 'ACRYLIC PLAQUE',
+    //   jobNo: '14891a',
+    //   client: 'TECH INNOVATIONS',
+    //   email: 'contact@techinno.com',
+    //   contactNo: '87654 32109',
+    //   quantity: 15,
+    //   size: '12 Inches',
+    //   startTime: '2025-02-09 09:10 AM',
+    //   endTime: '2025-02-10 10:10 AM',
+    //   status: 'Pending',
+    //   innerPacking: 'Tissue papper',
+    //   deliveryAddress: {
+    //     street: 'ITC Central, Parel',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400012',
+    //   },
+    //   billingAddress: {
+    //     street: '1st Floor, Cleonett House, Andheri East',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400059',
+    //   },
+    //   deliveryDate: '19-09-2025',
+    //   deliveryLocation: 'Powai - MUMBAI',
+    //   deliveryMode: 'HAND DELIVERY',
+    //   mainImage: a1,
+    //   enquiryOrigin: 'WhatsApp',
+    //   budget: '₹30,000',
+    //   preferedMaterial: 'Clear Acrylic',
+    //   briefing: 'Modern plaques for milestone recognition.',
+    //   paymentTerms: '50% Advance & Balance when Material is Ready',
+    //   maxImages: 4,
+    //   remarks: 'Good product',
+
+    //   time: '2025-09-17 03:00 PM',
+    //   phoneNumber: '87654 32109',
+    //   pricePerPiece: '₹2,000',
+    //   deliveryType: 'Standard Hand Delivery',
+    //   billingAddress: 'Tech Innovations Pvt Ltd, 502 Innovation Towers, Powai, MH 400076',
+    //   packingType: 'Soft Foam',
+    //   innerPackingType: 'Foam Cut Inserts',
+    //   premiumPackingOptions: 'Gold Foil Gift Wrap',
+    //   packingInstructions: 'No scratches on acrylic surface.',
+    //   deliveryAddress: {
+    //     street: 'ITC Central, Parel',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400012',
+    //   },
+    //   billingAddress: {
+    //     street: '1st Floor, Cleonett House, Andheri East',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400059',
+    //   },
+    //   packingMode: 'Batch Pack',
+    //   deliveryAddress: 'Innovation Towers, Powai, Mumbai, MH 400076',
+    // },
+    // {
+    //   id: 5,
+    //   name: 'ACRYLIC PLAQUE',
+    //   jobNo: '14891d',
+    //   client: 'TECH INNOVATIONS',
+    //   email: 'contact@techinno.com',
+    //   contactNo: '87654 32109',
+    //   quantity: 15,
+    //   innerPacking: 'Tissue papper',
+    //   size: '12 Inches',
+    //   startTime: '2025-02-09 09:10 AM',
+    //   endTime: '2025-02-10 10:10 AM',
+    //   status: 'Pending',
+    //   deliveryAddress: {
+    //     street: 'ITC Central, Parel',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400012',
+    //   },
+    //   billingAddress: {
+    //     street: '1st Floor, Cleonett House, Andheri East',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400059',
+    //   },
+    //   deliveryDate: '19-09-2025',
+    //   deliveryLocation: 'Powai - MUMBAI',
+    //   deliveryMode: 'HAND DELIVERY',
+    //   mainImage: a4,
+    //   enquiryOrigin: 'WhatsApp',
+    //   budget: '₹30,000',
+    //   preferedMaterial: 'Clear Acrylic',
+    //   briefing: 'Additional design for same milestone batch.',
+    //   paymentTerms: '50% Advance & Balance when Material is Ready',
+    //   maxImages: 4,
+    //   remarks: 'Good product',
+
+    //   time: '2025-09-17 03:30 PM',
+    //   phoneNumber: '87654 32109',
+    //   pricePerPiece: '₹2,000',
+    //   deliveryType: 'Standard Hand Delivery',
+    //   billingAddress: 'Tech Innovations Pvt Ltd, 502 Innovation Towers, Powai, MH 400076',
+    //   packingType: 'Soft Foam',
+    //   innerPackingType: 'Foam Cut Inserts',
+    //   premiumPackingOptions: 'Gold Foil Gift Wrap',
+    //   packingInstructions: 'Keep plaques separate.',
+    //   packingMode: 'Batch Pack',
+    //   deliveryAddress: 'Innovation Towers, Powai, Mumbai, MH 400076',
+    // },
+    // {
+    //   id: 6,
+    //   name: 'GLASS TROPHY',
+    //   jobNo: '14893c',
+    //   client: 'EXCELLENCE AWARDS',
+    //   email: 'awards@excellence.com',
+    //   innerPacking: 'Tissue papper',
+    //   deliveryAddress: {
+    //     street: 'ITC Central, Parel',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400012',
+    //   },
+    //   billingAddress: {
+    //     street: '1st Floor, Cleonett House, Andheri East',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400059',
+    //   },
+    //   contactNo: '98123 45678',
+    //   quantity: 12,
+    //   size: '16 Inches',
+    //   startTime: '2025-02-09 09:10 AM',
+    //   endTime: '2025-02-10 10:10 AM',
+    //   status: 'Pending',
+    //   deliveryDate: '11-01-2025',
+    //   deliveryLocation: 'Andheri - MUMBAI',
+    //   deliveryMode: 'EXPRESS DELIVERY',
+    //   mainImage: a2,
+    //   enquiryOrigin: 'LinkedIn',
+    //   budget: '₹85,000',
+    //   preferedMaterial: 'Borosilicate Glass',
+    //   briefing: 'Premium trophies with LED base.',
+    //   paymentTerms: 'Corporate Credit',
+    //   maxImages: 3,
+    //   remarks: 'Good product',
+
+    //   time: '2025-01-10 02:00 PM',
+    //   phoneNumber: '98123 45678',
+    //   pricePerPiece: '₹7,000',
+    //   deliveryType: 'Express Courier',
+    //   billingAddress: 'Excellence Awards Pvt Ltd, 14th Floor, Andheri West, MH 400053',
+    //   packingType: 'Hard Foam & Wooden Box',
+    //   innerPackingType: 'Thermocol Mold',
+    //   premiumPackingOptions: 'Custom LED Box',
+    //   packingInstructions: 'Secure LED base separately.',
+    //   deliveryAddress: {
+    //     street: 'ITC Central, Parel',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400012',
+    //   },
+    //   billingAddress: {
+    //     street: '1st Floor, Cleonett House, Andheri East',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400059',
+    //   },
+    //   packingMode: 'Individual Pack',
+    //   deliveryAddress: 'Andheri West, Mumbai, MH 400053',
+    // },
     {
-      id: 2,
+      id: 7,
       name: 'CRYSTAL AWARD',
       jobNo: '14889',
       client: 'CORPORATE SOLUTIONS',
       email: 'info@corpsol.com',
       contactNo: '98765 43210',
-      status: 'DESIGN',
       quantity: 25,
       size: '8 Inches',
-      deliveryDate: '17-04-2025',
-      deliveryLocation: 'Bandra Kurla Complex - MUMBAI',
-      deliveryMode: 'COURIER',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
+      status: 'Completed',
+      deliveryDate: '17-04-2025',
+      deliveryLocation: 'Bandra Kurla Complex - MUMBAI',
+
+      deliveryMode: 'COURIER',
       mainImage: award2,
       enquiryOrigin: 'Direct Call',
       budget: '₹75,000',
       preferedMaterial: 'Premium Crystal',
-      briefing:
-        'Elegant crystal awards for employee recognition ceremony. Custom text engraving required.',
+      briefing: 'Elegant crystal awards for employees.',
       paymentTerms: '100% Advance',
       maxImages: 4,
       remarks: 'Special product',
+
+      time: '2025-04-15 05:00 PM',
+      phoneNumber: '98765 43210',
+      pricePerPiece: '₹3,000',
+      deliveryType: 'Secure Courier',
+      billingAddress: 'Corporate Solutions Ltd, Bandra East, Mumbai, MH 400051',
+      packingType: 'Bubble Wrap & Hard Box',
+      innerPackingType: 'Cushion Foam',
+      premiumPackingOptions: 'Velvet Pouch',
+      packingInstructions: 'No scratches on crystal surface.',
+      deliveryAddress: {
+        street: 'ITC Central, Parel',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400012',
+      },
+      billingAddress: {
+        street: '1st Floor, Cleonett House, Andheri East',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400059',
+      },
+      packingMode: 'Individual Pack',
+      deliveryAddress: 'BKC, Mumbai, MH 400051',
     },
     {
-      id: 3,
+      id: 8,
       name: 'GOLD MEDAL',
       jobNo: '14890',
       client: 'SPORTS FEDERATION',
       email: 'awards@sports.com',
       contactNo: '91234 56789',
-      startTime: '2025-02-09 09:10 AM',
-      endTime: '2025-02-10 10:10 AM',
-      status: 'SAMPLING',
       quantity: 100,
       size: '3 Inches',
+      startTime: '2025-02-09 09:10 AM',
+      endTime: '2025-02-10 10:10 AM',
+      status: 'Completed',
       deliveryDate: '19-01-2026',
       deliveryLocation: 'Worli Sports Complex - MUMBAI',
       deliveryMode: 'PICKUP',
@@ -239,24 +436,47 @@ const EnhancedProductCards = () => {
       enquiryOrigin: 'Email Inquiry',
       budget: '₹1,20,000',
       preferedMaterial: 'Gold Plated Metal',
-      briefing:
-        'Olympic-style gold medals for inter-school sports competition. Different sports icons required.',
+      briefing: 'Olympic-style medals with different icons.',
       paymentTerms: 'Corporate Credit',
       maxImages: 1,
       remarks: 'Special product',
+
+      time: '2026-01-15 03:00 PM',
+      phoneNumber: '91234 56789',
+      pricePerPiece: '₹1,200',
+      deliveryType: 'Self Pickup',
+      billingAddress: 'Sports Federation India, Worli, Mumbai, MH 400030',
+      packingType: 'Velvet Pouches',
+      innerPackingType: 'Individual Slot',
+      deliveryAddress: {
+        street: 'ITC Central, Parel',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400012',
+      },
+      billingAddress: {
+        street: '1st Floor, Cleonett House, Andheri East',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400059',
+      },
+      premiumPackingOptions: 'Branded Medal Case',
+      packingInstructions: 'Group by sport type.',
+      packingMode: 'Batch Pack of 10',
+      deliveryAddress: 'Worli Sports Complex, Mumbai, MH 400030',
     },
     {
-      id: 5,
+      id: 9,
       name: 'WOODEN SHIELD',
       jobNo: '14892',
       client: 'HERITAGE CLUB',
       email: 'heritage@club.com',
       contactNo: '99887 76543',
       quantity: 30,
+      size: '14 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'PRINTING',
-      size: '14 Inches',
+      status: 'Completed',
       deliveryDate: '19-02-2025',
       deliveryLocation: 'Fort - MUMBAI',
       deliveryMode: 'COURIER',
@@ -264,14 +484,36 @@ const EnhancedProductCards = () => {
       enquiryOrigin: 'Referral',
       budget: '₹90,000',
       preferedMaterial: 'Teak Wood',
-      briefing:
-        'Traditional wooden shields for cultural event awards. Intricate carving work required.',
+      briefing: 'Traditional shields with carving.',
       paymentTerms: '50% advance & Bal before dispatch & delivery',
       maxImages: 1,
       remarks: 'Special product',
+      deliveryAddress: {
+        street: 'ITC Central, Parel',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400012',
+      },
+      billingAddress: {
+        street: '1st Floor, Cleonett House, Andheri East',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400059',
+      },
+
+      time: '2025-02-18 02:00 PM',
+      phoneNumber: '99887 76543',
+      pricePerPiece: '₹3,000',
+      deliveryType: 'Secure Courier',
+      billingAddress: 'Heritage Club, Fort, Mumbai, MH 400001',
+      packingType: 'Cardboard & Bubble Wrap',
+      innerPackingType: 'Foam Corner Pads',
+      premiumPackingOptions: 'Wooden Crate',
+      packingInstructions: 'Keep away from moisture.',
+      packingMode: 'Batch Pack',
+      deliveryAddress: 'Heritage Club, Fort, Mumbai, MH 400001',
     },
   ]
-
   // Get screen size for responsive design
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
 
@@ -291,16 +533,17 @@ const EnhancedProductCards = () => {
     (product) =>
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.jobNo.includes(searchTerm) ||
-      product.product.toLowerCase().includes(searchTerm.toLowerCase()),
+      product.jobNo.includes(searchTerm),
   )
 
   const getDeliveryModeClass = (mode) => {
     switch (mode) {
       case 'PRINTING':
         return 'status-printing'
-      case 'DESIGN':
-        return 'status-design'
+      case 'Completed':
+        return 'status-green'
+      case 'Process':
+        return 'status-process'
       case 'ENQUIRY':
         return 'status-enquiry'
       case 'PRODUCTION':
@@ -343,13 +586,11 @@ const EnhancedProductCards = () => {
 
   const getCurrentImage = (product) => {
     const images = getProductImages(product.id)
-    // const currentIndex = currentImageIndex[product.id] || 0
-
     const allImages = [...(product.mainImage ? [product.mainImage] : []), ...images]
     const currentIndex = currentImageIndex[product.id] || 0
 
     if (allImages.length > 0) {
-      return allImages[currentIndex] || allImages[0] // Proper order
+      return allImages[currentIndex] || allImages[0]
     }
 
     return product.mainImage || noImage
@@ -365,11 +606,6 @@ const EnhancedProductCards = () => {
     }
 
     return product.mainImage || noImage
-  }
-
-  const canShowNextPrevious = (product) => {
-    const images = getProductImages(product.id)
-    return images.length > 1 || (images.length === 0 && product.mainImage)
   }
 
   const handlePreviousImage = (productId) => {
@@ -465,6 +701,22 @@ const EnhancedProductCards = () => {
     })
   }
 
+  // New function to handle edit button click
+  const handleEditClick = (productId) => {
+    setProcessedProducts((prev) => {
+      const newProcessed = new Set(prev)
+      newProcessed.add(productId)
+      return newProcessed
+    })
+    // navigate('/salesorder')
+  }
+
+  // New function to handle "To Process" button click
+  const handleToProcessClick = (productId) => {
+    alert(`Product ${productId} is now being processed!`)
+    // You can add additional logic here for processing
+  }
+
   const confirmUpload = () => {
     if (selectedFile && uploadModalProduct) {
       const reader = new FileReader()
@@ -474,7 +726,6 @@ const EnhancedProductCards = () => {
           [uploadModalProduct.id]: [...(prev[uploadModalProduct.id] || []), e.target.result],
         }))
 
-        // Hide upload icons and show accept button again
         setShowUploadForProducts((prev) => {
           const newShowUpload = new Set(prev)
           newShowUpload.delete(uploadModalProduct.id)
@@ -736,13 +987,13 @@ const EnhancedProductCards = () => {
 
         <div className="upload-modal-overlay" onClick={onClose}>
           <div className="upload-modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3 className="upload-modal-title">Image Upload</h3>
+            <h3 className="upload-modal-title">File Upload</h3>
 
-            <div className="upload-progress">
+            {/* <div className="upload-progress">
               <div className="upload-progress-text">
                 Upload Progress: {uploadedCount}/{maxImages}
               </div>
-            </div>
+            </div> */}
 
             <div style={{ marginBottom: '1.5rem' }}>
               <div style={{ marginBottom: '1.5rem' }}>
@@ -784,9 +1035,9 @@ const EnhancedProductCards = () => {
 
                   <p className="upload-text-primary">Click to browse files or drag and drop</p>
 
-                  <p className="upload-text-secondary">
+                  {/* <p className="upload-text-secondary">
                     Maximum 1 image allowed • Supported formats: JPG, PNG, GIF
-                  </p>
+                  </p> */}
                 </div>
 
                 {previewUrl && (
@@ -883,7 +1134,7 @@ const EnhancedProductCards = () => {
 
                   <img src={currentModalImage} alt={product.name} className="modal-image" />
 
-                  {allImages.length > 1 && (
+                  {/* {allImages.length > 1 && (
                     <button
                       className="nav-arrow nav-arrow-right"
                       onClick={() => handleModalNextImage(product.id)}
@@ -902,20 +1153,20 @@ const EnhancedProductCards = () => {
                         />
                       </svg>
                     </button>
-                  )}
+                  )} */}
 
-                  {allImages.length > 1 && (
+                  {/* {allImages.length > 1 && (
                     <div className="image-counter">
                       {currentIndex + 1} / {allImages.length}
                     </div>
-                  )}
+                  )} */}
                 </div>
 
-                {uploadedCount < maxImages && (
+                {/* {uploadedCount < maxImages && (
                   <div className="upload-progress-indicator">
                     Uploaded: {uploadedCount}/{maxImages}
                   </div>
-                )}
+                )} */}
               </div>
 
               {/* Right Product Info */}
@@ -926,10 +1177,6 @@ const EnhancedProductCards = () => {
                     <span className="modal-label">Job Number:</span>
                     <span className="modal-value">{product.jobNo}</span>
                   </div>
-                  {/* <div className="modal-detail-item">
-                    <span className="modal-label">Product:</span>
-                    <span className="modal-value">{product.product}</span>
-                  </div> */}
                   <div className="modal-detail-item">
                     <span className="modal-label">Quantity:</span>
                     <span className="modal-value">{product.quantity}</span>
@@ -939,17 +1186,29 @@ const EnhancedProductCards = () => {
                     <span className="modal-value">{product.size}</span>
                   </div>
                   <div className="modal-detail-item">
+                    <span className="modal-label">Time:</span>
+                    <span className="modal-value">{product.time}</span>
+                  </div>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Price per Piece:</span>
+                    <span className="modal-value">{product.pricePerPiece}</span>
+                  </div>
+                  <div className="modal-detail-item">
                     <span className="modal-label">Status:</span>
                     <span className={`modal-badge ${getDeliveryModeClass(product.status)}`}>
                       {product.status}
                     </span>
                   </div>
+                  {/* <div className="modal-detail-item">
+                      <span className="modal-label">Assigned To:</span>
+                      <span className="modal-value">{assignedPerson || 'Ronald'}</span>
+                    </div> */}
                 </div>
               </div>
             </div>
 
             {/* Row 2: Assignment Details - Full Width */}
-            {(['14888', '14889'].includes(product.jobNo) || currentModalImage) && (
+            {/* {(['14888', '14889'].includes(product.jobNo) || currentModalImage) && (
               <div className="modal-full-width-row">
                 <div className="modal-section">
                   <h3 className="modal-section-title">Assignment Details</h3>
@@ -983,17 +1242,7 @@ const EnhancedProductCards = () => {
                           <td>
                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                               {['14892'].includes(product.jobNo) && (
-                                <span
-                                  // style={{
-                                  //   backgroundColor: '#ef4444',
-                                  //   color: 'white',
-                                  //   border: 'none',
-                                  //   borderRadius: '4px',
-                                  //   padding: '4px 12px',
-                                  //   fontSize: '12px',
-                                  // }}
-                                  className={`modal-badge ${getDeliveryModeClass('Reject')}`}
-                                >
+                                <span className={`modal-badge ${getDeliveryModeClass('Reject')}`}>
                                   Reject
                                 </span>
                               )}
@@ -1010,7 +1259,7 @@ const EnhancedProductCards = () => {
                   </table>
                 </div>
               </div>
-            )}
+            )} */}
 
             {/* Row 3: Client Information & Financial Details */}
             <div className="modal-two-column-row">
@@ -1048,10 +1297,91 @@ const EnhancedProductCards = () => {
                   <span className="modal-label">Payment Terms:</span>
                   <span className="modal-value">{product.paymentTerms}</span>
                 </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Delivery Type:</span>
+                  <span className="modal-value">{product.deliveryType}</span>
+                </div>
               </div>
             </div>
 
-            {/* Row 4: Delivery Information & Product Specifications */}
+            {/* Row 4: Billing Address & Delivery Address */}
+            <div className="modal-two-column-row">
+              <div className="modal-section">
+                <h3 className="modal-section-title">Billing Address</h3>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Street:</span>
+                  <span className="modal-value">{product.billingAddress?.street || '1st Floor, Cleonett House, Andheri East'}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">City:</span>
+                  <span className="modal-value">{product.billingAddress?.city || 'Mumbai'}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">State:</span>
+                  <span className="modal-value">{product.billingAddress?.state || 'MH'}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Postal Code:</span>
+                  <span className="modal-value">{product.billingAddress?.postalCode || '400059'}</span>
+                </div>
+              </div>
+
+              <div className="modal-section">
+                <h3 className="modal-section-title">Delivery Address</h3>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Street:</span>
+                  <span className="modal-value">
+                    {product.deliveryAddress?.street || '1st Floor, Cleonett House, Andheri East'}
+                  </span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">City:</span>
+                  <span className="modal-value">{product.deliveryAddress?.city || 'Mumbai'}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">State:</span>
+                  <span className="modal-value">{product.deliveryAddress?.state || 'MH'}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Postal Code:</span>
+                  <span className="modal-value">
+                    {product.deliveryAddress?.postalCode || '400059'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 5: Packing Information */}
+            <div className="modal-two-column-row">
+              <div className="modal-section">
+                <h3 className="modal-section-title">Packing Details</h3>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Packing Type:</span>
+                  <span className="modal-value">{product.packingType}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Inner Packing:</span>
+                  <span className="modal-value">{product.innerPackingType}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Premium Options:</span>
+                  <span className="modal-value">{product.premiumPackingOptions}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Packing Mode:</span>
+                  <span className="modal-value">{product.packingMode}</span>
+                </div>
+              </div>
+
+              <div className="modal-section">
+                <h3 className="modal-section-title">Packing Instructions</h3>
+                <div className="modal-detail-item">
+                  <span className="modal-value">{product.packingInstructions}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 6: Delivery Information & Product Specifications */}
             <div className="modal-two-column-row">
               <div className="modal-section">
                 <h3 className="modal-section-title">Delivery Information</h3>
@@ -1457,14 +1787,13 @@ const EnhancedProductCards = () => {
       ...getProductImages(product.id),
     ]
     const showSlideControls = allImages.length > 1
+    const isProcessed = processedProducts.has(product.id) // Check if product is processed
 
     const handleAccept = () => {
       handleAcceptProduct(product.id)
     }
 
     const handleSubmit = () => {
-      // Handle final submission when all images are uploaded
-
       alert(`${product.name} submitted successfully!`)
     }
 
@@ -1481,6 +1810,7 @@ const EnhancedProductCards = () => {
             flex-direction: ${isMobile || isTablet ? 'column' : 'row'};
             transition: none;
             height: fit-content;
+            max-height: 260px !important;
             transform: none;
           }
 
@@ -1503,7 +1833,7 @@ const EnhancedProductCards = () => {
             flex: ${isMobile || isTablet ? 'none' : '1'};
             display: flex;
             align-items: center;
-            max-height: 238px !important;
+            max-height: 245px !important;
             justify-content: center;
           }
 
@@ -1532,10 +1862,6 @@ const EnhancedProductCards = () => {
             font-weight: bold;
             transition: background-color 0.2s ease;
             z-index: 5;
-          }
-
-          .slide-arrow:hover {
-            background-color: rgba(0, 0, 0, 0.7);
           }
 
           .slide-arrow:hover {
@@ -1629,6 +1955,7 @@ const EnhancedProductCards = () => {
             border: 1px solid #0061ed;
             color: #0061ed;
             cursor: pointer;
+            margin: 3px 0;
             transition:
               background-color 0.2s ease,
               color 0.2s ease;
@@ -1653,6 +1980,36 @@ const EnhancedProductCards = () => {
 
           .edit-btn:hover {
             background: rgb(64, 62, 62);
+          }
+
+          .process-btn {
+            width: auto;
+            background: #5b5757;
+            padding: 4px 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+          }
+
+          .edit-btn:hover {
+            background: rgb(64, 62, 62);
+          }
+
+          .process-btn {
+            width: auto;
+            background: #0061ed;
+            padding: 4px 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            cursor: pointer;
+          }
+
+          .process-btn:hover {
+            background: rgb(9, 95, 214);
           }
 
           .processing-green-btn {
@@ -1692,7 +2049,7 @@ const EnhancedProductCards = () => {
         <div className="product-card">
           <div className="image-container">
             <div className="image-slider">
-              {showSlideControls && (
+              {/* {showSlideControls && (
                 <button
                   className="slide-arrow slide-arrow-left"
                   onClick={() => handlePreviousImage(product.id)}
@@ -1702,20 +2059,20 @@ const EnhancedProductCards = () => {
                     width="14"
                     height="14"
                     fill="currentColor"
-                    class="bi bi-arrow-left"
+                    className="bi bi-arrow-left"
                     viewBox="0 0 16 16"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"
                     />
                   </svg>
                 </button>
-              )}
+              )} */}
 
               <img src={currentImage} alt={product.name} className="product-image" />
 
-              {showSlideControls && (
+              {/* {showSlideControls && (
                 <button
                   className="slide-arrow slide-arrow-right"
                   onClick={() => handleNextImage(product.id)}
@@ -1725,23 +2082,15 @@ const EnhancedProductCards = () => {
                     width="14"
                     height="14"
                     fill="currentColor"
-                    class="bi bi-arrow-right"
+                    className="bi bi-arrow-right"
                     viewBox="0 0 16 16"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"
                     />
                   </svg>
                 </button>
-              )}
-
-              {/* {(showSlideControls || uploadedCount > 0) && (
-                <div className="image-progress">
-                  {showSlideControls
-                    ? `${(currentImageIndex[product.id] || 0) + 1}/${allImages.length}`
-                    : `${uploadedCount}/${maxImages}`}
-                </div>
               )} */}
             </div>
           </div>
@@ -1759,10 +2108,6 @@ const EnhancedProductCards = () => {
                 <span className="detail-label">CLIENT: </span>
                 <span className="detail-value">{product.client}</span>
               </div>
-              {/* <div className="detail-row">
-                <span className="detail-label">PRODUCT: </span>
-                <span className="detail-value">{product.product}</span>
-              </div> */}
               <div className="detail-row">
                 <span className="detail-label">QUANTITY: </span>
                 <span className="detail-value">{product.quantity}</span>
@@ -1789,10 +2134,33 @@ const EnhancedProductCards = () => {
                     <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                   </svg>
                 </div>
-                <button className="edit-btn" onClick={() => navigate('/salesorder')}>Edit</button>
+                {/* {['14889'].includes(product.jobNo) && (
+                  <button
+                    className={`process-btn ${getDeliveryModeClass('Process')}`}
+                    onClick={() => handleToProcessClick(product.id)}
+                  >
+                    To Process
+                  </button>
+                )} */}
+
+                {/* Show Edit button if not processed, otherwise show To Process button */}
+                {/* {!isProcessed ? (
+                  <button className="edit-btn" onClick={() => handleEditClick(product.id)}>
+                    Edit
+                  </button>
+                ) : (
+                  !['14889', '14890', '14892'].includes(product.jobNo) && (
+                    <button
+                      className={`process-btn ${getDeliveryModeClass('Process')}`}
+                      onClick={() => handleToProcessClick(product.id)}
+                    >
+                      To Process
+                    </button>
+                  )
+                )} */}
 
                 {/* Show upload icon when showUploadIcons is true */}
-                {showUploadIcons && uploadedCount < maxImages && (
+                {!['14892', '14890', '14889'].includes(product.jobNo) && (
                   <div
                     className="action-icon"
                     title="Upload Image"
@@ -1814,40 +2182,6 @@ const EnhancedProductCards = () => {
                     </svg>
                   </div>
                 )}
-
-                {/* Show accept button when not accepted OR when upload is complete and not at max */}
-                {/* {(!isAccepted ||
-                  (!showUploadIcons && uploadedCount > 0 && uploadedCount < maxImages)) &&
-                  uploadedCount !== maxImages &&
-                  product.jobNo !== '14892' && (
-                    <button className="edit-btn" onClick={handleAccept}>
-                      Accept
-                    </button>
-                  )} */}
-
-                {/* Show green processing button when showUploadIcons is true */}
-                {/* {showUploadIcons && uploadedCount < maxImages && (
-                  <button className="processing-green-btn" disabled>
-                    Processing...
-                  </button>
-                )} */}
-
-                {/* Show submit button when all images uploaded */}
-                {/* {uploadedCount === maxImages && !['14892', '14890'].includes(product.jobNo) && (
-                  <button className="submit-btn" onClick={handleSubmit}>
-                    Submit
-                  </button>
-                )} */}
-
-                {/* Show upload progress when there are uploaded images */}
-                {/* {uploadedCount > 0 &&
-                  product.jobNo !== '14892' &&
-                  !['14892', '14890', '14888'].includes(product.jobNo) &&
-                  uploadedCount !== maxImages && (
-                    <span className="upload-progress-text">
-                      {uploadedCount}/{maxImages}
-                    </span>
-                  )} */}
               </div>
             </div>
           </div>
@@ -1971,7 +2305,7 @@ const EnhancedProductCards = () => {
           color: white;
         }
 
-        .status-design {
+        .status-process {
           background-color: #2563eb;
           color: white;
         }
