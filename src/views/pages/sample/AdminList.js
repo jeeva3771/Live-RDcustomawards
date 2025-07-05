@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+
 import { CButton, CCol, CFormLabel, CFormSelect } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import CIcon from '@coreui/icons-react'
@@ -32,7 +33,13 @@ const EnhancedProductCards = () => {
   const [showUploadForProducts, setShowUploadForProducts] = useState(new Set())
   const [currentImageIndex, setCurrentImageIndex] = useState({})
   const [modalImageIndex, setModalImageIndex] = useState({})
-  const [processedProducts, setProcessedProducts] = useState(new Set([7, 8, 9])) // New state for processed products
+  const [processedProducts, setProcessedProducts] = useState(new Set([7, 8, 9]))
+  const [activeTab, setActiveTab] = useState('All')
+  const [viewMode, setViewMode] = useState('grid') // grid, table, super-grid
+  const [selectedProduct, setSelectedProduct] = useState(null) // For super-grid detail view
+  const [showPriorityModal, setShowPriorityModal] = useState(false)
+  const [selectedPriority, setSelectedPriority] = useState('')
+  const [priorityProductId, setPriorityProductId] = useState(null)
   const navigate = useNavigate()
 
   // Available persons list
@@ -65,7 +72,6 @@ const EnhancedProductCards = () => {
       paymentTerms: '50% advance & Bal before dispatch & delivery',
       maxImages: 1,
       remarks: 'Special product',
-
       time: '2025-02-08 04:00 PM',
       phoneNumber: '98337 40939',
       pricePerPiece: '₹1,100',
@@ -113,21 +119,8 @@ const EnhancedProductCards = () => {
       paymentTerms: '50% advance & Bal before dispatch & delivery',
       maxImages: 1,
       remarks: 'Special product',
-
       time: '2025-02-08 04:30 PM',
       phoneNumber: '98337 40939',
-      deliveryAddress: {
-        street: 'ITC Central, Parel',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400012',
-      },
-      billingAddress: {
-        street: '1st Floor, Cleonett House, Andheri East',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400059',
-      },
       pricePerPiece: '₹1,100',
       deliveryType: 'Express Hand Delivery',
       billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
@@ -159,7 +152,6 @@ const EnhancedProductCards = () => {
         postalCode: '400012',
       },
       invoiceUrl: invoiceUrl,
-
       billingAddress: {
         street: '1st Floor, Cleonett House, Andheri East',
         city: 'Mumbai',
@@ -175,7 +167,6 @@ const EnhancedProductCards = () => {
       paymentTerms: '100% Advance',
       maxImages: 4,
       remarks: 'Special product',
-
       time: '2025-04-15 05:00 PM',
       phoneNumber: '98765 43210',
       pricePerPiece: '₹3,000',
@@ -185,22 +176,9 @@ const EnhancedProductCards = () => {
       innerPackingType: 'Cushion Foam',
       premiumPackingOptions: 'Velvet Pouch',
       packingInstructions: 'No scratches on crystal surface.',
-      deliveryAddress: {
-        street: 'ITC Central, Parel',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400012',
-      },
-      billingAddress: {
-        street: '1st Floor, Cleonett House, Andheri East',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400059',
-      },
       packingMode: 'Individual Pack',
       deliveryAddress: 'BKC, Mumbai, MH 400051',
     },
-
     {
       id: 6,
       name: 'GLASS TROPHY',
@@ -214,7 +192,6 @@ const EnhancedProductCards = () => {
         postalCode: '400012',
       },
       invoiceUrl: invoiceUrl,
-
       billingAddress: {
         street: '1st Floor, Cleonett House, Andheri East',
         city: 'Mumbai',
@@ -238,7 +215,6 @@ const EnhancedProductCards = () => {
       paymentTerms: 'Corporate Credit',
       maxImages: 3,
       remarks: 'Good product',
-
       time: '2025-01-10 02:00 PM',
       phoneNumber: '98123 45678',
       pricePerPiece: '₹7,000',
@@ -248,23 +224,11 @@ const EnhancedProductCards = () => {
       innerPackingType: 'Thermocol Mold',
       premiumPackingOptions: 'Custom LED Box',
       packingInstructions: 'Secure LED base separately.',
-      deliveryAddress: {
-        street: 'ITC Central, Parel',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400012',
-      },
-      billingAddress: {
-        street: '1st Floor, Cleonett House, Andheri East',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400059',
-      },
       invoiceFileName: 'sampledetails.pdf',
       packingMode: 'Individual Pack',
       deliveryAddress: 'Andheri West, Mumbai, MH 400053',
+      designFile: 'design_file.pdf',
     },
-
     {
       id: 8,
       name: 'GOLD MEDAL',
@@ -301,7 +265,6 @@ const EnhancedProductCards = () => {
       paymentTerms: 'Corporate Credit',
       maxImages: 1,
       remarks: 'Special product',
-
       time: '2026-01-15 03:00 PM',
       phoneNumber: '91234 56789',
       pricePerPiece: '₹1,200',
@@ -309,20 +272,7 @@ const EnhancedProductCards = () => {
       billingAddress: 'Sports Federation India, Worli, Mumbai, MH 400030',
       packingType: 'Velvet Pouches',
       innerPackingType: 'Individual Slot',
-      deliveryAddress: {
-        street: 'ITC Central, Parel',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400012',
-      },
-      billingAddress: {
-        street: '1st Floor, Cleonett House, Andheri East',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400059',
-      },
       invoiceUrl: invoiceUrl,
-
       premiumPackingOptions: 'Branded Medal Case',
       packingInstructions: 'Group by sport type.',
       packingMode: 'Batch Pack of 10',
@@ -351,7 +301,6 @@ const EnhancedProductCards = () => {
       paymentTerms: '50% advance & Bal before dispatch & delivery',
       maxImages: 1,
       remarks: 'Special product',
-
       time: '2025-02-18 02:00 PM',
       phoneNumber: '99887 76543',
       pricePerPiece: '₹3,000',
@@ -364,29 +313,68 @@ const EnhancedProductCards = () => {
       packingMode: 'Batch Pack',
       deliveryAddress: 'Heritage Club, Fort, Mumbai, MH 400001',
     },
+
+    {
+      id: 10,
+      name: 'MIC TROPHY',
+      jobNo: '14887b',
+      client: 'CLEONETT EVENTS',
+      email: 'steffie@cleonett.com',
+      contactNo: '98337 40939',
+      quantity: 46,
+      size: '10 Inches',
+      startTime: '2025-02-09 09:10 AM',
+      endTime: '2025-02-10 10:10 AM',
+      status: 'Completed',
+      deliveryDate: '19-03-2025',
+      deliveryLocation: 'ITC Central - Parel - MUMBAI',
+      deliveryMode: 'HAND DELIVERY',
+      mainImage: award5,
+      enquiryOrigin: 'Website Form',
+      deliveryAddress: {
+        street: 'ITC Central, Parel',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400012',
+      },
+      billingAddress: {
+        street: '1st Floor, Cleonett House, Andheri East',
+        city: 'Mumbai',
+        state: 'MH',
+        postalCode: '400059',
+      },
+      budget: '₹50,000',
+      preferedMaterial: 'Crystal Glass',
+      briefing: 'Duplicate batch for same event — same engraving and specs.',
+      paymentTerms: '50% advance & Bal before dispatch & delivery',
+      maxImages: 1,
+      remarks: 'Special product',
+      time: '2025-02-08 04:30 PM',
+      phoneNumber: '98337 40939',
+      pricePerPiece: '₹1,100',
+      deliveryType: 'Express Hand Delivery',
+      billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
+      packingType: 'Bubble Wrap & Box',
+      innerPackingType: 'Foam Cutout',
+      premiumPackingOptions: 'Branded Gift Box',
+      packingInstructions: 'Keep same as previous lot.',
+      packingMode: 'Individual Pack',
+      deliveryAddress: 'ITC Central, Parel, Mumbai, MH 400012',
+    },
   ]
 
-  // Get screen size for responsive design
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
+  // Get available statuses for tabs (remove duplicate completed)
+  const statusTabs = ['All', ...new Set(products.map((product) => product.status))]
 
-  React.useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth)
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  // Responsive breakpoints
-  const isMobile = windowWidth <= 480
-  const isTablet = windowWidth <= 768
-  const isSmallDesktop = windowWidth <= 1024
-
-  // Filter products based on search term
-  const filteredProducts = products.filter(
-    (product) =>
+  // Filter products based on active tab and search term
+  const filteredProducts = products.filter((product) => {
+    const matchesTab = activeTab === 'All' || product.status === activeTab
+    const matchesSearch =
       product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.jobNo.includes(searchTerm),
-  )
+      product.jobNo.includes(searchTerm)
+    return matchesTab && matchesSearch
+  })
 
   const getDeliveryModeClass = (mode) => {
     switch (mode) {
@@ -410,6 +398,8 @@ const EnhancedProductCards = () => {
         return 'status-green'
       case 'Reject':
         return 'status-red'
+      case 'Completed':
+        return 'status-completed'
       default:
         return 'status-default'
     }
@@ -424,7 +414,6 @@ const EnhancedProductCards = () => {
     const product = products.find((p) => p.id === productId)
     let count = images.length
 
-    // Add 1 if product has mainImage (default image)
     if (product && product.mainImage) {
       count += 1
     }
@@ -486,29 +475,29 @@ const EnhancedProductCards = () => {
     }))
   }
 
-  const handleModalPreviousImage = (productId) => {
+  const handlePreviousModalImage = (productId) => {
     const images = getProductImages(productId)
     const product = products.find((p) => p.id === productId)
-    const allImages = [...(product.mainImage ? [product.mainImage] : []), ...images]
+    const totalImages = images.length + (product.mainImage ? 1 : 0)
 
-    if (allImages.length <= 1) return
+    if (totalImages <= 1) return
 
     setModalImageIndex((prev) => ({
       ...prev,
-      [productId]: ((prev[productId] || 0) - 1 + allImages.length) % allImages.length,
+      [productId]: ((prev[productId] || 0) - 1 + totalImages) % totalImages,
     }))
   }
 
-  const handleModalNextImage = (productId) => {
+  const handleNextModalImage = (productId) => {
     const images = getProductImages(productId)
     const product = products.find((p) => p.id === productId)
-    const allImages = [...(product.mainImage ? [product.mainImage] : []), ...images]
+    const totalImages = images.length + (product.mainImage ? 1 : 0)
 
-    if (allImages.length <= 1) return
+    if (totalImages <= 1) return
 
     setModalImageIndex((prev) => ({
       ...prev,
-      [productId]: ((prev[productId] || 0) + 1) % allImages.length,
+      [productId]: ((prev[productId] || 0) + 1) % totalImages,
     }))
   }
 
@@ -540,6 +529,27 @@ const EnhancedProductCards = () => {
     document.body.style.paddingRight = '0px'
   }
 
+  const openPriorityModal = (productId) => {
+    setPriorityProductId(productId)
+    setSelectedPriority('')
+    setShowPriorityModal(true)
+  }
+
+  const closePriorityModal = () => {
+    setShowPriorityModal(false)
+    setPriorityProductId(null)
+    setSelectedPriority('')
+  }
+
+  const handlePrioritySubmit = () => {
+    if (selectedPriority) {
+      alert(
+        `Product ${priorityProductId} added to Production Plan with ${selectedPriority} priority!`,
+      )
+      closePriorityModal()
+    }
+  }
+
   const handleAcceptProduct = (productId) => {
     setAcceptedProducts((prev) => {
       const newAccepted = new Set(prev)
@@ -553,20 +563,16 @@ const EnhancedProductCards = () => {
     })
   }
 
-  // New function to handle edit button click
   const handleEditClick = (productId) => {
     setProcessedProducts((prev) => {
       const newProcessed = new Set(prev)
       newProcessed.add(productId)
       return newProcessed
     })
-    // navigate('/salesorder')
   }
 
-  // New function to handle "To Process" button click
   const handleToProcessClick = (productId) => {
     alert(`Product ${productId} is now being processed!`)
-    // You can add additional logic here for processing
   }
 
   const confirmUpload = () => {
@@ -588,6 +594,210 @@ const EnhancedProductCards = () => {
       }
       reader.readAsDataURL(selectedFile)
     }
+  }
+
+  const downloadFile = (url, filename) => {
+    const link = document.createElement('a')
+    link.href = url
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  // Priority Modal Component
+  const PriorityModal = () => {
+    if (!showPriorityModal) return null
+
+    return (
+      <div className="modal-overlay" onClick={closePriorityModal}>
+        <div className="priority-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">Set Priority</h2>
+            <button className="close-button" onClick={closePriorityModal}>
+              ×
+            </button>
+          </div>
+
+          <div className="priority-modal-body">
+            <div className="priority-options">
+              {['Very High', 'High', 'Medium', 'Low', 'Very Low'].map((priority) => (
+                <label
+                  key={priority}
+                  className={`priority-option priority-${priority.toLowerCase().replace(' ', '-')}`}
+                >
+                  <input
+                    type="radio"
+                    name="priority"
+                    className="priority"
+                    value={priority}
+                    checked={selectedPriority === priority}
+                    onChange={(e) => setSelectedPriority(e.target.value)}
+                  />
+                  <span className="priority-label">{priority}</span>
+                </label>
+              ))}
+            </div>
+
+            <div className="priority-actions">
+              <button onClick={closePriorityModal} className="btn-cancel">
+                Cancel
+              </button>
+              <button
+                onClick={handlePrioritySubmit}
+                className="btn-submit"
+                disabled={!selectedPriority}
+              >
+                Add to Production Plan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Super Grid Detail Card Component
+  const SuperGridDetailCard = ({ product }) => {
+    if (!product) return null
+
+    const currentImage = getCurrentImage(product)
+    const isProcessed = processedProducts.has(product.id)
+    const showUploadIcons = showUploadForProducts.has(product.id)
+    const uploadedCount = getUploadedCount(product.id)
+    const maxImages = getMaxImages(product)
+    const allImages = [
+      ...(product.mainImage ? [product.mainImage] : []),
+      ...getProductImages(product.id),
+    ]
+    const showSlideControls = allImages.length > 1
+
+    const handleSubmit = () => {
+      openPriorityModal(product.id)
+    }
+
+    return (
+      <div className="super-grid-card-view">
+        {/* Image Section */}
+        <div className="super-grid-image-section">
+          <img src={currentImage} alt={product.name} className="super-grid-main-image" />
+        </div>
+
+        {/* Content Section */}
+        <div className="super-grid-content">
+          <div>
+            <h2 className="super-grid-product-name">{product.name}</h2>
+            <div className="super-grid-job-number">
+              Job No: <span>{product.jobNo}</span>
+            </div>
+          </div>
+
+          <div className="super-grid-details">
+            <div className="super-grid-detail-row">
+              <span className="detail-label">CLIENT: </span>
+              <span className="detail-value">{product.client}</span>
+            </div>
+            <div className="super-grid-detail-row">
+              <span className="detail-label">QUANTITY: </span>
+              <span className="detail-value">{product.quantity}</span>
+            </div>
+            <div className="super-grid-detail-row">
+              <span className="detail-label">DELIVERY DATE: </span>
+              <span className="detail-value">{product.deliveryDate}</span>
+            </div>
+            <div className="super-grid-detail-row">
+              <span className="detail-label">STATUS: </span>
+              <span className={`status-badge ${getDeliveryModeClass(product.status)}`}>
+                {product.status}
+              </span>
+            </div>
+
+            <div className="super-grid-actions">
+              {/* Show only eye icon for completed status, otherwise show all actions */}
+              {product.status === 'Completed' ? (
+                <div
+                  className="action-icon"
+                  onClick={() => openModal(product)}
+                  title="View All Details"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                  </svg>
+                </div>
+              ) : (
+                <>
+                  {/* Always show eye icon */}
+                  {['14892', '14890', '14889', '14893c'].includes(product.jobNo) && (
+                    <div
+                      className="action-icon"
+                      onClick={() => openModal(product)}
+                      title="View All Details"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                      </svg>
+                    </div>
+                  )}
+
+                  {['14889'].includes(product.jobNo) && (
+                    <button
+                      className={`process-btn ${getDeliveryModeClass('Process')}`}
+                      onClick={() => handleToProcessClick(product.id)}
+                    >
+                      To Process
+                    </button>
+                  )}
+
+                  {!isProcessed && !['14893c', '14890'].includes(product.jobNo) ? (
+                    <button className="edit-btn" onClick={() => navigate('/salesorder')}>
+                      Edit
+                    </button>
+                  ) : (
+                    !['14889', '14890', '14892', '14893c'].includes(product.jobNo) && (
+                      <button
+                        className={`process-btn ${getDeliveryModeClass('Process')}`}
+                        onClick={() => handleToProcessClick(product.id)}
+                      >
+                        To Process
+                      </button>
+                    )
+                  )}
+
+                  {['14892'].includes(product.jobNo) && (
+                    <button className="submit-btn" onClick={handleSubmit}>
+                      To Production Plan
+                    </button>
+                  )}
+
+                  {showUploadIcons && uploadedCount < maxImages && (
+                    <div
+                      className="action-icon"
+                      title="Upload Image"
+                      onClick={() => openUploadModal(product)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="currentColor"
+                        className="bi bi-cloud-arrow-up"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"
+                        />
+                        <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+                      </svg>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   // Upload Modal Component
@@ -652,284 +862,94 @@ const EnhancedProductCards = () => {
     const maxImages = getMaxImages(product)
 
     return (
-      <>
-        <style jsx>{`
-          .upload-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 1rem;
-          }
+      <div className="upload-modal-overlay" onClick={onClose}>
+        <div className="upload-modal-content" onClick={(e) => e.stopPropagation()}>
+          <h3 className="upload-modal-title">Image Upload</h3>
 
-          .upload-modal-content {
-            background-color: white;
-            border-radius: 0.75rem;
-            width: 100%;
-            max-width: 600px;
-            padding: 1.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            margin: auto;
-            max-height: 90vh;
-            overflow: auto;
-          }
-
-          .upload-modal-title {
-            margin-bottom: 1.5rem;
-            color: #111827;
-            font-size: 1.25rem;
-            font-weight: bold;
-            text-align: center;
-          }
-
-          .upload-progress {
-            background-color: #f3f4f6;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-          }
-
-          .upload-progress-text {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #374151;
-          }
-
-          .upload-drop-zone {
-            border: 2px dashed ${dragActive ? '#4F46E5' : '#D1D5DB'};
-            border-radius: 0.5rem;
-            padding: 2rem;
-            text-align: center;
-            background-color: ${dragActive ? '#F3F4F6' : '#F9FAFB'};
-            cursor: pointer;
-            transition:
-              border-color 0.2s ease,
-              background-color 0.2s ease;
-            position: relative;
-          }
-
-          .upload-icon {
-            margin: 0 auto 1rem auto;
-            display: block;
-          }
-
-          .upload-browse-btn {
-            background-color: #0061ed;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            border: none;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 1rem;
-          }
-
-          .upload-text-primary {
-            color: #6b7280;
-            font-size: 0.875rem;
-            margin: 0.5rem 0;
-            line-height: 1.4;
-          }
-
-          .upload-text-secondary {
-            color: #9ca3af;
-            font-size: 0.75rem;
-            margin: 0;
-          }
-
-          .upload-preview-container {
-            margin-top: 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            background-color: white;
-          }
-
-          .upload-preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-          }
-
-          .upload-preview-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: #374151;
-            margin: 0;
-          }
-
-          .upload-remove-btn {
-            background-color: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 0.25rem;
-            padding: 0.25rem 0.5rem;
-            font-size: 0.75rem;
-            cursor: pointer;
-          }
-
-          .upload-preview-content {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-          }
-
-          .upload-preview-image {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 0.375rem;
-            border: 1px solid #e5e7eb;
-          }
-
-          .upload-file-info h4 {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: #111827;
-            margin: 0 0 0.25rem 0;
-          }
-
-          .upload-file-info p {
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin: 0;
-          }
-
-          .upload-actions {
-            display: flex;
-            gap: 0.75rem;
-            justify-content: flex-end;
-          }
-
-          .upload-btn-cancel {
-            padding: 0.75rem 1.5rem;
-            background-color: #6b7280;
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 0.875rem;
-            font-weight: 500;
-          }
-
-          .upload-btn-submit {
-            padding: 0.75rem 1.5rem;
-            background-color: ${selectedFile ? '#28a745' : 'rgb(100 176 100)'};
-            color: white;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: ${selectedFile ? 'pointer' : 'not-allowed'};
-            font-size: 0.875rem;
-            font-weight: 500;
-          }
-
-          .hidden-input {
-            display: none;
-          }
-        `}</style>
-
-        <div className="upload-modal-overlay" onClick={onClose}>
-          <div className="upload-modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3 className="upload-modal-title">Image Upload</h3>
-
-            <div className="upload-progress">
-              <div className="upload-progress-text">
-                Upload Progress: {uploadedCount}/{maxImages}
-              </div>
-            </div>
-
-            <div style={{ marginBottom: '1.5rem' }}>
-              <div style={{ marginBottom: '1.5rem' }}>
-                <div
-                  className="upload-drop-zone"
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                  onClick={() => document.getElementById('fileInput').click()}
-                >
-                  <input
-                    id="fileInput"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleFileInputChange}
-                    className="hidden-input"
-                  />
-
-                  <div>
-                    <svg
-                      width="48"
-                      height="48"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#6B7280"
-                      strokeWidth="1.5"
-                      className="upload-icon"
-                    >
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7,10 12,15 17,10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                  </div>
-
-                  <button type="button" className="upload-browse-btn">
-                    BROWSE & UPLOAD
-                  </button>
-
-                  <p className="upload-text-primary">Click to browse files or drag and drop</p>
-
-                  <p className="upload-text-secondary">
-                    Maximum 1 image allowed • Supported formats: JPG, PNG, GIF
-                  </p>
-                </div>
-
-                {previewUrl && (
-                  <div className="upload-preview-container">
-                    <div className="upload-preview-header">
-                      <h4 className="upload-preview-title">Image Preview</h4>
-                      <button onClick={removeFile} className="upload-remove-btn">
-                        X
-                      </button>
-                    </div>
-
-                    <div className="upload-preview-content">
-                      <img src={previewUrl} alt="Preview" className="upload-preview-image" />
-                      <div className="upload-file-info">
-                        <h4>{selectedFile?.name}</h4>
-                        <p>
-                          {selectedFile ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB` : ''}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="upload-actions">
-              <button onClick={onClose} className="upload-btn-cancel">
-                Cancel
-              </button>
-              <button
-                onClick={confirmUpload}
-                className="upload-btn-submit"
-                disabled={!selectedFile}
-              >
-                Confirm Upload
-              </button>
+          <div className="upload-progress">
+            <div className="upload-progress-text">
+              Upload Progress: {uploadedCount}/{maxImages}
             </div>
           </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div
+                className="upload-drop-zone"
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('fileInput').click()}
+              >
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileInputChange}
+                  className="hidden-input"
+                />
+
+                <div>
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#6B7280"
+                    strokeWidth="1.5"
+                    className="upload-icon"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7,10 12,15 17,10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                </div>
+
+                <button type="button" className="upload-browse-btn">
+                  BROWSE & UPLOAD
+                </button>
+
+                <p className="upload-text-primary">Click to browse files or drag and drop</p>
+
+                <p className="upload-text-secondary">
+                  Maximum 1 image allowed • Supported formats: JPG, PNG, GIF
+                </p>
+              </div>
+
+              {previewUrl && (
+                <div className="upload-preview-container">
+                  <div className="upload-preview-header">
+                    <h4 className="upload-preview-title">Image Preview</h4>
+                    <button onClick={removeFile} className="upload-remove-btn">
+                      X
+                    </button>
+                  </div>
+
+                  <div className="upload-preview-content">
+                    <img src={previewUrl} alt="Preview" className="upload-preview-image" />
+                    <div className="upload-file-info">
+                      <h4>{selectedFile?.name}</h4>
+                      <p>
+                        {selectedFile ? `${(selectedFile.size / 1024 / 1024).toFixed(2)} MB` : ''}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="upload-actions">
+            <button onClick={onClose} className="upload-btn-cancel">
+              Cancel
+            </button>
+            <button onClick={confirmUpload} className="upload-btn-submit" disabled={!selectedFile}>
+              Confirm Upload
+            </button>
+          </div>
         </div>
-      </>
+      </div>
     )
   }
 
@@ -937,15 +957,11 @@ const EnhancedProductCards = () => {
     if (!product) return null
 
     const currentModalImage = getCurrentModalImage(product)
-    const assignedPerson = assignedPersons[product.id]
-    const remarks = productRemarks[product.id]
-    const uploadedCount = getUploadedCount(product.id)
-    const maxImages = getMaxImages(product)
     const allImages = [
       ...(product.mainImage ? [product.mainImage] : []),
       ...getProductImages(product.id),
     ]
-    const currentIndex = modalImageIndex[product.id] || 0
+    const showSlideControls = allImages.length > 1
 
     return (
       <div className="modal-overlay" onClick={onClose}>
@@ -958,164 +974,139 @@ const EnhancedProductCards = () => {
           </div>
 
           <div className="modal-body">
-            {/* Row 1: Product Image and Information */}
-            <div className="modal-top-row">
-              {/* Left Image with Navigation */}
-              <div className="modal-image-section">
-                <div className="image-slider-container">
-                  {allImages.length > 1 && (
-                    <button
-                      className="nav-arrow nav-arrow-left"
-                      onClick={() => handleModalPreviousImage(product.id)}
+            {/* Image Section in Modal */}
+            <div className="modal-image-section">
+              {/* {showSlideControls && (
+                  <button
+                    className="slide-arrow slide-arrow-left"
+                    onClick={() => handlePreviousModalImage(product.id)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
                     >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        fill="currentColor"
-                        className="bi bi-arrow-left"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"
-                        />
-                      </svg>
-                    </button>
-                  )}
-
-                  <img src={currentModalImage} alt={product.name} className="modal-image" />
-
-                  {/* {allImages.length > 1 && (
-                    <button
-                      className="nav-arrow nav-arrow-right"
-                      onClick={() => handleModalNextImage(product.id)}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        fill="currentColor"
-                        className="bi bi-arrow-right"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"
-                        />
-                      </svg>
-                    </button>
-                  )} */}
-
-                  {/* {allImages.length > 1 && (
-                    <div className="image-counter">
-                      {currentIndex + 1} / {allImages.length}
-                    </div>
-                  )} */}
-                </div>
-
-                {/* {uploadedCount < maxImages && (
-                  <div className="upload-progress-indicator">
-                    Uploaded: {uploadedCount}/{maxImages}
-                  </div>
+                      <path
+                        fillRule="evenodd"
+                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"
+                      />
+                    </svg>
+                  </button>
                 )} */}
+
+              <img src={currentModalImage} alt={product.name} className="modal-main-image" />
+
+              {/* {showSlideControls && (
+                  <button
+                    className="slide-arrow slide-arrow-right"
+                    onClick={() => handleNextModalImage(product.id)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"
+                      />
+                    </svg>
+                  </button>
+                )} */}
+            </div>
+
+            <div className="modal-two-column-row">
+              <div className="modal-section">
+                <h3 className="modal-section-title">Basic Information</h3>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Job No:</span>
+                  <span className="modal-value">{product.jobNo}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Client Name:</span>
+                  <span className="modal-value">{product.client}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Email:</span>
+                  <span className="modal-value">{product.email}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Contact:</span>
+                  <span className="modal-value">{product.contactNo}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Product Name:</span>
+                  <span className="modal-value">{product.name}</span>
+                </div>
               </div>
 
-              {/* Right Product Info */}
-              <div className="modal-top-right-section">
-                <div className="modal-section">
-                  <h3 className="modal-section-title">Product Information</h3>
-                  <div className="modal-detail-item">
-                    <span className="modal-label">Job Number:</span>
-                    <span className="modal-value">{product.jobNo}</span>
-                  </div>
-                  <div className="modal-detail-item">
-                    <span className="modal-label">Quantity:</span>
-                    <span className="modal-value">{product.quantity}</span>
-                  </div>
-                  <div className="modal-detail-item">
-                    <span className="modal-label">Size:</span>
-                    <span className="modal-value">{product.size}</span>
-                  </div>
-                  <div className="modal-detail-item">
-                    <span className="modal-label">Time:</span>
-                    <span className="modal-value">{product.time}</span>
-                  </div>
-                  <div className="modal-detail-item">
-                    <span className="modal-label">Price per Piece:</span>
-                    <span className="modal-value">{product.pricePerPiece}</span>
-                  </div>
-                  <div className="modal-detail-item">
-                    <span className="modal-label">Status:</span>
-                    <span className={`modal-badge ${getDeliveryModeClass(product.status)}`}>
-                      {product.status}
-                    </span>
-                  </div>
-                  {/* <div className="modal-detail-item">
-                    <span className="modal-label">Assigned To:</span>
-                    <span className="modal-value">{assignedPerson || 'Ronald'}</span>
-                  </div> */}
+              <div className="modal-section">
+                <h3 className="modal-section-title">Product Details</h3>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Job Quantity:</span>
+                  <span className="modal-value">{product.quantity}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Product Size:</span>
+                  <span className="modal-value">{product.size}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Job Completion Date:</span>
+                  <span className="modal-value">{product.deliveryDate}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Time:</span>
+                  <span className="modal-value">{product.time}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Price per Piece:</span>
+                  <span className="modal-value">{product.pricePerPiece}</span>
                 </div>
               </div>
             </div>
 
-            {/* Row 2: Assignment Details - Full Width */}
-            {/* {(['14888', '14889'].includes(product.jobNo) || currentModalImage) && (
-              <div className="modal-full-width-row">
-                <div className="modal-section">
-                  <h3 className="modal-section-title">Assignment Details</h3>
-                  <table className="modal-table">
-                    <thead>
-                      <tr>
-                        <th>Image</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
-                        {['14890', '14892'].includes(product.jobNo) && <th>Client Status</th>}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          <img
-                            src={currentModalImage}
-                            alt={product.name}
-                            style={{
-                              width: '60px',
-                              height: '60px',
-                              objectFit: 'cover',
-                              borderRadius: '4px',
-                              border: '1px solid #e5e7eb',
-                            }}
-                          />
-                        </td>
-                        <td>{product.startTime || '-'}</td>
-                        <td>{product.endTime || '-'}</td>
-                        {['14890', '14892'].includes(product.jobNo) && (
-                          <td>
-                            <div style={{ display: 'flex', gap: '0.5rem' }}>
-                              {['14892'].includes(product.jobNo) && (
-                                <span className={`modal-badge ${getDeliveryModeClass('Reject')}`}>
-                                  Reject
-                                </span>
-                              )}
-                              {['14890'].includes(product.jobNo) && (
-                                <span className={`modal-badge ${getDeliveryModeClass('Approve')}`}>
-                                  Approve
-                                </span>
-                              )}
-                            </div>
-                          </td>
-                        )}
-                      </tr>
-                    </tbody>
-                  </table>
+            <div className="modal-two-column-row">
+              <div className="modal-section">
+                <h3 className="modal-section-title">Delivery Information</h3>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Delivery Address:</span>
+                  <span className="modal-value">{product.deliveryAddress}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Courier:</span>
+                  <span className="modal-value">{product.deliveryMode}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Delivery Type:</span>
+                  <span className="modal-value">{product.deliveryType}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Phone Number:</span>
+                  <span className="modal-value">{product.phoneNumber}</span>
                 </div>
               </div>
-            )} */}
 
-            {/* Row 3: Client Information & Financial Details */}
+              <div className="modal-section">
+                <h3 className="modal-section-title">Payment & Billing</h3>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Payment Terms:</span>
+                  <span className="modal-value">{product.paymentTerms}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Billing Address:</span>
+                  <span className="modal-value">{product.billingAddress}</span>
+                </div>
+                <div className="modal-detail-item">
+                  <span className="modal-label">Remarks:</span>
+                  <span className="modal-value">{product.remarks}</span>
+                </div>
+              </div>
+            </div>
 
-            {/* Row 5: Packing Information */}
             <div className="modal-two-column-row">
               <div className="modal-section">
                 <h3 className="modal-section-title">Packing Details</h3>
@@ -1124,11 +1115,11 @@ const EnhancedProductCards = () => {
                   <span className="modal-value">{product.packingType}</span>
                 </div>
                 <div className="modal-detail-item">
-                  <span className="modal-label">Inner Packing:</span>
+                  <span className="modal-label">Inner Packing Type:</span>
                   <span className="modal-value">{product.innerPackingType}</span>
                 </div>
                 <div className="modal-detail-item">
-                  <span className="modal-label">Premium Options:</span>
+                  <span className="modal-label">Premium Packing Options:</span>
                   <span className="modal-value">{product.premiumPackingOptions}</span>
                 </div>
                 <div className="modal-detail-item">
@@ -1145,559 +1136,108 @@ const EnhancedProductCards = () => {
               </div>
             </div>
 
-            {/* Row 4: Billing Address & Delivery Address */}
-            <div className="modal-two-column-row">
-              <div className="modal-section">
-                <h3 className="modal-section-title">Billing Address</h3>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Street:</span>
-                  <span className="modal-value">
-                    {product.billingAddress?.street || '1st Floor, Cleonett House, Andheri East'}
-                  </span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">City:</span>
-                  <span className="modal-value">{product.billingAddress?.city || 'Mumbai'}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">State:</span>
-                  <span className="modal-value">{product.billingAddress?.state || 'MH'}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Postal Code:</span>
-                  <span className="modal-value">
-                    {product.billingAddress?.postalCode || '400059'}
-                  </span>
-                </div>
-              </div>
-
-              <div className="modal-section">
-                <h3 className="modal-section-title">Delivery Address</h3>
-                {/* <div className="modal-detail-item">
-                  <span className="modal-label">Street:</span>
-                  <span className="modal-value">
-                    {product.deliveryAddress?.street || '1st Floor, Cleonett House, Andheri East'}
-                  </span>
-                </div> */}
-                <div className="modal-detail-item">
-                  <span className="modal-label">City:</span>
-                  <span className="modal-value">{product.deliveryAddress?.city || 'Mumbai'}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">State:</span>
-                  <span className="modal-value">{product.deliveryAddress?.state || 'MH'}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Postal Code:</span>
-                  <span className="modal-value">
-                    {product.deliveryAddress?.postalCode || '400059'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="modal-two-column-row">
-              {/* <div className="modal-section">
-                <h3 className="modal-section-title">Client Information</h3>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Client:</span>
-                  <span className="modal-value">{product.client}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Email:</span>
-                  <a href={`mailto:${product.email}`} className="modal-link">
-                    {product.email}
-                  </a>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Contact:</span>
-                  <a href={`tel:${product.contactNo}`} className="modal-link">
-                    {product.contactNo}
-                  </a>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Enquiry Origin:</span>
-                  <span className="modal-value">{product.enquiryOrigin}</span>
-                </div>
-              </div> */}
-
-              <div className="modal-section">
-                <h3 className="modal-section-title">Delivery</h3>
-                {/* <div className="modal-detail-item">
-                  <span className="modal-label">Budget:</span>
-                  <span className="modal-value">{product.budget}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Payment Terms:</span>
-                  <span className="modal-value">{product.paymentTerms}</span>
-                </div> */}
-                <div className="modal-detail-item">
-                  <span className="modal-label">Delivery Type:</span>
-                  <span className="modal-value">{product.deliveryType}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 6: Delivery Information & Product Specifications */}
-            {/* <div className="modal-two-column-row">
-              <div className="modal-section">
-                <h3 className="modal-section-title">Delivery Information</h3>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Delivery Date:</span>
-                  <span className="modal-value">{product.deliveryDate}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Delivery Location:</span>
-                  <span className="modal-value">{product.deliveryLocation}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Delivery Mode:</span>
-                  <span className="modal-value">{product.deliveryMode}</span>
-                </div>
-              </div>
-
-              <div className="modal-section">
-                <h3 className="modal-section-title">Product Specifications</h3>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Preferred Material:</span>
-                  <span className="modal-value">{product.preferedMaterial}</span>
-                </div>
-                <div className="modal-detail-item">
-                  <span className="modal-label">Briefing:</span>
-                  <span className="modal-value">{product.briefing}</span>
-                </div>
-              </div>
-            </div> */}
-
-            {/* Row 5: Remarks (if exists) - Full Width */}
-            {/* {(remarks || product.remarks) && (
-              <div className="modal-full-width-row">
-                <div className="modal-section">
-                  <h3 className="modal-section-title">Remarks</h3>
-                  <div className="modal-detail-item">
-                    <span className="modal-value">{remarks || product.remarks}</span>
-                  </div>
-                </div>
-              </div>
-            )} */}
-            {/* Row: Invoice PDF Preview */}
-            {/* {product.invoiceUrl && ( */}
-            {['14890', '14893c'].includes(product.jobNo) && product.invoiceUrl && (
-              <div className="modal-full-width-row">
-                <div className="modal-section">
-                  {['14890'].includes(product.jobNo) ? (
-                    <h3 className="modal-section-title">Invoice Document</h3>
-                  ) : (
-                    <h3 className="modal-section-title">Document</h3>
-                  )}
-                  <div className="modal-detail-item">
-                    <span className="modal-label">File:</span>
-                    <div className="modal-file-link-group">
-                      <a
-                        href={product.invoiceUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="modal-link"
-                      >
-                        {product.invoiceFileName || 'Invoice.pdf'}
-                      </a>
-                      <a
-                        href={product.invoiceUrl}
-                        download
-                        className="modal-download-icon"
-                        title="Download"
-                      >
+            {/* Document Files Section */}
+            {(product.invoiceUrl || product.designFile || product.status === 'Completed') && (
+              <div className="modal-documents-section">
+                <h3 className="modal-section-title">Documents</h3>
+                <div className="document-files">
+                  {product.status === 'PI Uploaded' && product.invoiceUrl && (
+                    <div className="document-item">
+                      <div className="document-info">
                         <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="14"
-                          height="14"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
                           fill="currentColor"
-                          viewBox="0 0 16 16"
+                          className="document-icon"
                         >
-                          <path d="M.5 9.9a.5.5 0 0 1 .5.5v3.1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10.4a.5.5 0 0 1 1 0v3.1A2 2 0 0 1 14 15.5H2a2 2 0 0 1-2-2v-3.1a.5.5 0 0 1 .5-.5z" />
-                          <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+                          <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
                         </svg>
-                      </a>
+                        <span>Invoice.pdf</span>
+                      </div>
+                      <button
+                        className="download-btn"
+                        onClick={() => downloadFile(product.invoiceUrl, 'invoice.pdf')}
+                      >
+                        Download
+                      </button>
                     </div>
-                  </div>
+                  )}
+                  {product.status === 'Design Uploaded' && product.designFile && (
+                    <div className="document-item">
+                      <div className="document-info">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          className="document-icon"
+                        >
+                          <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                        </svg>
+                        <span>Design_File.pdf</span>
+                      </div>
+                      <button
+                        className="download-btn"
+                        onClick={() => downloadFile('#', 'design_file.pdf')}
+                      >
+                        Download
+                      </button>
+                    </div>
+                  )}
+                  {product.status === 'Completed' && (
+                    <>
+                      <div className="document-item">
+                        <div className="document-info">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="document-icon"
+                          >
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                          </svg>
+                          <span>Invoice.pdf</span>
+                        </div>
+                        <button
+                          className="download-btn"
+                          onClick={() => downloadFile(product.invoiceUrl, 'invoice.pdf')}
+                        >
+                          Download
+                        </button>
+                      </div>
+                      <div className="document-item">
+                        <div className="document-info">
+                          <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="document-icon"
+                          >
+                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+                          </svg>
+                          <span>Delivery_Receipt.pdf</span>
+                        </div>
+                        <button
+                          className="download-btn"
+                          onClick={() => downloadFile('#', 'delivery_receipt.pdf')}
+                        >
+                          Download
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             )}
-
-            {/* )} */}
           </div>
-
-          {/* Updated Styles */}
-          <style jsx>{`
-            .modal-file-link-group {
-              display: inline-flex;
-              align-items: center;
-              gap: 10px; /* Small tight gap */
-            }
-
-            .modal-download-icon {
-              display: inline-flex;
-              align-items: center;
-              justify-content: center;
-              width: 22px;
-              height: 22px;
-              background-color: #10b981; /* Green */
-              border-radius: 4px;
-              color: white;
-              transition: background-color 0.2s ease;
-            }
-
-            .modal-download-icon:hover {
-              background-color: #059669;
-              text-decoration: none;
-            }
-
-            .modal-overlay {
-              position: fixed;
-              top: 0;
-              left: 0;
-              right: 0;
-              bottom: 0;
-              background-color: rgba(0, 0, 0, 0.5);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              z-index: 1000;
-              padding: 1rem;
-            }
-
-            .detail-modal {
-              background-color: white;
-              border-radius: 0.75rem;
-              width: 100%;
-              max-width: 900px;
-              max-height: 80vh;
-              overflow: hidden;
-              box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-              display: flex;
-              flex-direction: column;
-              margin: 6% auto 0 auto;
-              transform: none;
-              transition: none;
-            }
-
-            .modal-header {
-              display: flex;
-              justify-content: space-between;
-              align-items: center;
-              padding: 1.5rem;
-              border-bottom: 1px solid #e5e7eb;
-              background-color: #f9fafb;
-            }
-
-            .modal-title {
-              font-size: 1.5rem;
-              font-weight: bold;
-              color: #111827;
-              margin: 0;
-            }
-
-            .close-button {
-              background: none;
-              border: none;
-              color: #6b7280;
-              cursor: pointer;
-              padding: 0.5rem;
-              border-radius: 0.25rem;
-              transition: all 0.2s ease;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 1.5rem;
-              font-weight: bold;
-              width: 2rem;
-              height: 2rem;
-            }
-
-            .close-button:hover {
-              color: #374151;
-              background-color: #f3f4f6;
-            }
-
-            .modal-body {
-              padding: 1.5rem;
-              overflow: auto;
-              flex: 1;
-              display: flex;
-              flex-direction: column;
-              gap: 1.5rem;
-            }
-
-            /* Row 1: Image + Product Info */
-            .modal-top-row {
-              margin: 0;
-              display: flex;
-              flex-direction: row;
-              gap: 1.5rem;
-              align-items: stretch;
-              height: 321px;
-            }
-
-            .modal-image-section {
-              flex-shrink: 0;
-              width: 280px;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              align-items: center;
-              background-color: #f9fafb;
-              border-radius: 0.5rem;
-              border: 1px solid #e5e7eb;
-              padding: 0.75rem;
-            }
-
-            .image-slider-container {
-              position: relative;
-              width: 250px;
-              height: 230px;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-            }
-
-            .modal-image {
-              width: 250px;
-              height: 230px;
-              object-fit: contain;
-              border-radius: 0.5rem;
-              box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            }
-
-            .nav-arrow {
-              position: absolute;
-              top: 50%;
-              transform: translateY(-50%);
-              background-color: rgba(0, 0, 0, 0.5);
-              color: white;
-              border: none;
-              border-radius: 50%;
-              width: 30px;
-              height: 30px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              cursor: pointer;
-              font-size: 1.5rem;
-              font-weight: bold;
-              transition: background-color 0.2s ease;
-              z-index: 10;
-            }
-
-            .nav-arrow:hover {
-              background-color: rgba(0, 0, 0, 0.7);
-            }
-
-            .nav-arrow-left {
-              left: -20px;
-            }
-
-            .nav-arrow-right {
-              right: -20px;
-            }
-
-            .image-counter {
-              position: absolute;
-              bottom: -10px;
-              left: 50%;
-              transform: translateX(-50%);
-              background-color: rgba(0, 0, 0, 0.7);
-              color: white;
-              padding: 0.25rem 0.5rem;
-              border-radius: 0.25rem;
-              font-size: 0.75rem;
-              font-weight: 500;
-            }
-
-            .upload-progress-indicator {
-              margin-top: 0.5rem;
-              padding: 0.5rem;
-              background-color: #f3f4f6;
-              border-radius: 0.25rem;
-              font-size: 0.75rem;
-              font-weight: 600;
-              color: #374151;
-              text-align: center;
-            }
-
-            .modal-top-right-section {
-              flex: 1;
-              display: flex;
-              flex-direction: column;
-              height: 100%;
-            }
-
-            /* Full Width Rows */
-            .modal-full-width-row {
-              width: 100%;
-            }
-
-            .modal-section {
-              background-color: #f9fafb;
-              padding: 1rem;
-              border-radius: 0.5rem;
-              border: 1px solid #e5e7eb;
-              height: 100%;
-              display: flex;
-              flex-direction: column;
-              gap: 10px;
-            }
-
-            .modal-section-title {
-              font-size: 1rem;
-              font-weight: bold;
-              color: #0061ed;
-              margin: 0 0 0.75rem 0;
-            }
-
-            /* Two Column Rows */
-            .modal-two-column-row {
-              display: grid;
-              grid-template-columns: 1fr 1fr;
-              gap: 1.5rem;
-            }
-
-            .modal-detail-item {
-              display: flex;
-              flex-direction: row;
-              gap: 0.5rem;
-              align-items: flex-start;
-            }
-
-            .modal-label {
-              font-size: 0.875rem;
-              font-weight: 600;
-              color: #374151;
-              min-width: 120px;
-              flex-shrink: 0;
-            }
-
-            .modal-value {
-              font-size: 0.875rem;
-              color: #111827;
-              line-height: 1.4;
-              flex: 1;
-            }
-
-            .modal-link {
-              font-size: 0.875rem;
-              color: #0061ed;
-              text-decoration: underline;
-              cursor: pointer;
-              flex: 1;
-            }
-
-            .modal-badge {
-              padding: 0.25rem 0.75rem;
-              border-radius: 0.375rem;
-              font-size: 0.75rem;
-              font-weight: 600;
-              display: inline-block;
-            }
-
-            /* Table for Assignment Details */
-            .modal-table {
-              width: 100%;
-              border-collapse: collapse;
-            }
-
-            .modal-table th,
-            .modal-table td {
-              border: 1px solid #d1d5db;
-              padding: 0.75rem;
-              text-align: left;
-              font-size: 0.875rem;
-            }
-
-            .modal-table th {
-              background: #f9fafb;
-              font-weight: 600;
-              color: #374151;
-            }
-
-            .modal-table td {
-              background: white;
-              color: #111827;
-            }
-
-            /* Mobile Responsive */
-            @media (max-width: 768px) {
-              .modal-top-row {
-                flex-direction: column;
-                height: auto;
-              }
-
-              .modal-image-section {
-                width: 100%;
-              }
-
-              .image-slider-container {
-                width: 100%;
-                height: 180px;
-              }
-
-              .modal-image {
-                width: 100%;
-                height: 180px;
-              }
-
-              .nav-arrow-left {
-                left: 10px;
-              }
-
-              .nav-arrow-right {
-                right: 10px;
-              }
-
-              .modal-two-column-row {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-              }
-
-              .modal-label {
-                min-width: 100px;
-                font-size: 0.75rem;
-              }
-
-              .modal-value {
-                font-size: 0.75rem;
-              }
-
-              .modal-table th,
-              .modal-table td {
-                padding: 0.5rem;
-                font-size: 0.75rem;
-              }
-            }
-
-            @media (max-width: 480px) {
-              .modal-body {
-                padding: 1rem;
-                gap: 1rem;
-              }
-
-              .modal-label {
-                min-width: 80px;
-              }
-
-              .modal-table {
-                font-size: 0.7rem;
-              }
-
-              .modal-table th,
-              .modal-table td {
-                padding: 0.4rem;
-              }
-            }
-          `}</style>
         </div>
       </div>
     )
   }
+
   const ProductCard = ({ product }) => {
     const isExpanded = expandedCards.has(product.id)
     const currentImage = getCurrentImage(product)
@@ -1711,440 +1251,227 @@ const EnhancedProductCards = () => {
       ...getProductImages(product.id),
     ]
     const showSlideControls = allImages.length > 1
-    const isProcessed = processedProducts.has(product.id) // Check if product is processed
+    const isProcessed = processedProducts.has(product.id)
 
     const handleAccept = () => {
       handleAcceptProduct(product.id)
     }
 
     const handleSubmit = () => {
-      alert(`${product.name} submitted successfully!`)
+      openPriorityModal(product.id)
     }
 
     return (
-      <>
-        <style jsx>{`
-          .product-card {
-            background-color: white;
-            color: white;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            display: flex;
-            flex-direction: ${isMobile || isTablet ? 'column' : 'row'};
-            transition: none;
-            height: fit-content;
-            max-height: 260px !important;
-            transform: none;
-          }
+      <div className="product-card">
+        <div className="image-container">
+          <img src={currentImage} alt={product.name} className="product-image" />
+        </div>
 
-          .image-container {
-            width: ${isMobile || isTablet ? '100%' : '180px'};
-            height: ${isMobile || isTablet ? '200px' : 'initial'};
-            background-color: #e5e7eb;
-            position: relative;
-            flex-shrink: 0;
-            overflow: hidden;
-            align-self: stretch;
-            display: flex;
-            flex-direction: column;
-          }
-
-          .image-slider {
-            position: relative;
-            width: 100%;
-            height: ${isMobile || isTablet ? '200px' : 'auto'};
-            flex: ${isMobile || isTablet ? 'none' : '1'};
-            display: flex;
-            align-items: center;
-            max-height: 245px !important;
-            justify-content: center;
-          }
-
-          .product-image {
-            width: 100%;
-            height: ${isMobile || isTablet ? '200px' : '100% !important'};
-            flex: ${isMobile || isTablet ? 'none' : '1'};
-            object-fit: ${isMobile || isTablet ? 'contain' : 'fill'};
-          }
-
-          .slide-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 25px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-            font-weight: bold;
-            transition: background-color 0.2s ease;
-            z-index: 5;
-          }
-
-          .slide-arrow:hover {
-            background-color: rgba(0, 0, 0, 0.7);
-          }
-
-          .slide-arrow-left {
-            left: 5px;
-          }
-
-          .slide-arrow-right {
-            right: 5px;
-          }
-
-          .image-progress {
-            position: absolute;
-            bottom: 5px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 0.2rem 0.4rem;
-            border-radius: 0.2rem;
-            font-size: 0.7rem;
-            font-weight: 500;
-          }
-
-          .card-content {
-            padding: ${isMobile ? '1rem' : '0.7rem'};
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-          }
-
-          .product-name {
-            font-size: ${isMobile ? '1.125rem' : '1.375rem'};
-            font-weight: bold;
-            color: black;
-            margin-bottom: 0.25rem;
-          }
-
-          .job-number {
-            font-size: ${isMobile ? '0.75rem' : '0.875rem'};
-            font-weight: bold;
-            color: rgb(0, 97, 237);
-            margin-bottom: 0.4rem;
-          }
-
-          .job-number span {
-            color: black;
-          }
-
-          .details-container {
-            margin-bottom: 1rem;
-          }
-
-          .detail-row {
-            margin-bottom: 0.625rem;
-            font-size: ${isMobile ? '0.75rem' : '0.8rem'};
-            line-height: 1.4;
-          }
-
-          .detail-label {
-            color: #0061ed;
-            font-weight: bold;
-          }
-
-          .detail-value {
-            color: black;
-          }
-
-          .action-icons-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            margin-top: 0.5rem;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-          }
-
-          .action-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: ${isMobile ? '2.5rem' : '1.9rem'};
-            height: ${isMobile ? '2rem' : '1.5rem'};
-            border-radius: 0.25rem;
-            background-color: transparent;
-            border: 1px solid #0061ed;
-            color: #0061ed;
-            cursor: pointer;
-            margin: 3px 0;
-            transition:
-              background-color 0.2s ease,
-              color 0.2s ease;
-            flex-shrink: 0;
-          }
-
-          .action-icon:hover {
-            background-color: #0061ed;
-            color: white;
-          }
-
-          .edit-btn {
-            width: auto;
-            background: #5b5757;
-            padding: 4px 10px;
-            font-size: 14px;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            cursor: pointer;
-          }
-
-          .edit-btn:hover {
-            background: rgb(64, 62, 62);
-          }
-
-          .process-btn {
-            width: auto;
-            background: #5b5757;
-            padding: 4px 10px;
-            font-size: 14px;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            cursor: pointer;
-          }
-
-          .edit-btn:hover {
-            background: rgb(64, 62, 62);
-          }
-
-          .process-btn {
-            width: auto;
-            background: #0061ed;
-            padding: 4px 10px;
-            font-size: 14px;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            cursor: pointer;
-          }
-
-          .process-btn:hover {
-            background: rgb(9, 95, 214);
-          }
-
-          .processing-green-btn {
-            width: auto;
-            background: #28a745;
-            padding: 4px 10px;
-            font-size: 14px;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            cursor: not-allowed;
-          }
-
-          .to-design-badge {
-            display: inline-block;
-            color: rgb(212, 128, 11); /* Blue text */
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            border-bottom: 2px solid rgb(212, 128, 11);
-            padding-bottom: 2px;
-          }
-
-          .to-pi-uploaded-badge {
-            display: inline-block;
-            color: rgb(141, 45, 237); /* Blue text */
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            border-bottom: 2px solid rgb(141, 45, 237);
-            padding-bottom: 2px;
-          }
-
-          .submit-btn {
-            width: auto;
-            background: green;
-            padding: 4px 12px;
-            font-size: 14px;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            cursor: pointer;
-            font-weight: 600;
-          }
-
-          .submit-btn:hover {
-            background: rgb(13, 138, 40);
-          }
-
-          .upload-progress-text {
-            font-size: 0.8rem;
-            color: #666;
-            margin-left: 0.5rem;
-          }
-        `}</style>
-
-        <div className="product-card">
-          <div className="image-container">
-            <div className="image-slider">
-              {showSlideControls && (
-                <button
-                  className="slide-arrow slide-arrow-left"
-                  onClick={() => handlePreviousImage(product.id)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    fill="currentColor"
-                    className="bi bi-arrow-left"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"
-                    />
-                  </svg>
-                </button>
-              )}
-
-              <img src={currentImage} alt={product.name} className="product-image" />
-
-              {showSlideControls && (
-                <button
-                  className="slide-arrow slide-arrow-right"
-                  onClick={() => handleNextImage(product.id)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    fill="currentColor"
-                    className="bi bi-arrow-right"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"
-                    />
-                  </svg>
-                </button>
-              )}
+        <div className="card-content">
+          <div>
+            <h2 className="product-name">{product.name}</h2>
+            <div className="job-number">
+              Job No: <span>{product.jobNo}</span>
             </div>
           </div>
 
-          <div className="card-content">
-            <div>
-              <h2 className="product-name">{product.name}</h2>
-              <div className="job-number">
-                Job No: <span>{product.jobNo}</span>
-              </div>
+          <div className="details-container">
+            <div className="detail-row">
+              <span className="detail-label">CLIENT: </span>
+              <span className="detail-value">{product.client}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">QUANTITY: </span>
+              <span className="detail-value">{product.quantity}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">DELIVERY DATE: </span>
+              <span className="detail-value">{product.deliveryDate}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">STATUS: </span>
+              <span className={`status-badge ${getDeliveryModeClass(product.status)}`}>
+                {product.status}
+              </span>
             </div>
 
-            <div className="details-container">
-              <div className="detail-row">
-                <span className="detail-label">CLIENT: </span>
-                <span className="detail-value">{product.client}</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">QUANTITY: </span>
-                <span className="detail-value">{product.quantity}</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">DELIVERY DATE: </span>
-                <span className="detail-value">{product.deliveryDate}</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">STATUS: </span>
-                <span className={`status-badge ${getDeliveryModeClass(product.status)}`}>
-                  {product.status}
-                </span>
-              </div>
-
-              <div className="action-icons-container">
-                {/* Always show eye icon */}
-                {['14892', '14890', '14889', '14893c'].includes(product.jobNo) && (
-                  <div
-                    className="action-icon"
-                    onClick={() => openModal(product)}
-                    title="View All Details"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
-                    </svg>
-                  </div>
-                )}
-                {['14889'].includes(product.jobNo) && (
-                  <button
-                    className={`process-btn ${getDeliveryModeClass('Process')}`}
-                    onClick={() => handleToProcessClick(product.id)}
-                  >
-                    To Process
-                  </button>
-                )}
-
-                {/* Show Edit button if not processed, otherwise show To Process button */}
-                {!isProcessed && !['14893c', '14890'].includes(product.jobNo) ? (
-                  <button className="edit-btn" onClick={() => navigate('/salesorder')}>
-                    Edit
-                  </button>
-                ) : (
-                  !['14889', '14890', '14892', '14893c'].includes(product.jobNo) && (
+            <div className="action-icons-container">
+              {/* Show only eye icon for completed status, otherwise show all actions */}
+              {product.status === 'Completed' ? (
+                <div
+                  className="action-icon"
+                  onClick={() => openModal(product)}
+                  title="View All Details"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                  </svg>
+                </div>
+              ) : (
+                <>
+                  {['14892', '14890', '14889', '14893c'].includes(product.jobNo) && (
+                    <div
+                      className="action-icon"
+                      onClick={() => openModal(product)}
+                      title="View All Details"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                      </svg>
+                    </div>
+                  )}
+                  {['14889'].includes(product.jobNo) && (
                     <button
                       className={`process-btn ${getDeliveryModeClass('Process')}`}
                       onClick={() => handleToProcessClick(product.id)}
                     >
                       To Process
                     </button>
-                  )
-                )}
-                {/* {['14893c'].includes(product.jobNo) && (
-                  <span className="to-design-badge">Design Uploaded</span>
-                )}
-                {['14890'].includes(product.jobNo) && (
-                  <span className="to-pi-uploaded-badge">PI Uploaded</span>
-                )} */}
+                  )}
 
-                {['14892'].includes(product.jobNo) && (
-                  <button className="submit-btn" onClick={handleSubmit}>
-                    To Production
-                  </button>
-                )}
+                  {!isProcessed && !['14893c', '14890'].includes(product.jobNo) ? (
+                    <button className="edit-btn" onClick={() => navigate('/salesorder')}>
+                      Edit
+                    </button>
+                  ) : (
+                    !['14889', '14890', '14892', '14893c'].includes(product.jobNo) && (
+                      <button
+                        className={`process-btn ${getDeliveryModeClass('Process')}`}
+                        onClick={() => handleToProcessClick(product.id)}
+                      >
+                        To Process
+                      </button>
+                    )
+                  )}
 
-                {/* Show upload icon when showUploadIcons is true */}
-                {showUploadIcons && uploadedCount < maxImages && (
-                  <div
-                    className="action-icon"
-                    title="Upload Image"
-                    onClick={() => openUploadModal(product)}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      fill="currentColor"
-                      className="bi bi-cloud-arrow-up"
-                      viewBox="0 0 16 16"
+                  {['14892'].includes(product.jobNo) && (
+                    <button className="submit-btn" onClick={handleSubmit}>
+                      To Production Plan
+                    </button>
+                  )}
+
+                  {showUploadIcons && uploadedCount < maxImages && (
+                    <div
+                      className="action-icon"
+                      title="Upload Image"
+                      onClick={() => openUploadModal(product)}
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"
-                      />
-                      <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="currentColor"
+                        className="bi bi-cloud-arrow-up"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M7.646 5.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 6.707V10.5a.5.5 0 0 1-1 0V6.707L6.354 7.854a.5.5 0 1 1-.708-.708z"
+                        />
+                        <path d="M4.406 3.342A5.53 5.53 0 0 1 8 2c2.69 0 4.923 2 5.166 4.579C14.758 6.804 16 8.137 16 9.773 16 11.569 14.502 13 12.687 13H3.781C1.708 13 0 11.366 0 9.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383m.653.757c-.757.653-1.153 1.44-1.153 2.056v.448l-.445.049C2.064 6.805 1 7.952 1 9.318 1 10.785 2.23 12 3.781 12h8.906C13.98 12 15 10.988 15 9.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 4.825 10.328 3 8 3a4.53 4.53 0 0 0-2.941 1.1z" />
+                      </svg>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
-      </>
+      </div>
+    )
+  }
+
+  // Table Row Component
+  const TableRow = ({ product }) => {
+    const currentImage = getCurrentImage(product)
+    const isProcessed = processedProducts.has(product.id)
+
+    const handleSubmit = () => {
+      openPriorityModal(product.id)
+    }
+
+    return (
+      <tr>
+        <td>
+          <img
+            src={currentImage}
+            alt={product.name}
+            className="table-image"
+            onClick={() => openModal(product)}
+          />
+        </td>
+        <td>{product.jobNo}</td>
+        <td>{product.name}</td>
+        <td>{product.client}</td>
+        <td>{product.quantity}</td>
+        <td>{product.deliveryDate}</td>
+        <td>
+          <span className={`status-badge ${getDeliveryModeClass(product.status)}`}>
+            {product.status}
+          </span>
+        </td>
+        <td>
+          <div className="table-actions">
+            <button
+              className="table-view-btn"
+              onClick={() => openModal(product)}
+              title="View Details"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+              </svg>
+            </button>
+
+            {['14889'].includes(product.jobNo) && (
+              <button
+                className="table-process-btn"
+                onClick={() => handleToProcessClick(product.id)}
+              >
+                To Process
+              </button>
+            )}
+
+            {!isProcessed && !['14893c', '14890'].includes(product.jobNo) ? (
+              <button className="table-edit-btn" onClick={() => navigate('/salesorder')}>
+                Edit
+              </button>
+            ) : (
+              !['14889', '14890', '14892', '14893c'].includes(product.jobNo) && (
+                <button
+                  className="table-process-btn"
+                  onClick={() => handleToProcessClick(product.id)}
+                >
+                  To Process
+                </button>
+              )
+            )}
+
+            {['14892'].includes(product.jobNo) && (
+              <button className="table-submit-btn" onClick={handleSubmit}>
+                To Production Plan
+              </button>
+            )}
+          </div>
+        </td>
+      </tr>
+    )
+  }
+
+  // Super Grid Item Component
+  const SuperGridItem = ({ product }) => {
+    const currentImage = getCurrentImage(product)
+    const isSelected = selectedProduct?.id === product.id
+
+    return (
+      <div
+        className={`super-grid-item ${isSelected ? 'selected' : ''}`}
+        onClick={() => setSelectedProduct(product)}
+      >
+        <img src={currentImage} alt={product.name} />
+        <div className="super-grid-overlay">
+          <span>{product.name}</span>
+        </div>
+      </div>
     )
   }
 
@@ -2157,17 +1484,21 @@ const EnhancedProductCards = () => {
       if (e.key === 'Escape' && uploadModalProduct) {
         closeUploadModal()
       }
+      if (e.key === 'Escape' && showPriorityModal) {
+        closePriorityModal()
+      }
     }
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
-  }, [modalProduct, uploadModalProduct])
+  }, [modalProduct, uploadModalProduct, showPriorityModal])
 
   return (
     <>
       <style jsx>{`
+        /* Base Styles */
         .main-container {
           min-height: 100vh;
-          padding: ${isMobile ? '0.5rem' : isTablet ? '0.75rem' : '1rem'};
+          padding: 1rem;
         }
 
         .inner-container {
@@ -2175,33 +1506,58 @@ const EnhancedProductCards = () => {
           margin: 0 auto;
         }
 
-        .header-title {
-          margin-bottom: ${isMobile ? '1rem' : '2rem'};
-          text-align: center;
+        .search-grid {
+          display: flex;
+          gap: 20px;
+          height: max-content;
+          justify-content: flex-end;
+          align-items: center;
+        }
+        .priority {
+          margin-right: 0.75rem;
+          width: 1.25rem;
+          height: 1.25rem;
+          accent-color: #0061ed;
+        }
+
+        /* Header with all controls in one line */
+        .header-controls-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
+          gap: 2rem;
+          flex-wrap: wrap;
         }
 
         .main-title {
-          font-size: ${isMobile ? '1.75rem' : isTablet ? '2rem' : '2.5rem'};
+          font-size: 2.5rem;
           font-weight: bold;
           color: black;
-          margin-bottom: 0.5rem;
+          margin: 0;
+          white-space: nowrap;
         }
 
         .search-container {
-          margin-bottom: ${isMobile ? '1rem' : '2rem'};
+          flex: 1;
+          max-width: 400px;
+          min-width: 300px;
+        }
+
+        /* Controls - Moved above tabs */
+        .controls-container {
           display: flex;
-          justify-content: center;
+          justify-content: space-between;
           align-items: center;
-          gap: ${isMobile ? '0.5rem' : '1rem'};
+          margin-bottom: 2rem;
+          gap: 1rem;
           flex-wrap: wrap;
-          flex-direction: ${isMobile ? 'column' : 'row'};
         }
 
         .search-input {
           width: 100%;
-          max-width: ${isMobile ? '100%' : '600px'};
-          padding: ${isMobile ? '0.75rem 1rem' : '0.875rem 1.25rem'};
-          font-size: ${isMobile ? '0.875rem' : '1rem'};
+          padding: 0.875rem 1.25rem;
+          font-size: 1rem;
           border: 2px solid #374151;
           border-radius: 0.5rem;
           background-color: white;
@@ -2213,51 +1569,557 @@ const EnhancedProductCards = () => {
           border-color: #f97316;
         }
 
+        .view-controls {
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        .view-btn {
+          padding: 0.5rem;
+          border: 2px solid #0061ed;
+          background: white;
+          color: #0061ed;
+          cursor: pointer;
+          border-radius: 0.375rem;
+          transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+          background: #0061ed;
+          color: white;
+        }
+
+        .view-btn:hover {
+          background: #0061ed;
+          color: white;
+        }
+
+        /* Tabs */
+        .tabs-container {
+          margin-bottom: 2rem;
+          border-bottom: 2px solid #e5e7eb;
+        }
+
+        .tabs-list {
+          display: flex;
+          gap: 0;
+          overflow-x: auto;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+
+        .tabs-list::-webkit-scrollbar {
+          display: none;
+        }
+
+        .tab-button {
+          padding: 1rem 1.5rem;
+          background: none;
+          border: none;
+          border-bottom: 3px solid transparent;
+          color: #6b7280;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+          min-width: fit-content;
+        }
+
+        .tab-button.active {
+          color: #0061ed;
+          border-bottom-color: #0061ed;
+        }
+
+        .tab-button:hover {
+          color: #0061ed;
+          background-color: #f8fafc;
+        }
+
+        /* Grid View - Center cards when searching */
         .products-grid {
           display: grid;
-          grid-template-columns: ${isMobile
-            ? '1fr'
-            : isTablet
-              ? 'repeat(auto-fit, minmax(350px, 1fr))'
-              : 'repeat(auto-fit, minmax(450px, 1fr))'};
-          gap: ${isMobile ? '1rem' : '1.5rem'};
+          grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+          gap: 1.5rem;
+          justify-content: center;
+          place-items: center;
+        }
+
+        /* Table View */
+        .table-container {
+          overflow-x: auto;
+          background: white;
+          border-radius: 0.5rem;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .products-table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+
+        .products-table th {
+          background: #f8fafc;
+          padding: 1rem;
+          text-align: left;
+          font-weight: 600;
+          color: #374151;
+          border-bottom: 2px solid #e5e7eb;
+        }
+
+        .products-table td {
+          padding: 1rem;
+          border-bottom: 1px solid #e5e7eb;
+          vertical-align: middle;
+        }
+
+        .products-table tbody tr:hover {
+          background-color: #f8fafc;
+        }
+
+        .table-image {
+          width: 60px;
+          height: 60px;
+          object-fit: cover;
+          border-radius: 0.375rem;
+          cursor: pointer;
+          transition: transform 0.2s ease;
+        }
+
+        .table-image:hover {
+          transform: scale(1.1);
+        }
+
+        .table-actions {
+          display: flex;
+          gap: 0.5rem;
+          align-items: center;
+          flex-wrap: wrap;
+        }
+
+        .table-view-btn {
+          background: #0061ed;
+          color: white;
+          border: none;
+          padding: 0.25rem;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
           justify-content: center;
         }
 
-        .no-results {
-          grid-column: 1 / -1;
-          text-align: center;
-          color: #9ca3af;
-          font-size: 1.125rem;
-          padding: 3rem 1rem;
+        .table-edit-btn {
+          background: #6b7280;
+          color: white;
+          border: none;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          font-size: 0.75rem;
+        }
+
+        .table-process-btn {
+          background: #0061ed;
+          color: white;
+          border: none;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          font-size: 0.75rem;
+        }
+
+        .table-submit-btn {
+          background: green;
+          color: white;
+          border: none;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        /* Super Grid View */
+        .super-grid-container {
+          display: flex;
+          gap: 1rem;
+          height: 600px;
+        }
+
+        .super-grid-images {
+          flex: 1;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+          gap: 0.5rem;
+          overflow-y: auto;
+          padding: 0.5rem;
+          background: #f8fafc;
           border-radius: 0.5rem;
         }
 
-        .no-results h3 {
-          margin-bottom: 0.5rem;
+        .super-grid-item {
+          position: relative;
+          aspect-ratio: 1;
+          cursor: pointer;
+          border-radius: 0.375rem;
+          overflow: hidden;
+          transition: transform 0.2s ease;
+          border: 2px solid transparent;
         }
 
-        .no-results p {
+        .super-grid-item:hover {
+          transform: scale(1.05);
+        }
+
+        .super-grid-item.selected {
+          border-color: #0061ed;
+          transform: scale(1.02);
+        }
+
+        .super-grid-item img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .super-grid-overlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+          color: white;
+          padding: 0.5rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        .super-grid-detail {
+          width: 450px;
+          background: white;
+          border-radius: 0.5rem;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+        }
+
+        .super-grid-card-view {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .super-grid-detail-card {
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* Super Grid Card View Styles */
+        .super-grid-image-section {
+          background-color: #e5e7eb;
+          position: relative;
+          height: 200px;
+          overflow: hidden;
+        }
+
+        .super-grid-main-image {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
+
+        .super-grid-content {
+          padding: 1rem;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .super-grid-product-name {
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: black;
+          margin-bottom: 0.25rem;
+        }
+
+        .super-grid-job-number {
+          font-size: 0.875rem;
+          font-weight: bold;
+          color: rgb(0, 97, 237);
+          margin-bottom: 0.75rem;
+        }
+
+        .super-grid-job-number span {
+          color: black;
+        }
+
+        .super-grid-details {
           margin-bottom: 1rem;
         }
 
-        .clear-search-btn {
-          width: auto;
+        .super-grid-detail-row {
+          margin-bottom: 0.5rem;
+          font-size: 0.875rem;
+          line-height: 1.4;
+        }
+
+        .super-grid-actions {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+
+        .detail-header {
+          background: #0061ed;
+          color: white;
+          padding: 1rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .detail-header h3 {
+          margin: 0;
+          font-size: 1.125rem;
+        }
+
+        .close-detail-btn {
+          background: none;
+          border: none;
+          color: white;
+          font-size: 1.5rem;
+          cursor: pointer;
+          padding: 0;
+          width: 2rem;
+          height: 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.25rem;
+        }
+
+        .close-detail-btn:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-content {
+          flex: 1;
+          padding: 1rem;
+          overflow-y: auto;
+        }
+
+        .detail-group {
+          margin-bottom: 1rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+
+        .detail-group label {
+          font-weight: 600;
+          color: #374151;
+          font-size: 0.875rem;
+        }
+
+        .detail-group span {
+          color: #111827;
+          font-size: 0.875rem;
+        }
+
+        /* Product Card Styles */
+        .product-card {
+          background-color: white;
+          color: white;
+          border-radius: 0.5rem;
+          overflow: hidden;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+          display: flex;
+          flex-direction: row;
+          transition: none;
+          height: fit-content;
+          max-height: 260px !important;
+          transform: none;
+          width: 100%;
+          max-width: 450px;
+        }
+
+        .image-container {
+          width: 180px;
+          background-color: #e5e7eb;
+          position: relative;
+          flex-shrink: 0;
+          overflow: hidden;
+          align-self: stretch;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .product-image {
+          width: 100%;
+          height: 100% !important;
+          flex: 1;
+          object-fit: cover;
+        }
+
+        .slide-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          background-color: rgba(0, 0, 0, 0.5);
+          color: white;
+          border: none;
+          border-radius: 50%;
+          width: 25px;
+          height: 28px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 1.2rem;
+          font-weight: bold;
+          transition: background-color 0.2s ease;
+          z-index: 5;
+        }
+
+        .slide-arrow:hover {
+          background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .slide-arrow-left {
+          left: 5px;
+        }
+
+        .slide-arrow-right {
+          right: 5px;
+        }
+
+        .card-content {
+          padding: 0.7rem;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          height: 100%;
+        }
+
+        .product-name {
+          font-size: 1.375rem;
+          font-weight: bold;
+          color: black;
+          margin-bottom: 0.25rem;
+        }
+
+        .job-number {
+          font-size: 0.875rem;
+          font-weight: bold;
+          color: rgb(0, 97, 237);
+          margin-bottom: 0.4rem;
+        }
+
+        .job-number span {
+          color: black;
+        }
+
+        .details-container {
+          margin-bottom: 1rem;
+        }
+
+        .detail-row {
+          margin-bottom: 0.625rem;
+          font-size: 0.8rem;
+          line-height: 1.4;
+        }
+
+        .detail-label {
+          color: #0061ed;
+          font-weight: bold;
+        }
+
+        .detail-value {
+          color: black;
+        }
+
+        .action-icons-container {
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          margin-top: 0.5rem;
+          gap: 0.5rem;
+          flex-wrap: wrap;
+        }
+
+        .action-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 1.9rem;
+          height: 1.5rem;
+          border-radius: 0.25rem;
+          background-color: transparent;
+          border: 1px solid #0061ed;
+          color: #0061ed;
+          cursor: pointer;
+          margin: 3px 0;
+          transition:
+            background-color 0.2s ease,
+            color 0.2s ease;
+          flex-shrink: 0;
+        }
+
+        .action-icon:hover {
           background-color: #0061ed;
           color: white;
-          padding: 0.5rem 1.5rem;
-          border-radius: 0.5rem;
-          font-weight: 500;
-          font-size: 0.875rem;
+        }
+
+        .edit-btn {
+          width: auto;
+          background: #5b5757;
+          padding: 4px 10px;
+          font-size: 14px;
           border: none;
+          border-radius: 4px;
+          color: #fff;
           cursor: pointer;
-          transition: background-color 0.3s ease;
         }
 
-        .clear-search-btn:hover {
-          background-color: #0052cc;
+        .edit-btn:hover {
+          background: rgb(64, 62, 62);
         }
 
+        .process-btn {
+          width: auto;
+          background: #0061ed;
+          padding: 4px 10px;
+          font-size: 14px;
+          border: none;
+          border-radius: 4px;
+          color: #fff;
+          cursor: pointer;
+        }
+
+        .process-btn:hover {
+          background: rgb(9, 95, 214);
+        }
+
+        .submit-btn {
+          width: auto;
+          background: green;
+          padding: 4px 12px;
+          font-size: 14px;
+          border: none;
+          border-radius: 4px;
+          color: #fff;
+          cursor: pointer;
+          font-weight: 600;
+        }
+
+        .submit-btn:hover {
+          background: rgb(13, 138, 40);
+        }
+
+        /* Status Badges */
         .status-printing {
           background-color: #059669;
           color: white;
@@ -2303,6 +2165,11 @@ const EnhancedProductCards = () => {
           color: white;
         }
 
+        .status-completed {
+          background-color: #10b981;
+          color: white;
+        }
+
         .status-default {
           background-color: #ea580c;
           color: white;
@@ -2311,42 +2178,934 @@ const EnhancedProductCards = () => {
         .status-badge {
           padding: 0.25rem 0.5rem;
           border-radius: 0.25rem;
-          font-size: ${isMobile ? '0.625rem' : '0.75rem'};
+          font-size: 0.75rem;
           font-weight: 600;
           display: inline-block;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+        }
+
+        .detail-modal {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 900px;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          display: flex;
+          flex-direction: column;
+          margin: 2% auto 0 auto;
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem;
+          border-bottom: 1px solid #e5e7eb;
+          background-color: #f9fafb;
+        }
+
+        .modal-title {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #111827;
+          margin: 0;
+        }
+
+        .close-button {
+          background: none;
+          border: none;
+          color: #6b7280;
+          cursor: pointer;
+          padding: 0.5rem;
+          border-radius: 0.25rem;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
+          font-weight: bold;
+          width: 2rem;
+          height: 2rem;
+        }
+
+        .close-button:hover {
+          color: #374151;
+          background-color: #f3f4f6;
+        }
+
+        .modal-body {
+          padding: 1.5rem;
+          overflow: auto;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        /* Modal Content Layout */
+        .modal-content-wrapper {
+          display: flex;
+          gap: 2rem;
+          height: 100%;
+        }
+
+        .modal-details-section {
+          flex: 2;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        /* Modal Image Section - Moved to right side */
+        .modal-image-section {
+          flex: 1;
+          background-color: #f8fafc;
+          border-radius: 0.5rem;
+          padding: 1rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 400px;
+          position: relative;
+          max-width: 350px;
+        }
+
+        .modal-image-slider {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-height: 350px;
+        }
+
+        .modal-main-image {
+          max-width: 50%;
+          max-height: 50%;
+          object-fit: contain;
+          border-radius: 0.5rem;
+        }
+
+        /* Document Files Section */
+        .modal-documents-section {
+          background-color: #f9fafb;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border: 1px solid #e5e7eb;
+        }
+
+        .document-files {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .document-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem;
+          background: white;
+          border-radius: 0.375rem;
+          border: 1px solid #e5e7eb;
+        }
+
+        .document-info {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .document-icon {
+          color: #6b7280;
+        }
+
+        .download-btn {
+          background: #0061ed;
+          color: white;
+          border: none;
+          padding: 0.5rem 1rem;
+          border-radius: 0.375rem;
+          cursor: pointer;
+          font-size: 0.875rem;
+          font-weight: 500;
+          transition: background-color 0.2s ease;
+        }
+
+        .download-btn:hover {
+          background: #0052cc;
+        }
+
+        .modal-two-column-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 1.5rem;
+        }
+
+        .modal-section {
+          background-color: #f9fafb;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border: 1px solid #e5e7eb;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .modal-section-title {
+          font-size: 1rem;
+          font-weight: bold;
+          color: #0061ed;
+          margin: 0 0 0.75rem 0;
+        }
+
+        .modal-detail-item {
+          display: flex;
+          flex-direction: row;
+          gap: 0.5rem;
+          align-items: flex-start;
+        }
+
+        .modal-label {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #374151;
+          min-width: 120px;
+          flex-shrink: 0;
+        }
+
+        .modal-value {
+          font-size: 0.875rem;
+          color: #111827;
+          line-height: 1.4;
+          flex: 1;
+        }
+
+        /* Priority Modal Styles */
+        .priority-modal {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 400px;
+          overflow: hidden;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          display: flex;
+          flex-direction: column;
+        }
+
+        .priority-modal-body {
+          padding: 1.5rem;
+        }
+
+        .priority-options {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+
+        .priority-option {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          cursor: pointer;
+          padding: 0.75rem;
+          border-radius: 0.5rem;
+          border: 2px solid #e5e7eb;
+          transition: all 0.2s ease;
+        }
+
+        // .priority-option:hover {
+        //   border-color: #0061ed;
+        //   background-color: #f8fafc;
+        // }
+
+        .priority-option.priority-very-high {
+          background-color: rgb(220, 66, 66); /* light red */
+        }
+
+        .priority-option.priority-high {
+          background-color: rgb(230, 190, 33); /* light yellow */
+        }
+
+        .priority-option.priority-medium {
+          background-color: rgb(52, 216, 132); /* light green */
+        }
+
+        .priority-option.priority-low {
+          background-color: rgb(94, 156, 233); /* light blue */
+        }
+
+        .priority-option.priority-very-low {
+          background-color: #e9d5ff; /* light purple */
+        }
+
+        .priority-label {
+          font-size: 1rem;
+          color: black;
+          transition: all 0.2s ease;
+        }
+
+        .priority-actions {
+          display: flex;
+          gap: 0.75rem;
+          justify-content: flex-end;
+        }
+
+        .btn-cancel {
+          padding: 0.75rem 1.5rem;
+          background-color: #6b7280;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-size: 0.875rem;
+          font-weight: 500;
+          transition: background-color 0.2s ease;
+        }
+
+        .btn-cancel:hover {
+          background-color: #4b5563;
+        }
+
+        .btn-submit {
+          padding: 0.75rem 1.5rem;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-size: 0.875rem;
+          font-weight: 500;
+          transition: background-color 0.2s ease;
+        }
+
+        .btn-submit:hover {
+          background-color: #1e7e34;
+        }
+
+        .btn-submit:disabled {
+          background-color: #9ca3af;
+          cursor: not-allowed;
+        }
+
+        /* Upload Modal Styles */
+        .upload-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+        }
+
+        .upload-modal-content {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 600px;
+          padding: 1.5rem;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          margin: auto;
+          max-height: 90vh;
+          overflow: auto;
+        }
+
+        .upload-modal-title {
+          margin-bottom: 1.5rem;
+          color: #111827;
+          font-size: 1.25rem;
+          font-weight: bold;
+          text-align: center;
+        }
+
+        .upload-progress {
+          background-color: #f3f4f6;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          margin-bottom: 1.5rem;
+          text-align: center;
+        }
+
+        .upload-progress-text {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #374151;
+        }
+
+        .upload-drop-zone {
+          border: 2px dashed #d1d5db;
+          border-radius: 0.5rem;
+          padding: 2rem;
+          text-align: center;
+          background-color: #f9fafb;
+          cursor: pointer;
+          transition:
+            border-color 0.2s ease,
+            background-color 0.2s ease;
+          position: relative;
+        }
+
+        .upload-icon {
+          margin: 0 auto 1rem auto;
+          display: block;
+        }
+
+        .upload-browse-btn {
+          background-color: #0061ed;
+          color: white;
+          padding: 0.75rem 1.5rem;
+          border-radius: 0.5rem;
+          border: none;
+          font-size: 0.875rem;
+          font-weight: 600;
+          cursor: pointer;
+          margin-bottom: 1rem;
+        }
+
+        .upload-text-primary {
+          color: #6b7280;
+          font-size: 0.875rem;
+          margin: 0.5rem 0;
+          line-height: 1.4;
+        }
+
+        .upload-text-secondary {
+          color: #9ca3af;
+          font-size: 0.75rem;
+          margin: 0;
+        }
+
+        .upload-preview-container {
+          margin-top: 1rem;
+          border: 1px solid #e5e7eb;
+          border-radius: 0.5rem;
+          padding: 1rem;
+          background-color: white;
+        }
+
+        .upload-preview-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.75rem;
+        }
+
+        .upload-preview-title {
+          font-size: 0.875rem;
+          font-weight: 600;
+          color: #374151;
+          margin: 0;
+        }
+
+        .upload-remove-btn {
+          background-color: #ef4444;
+          color: white;
+          border: none;
+          border-radius: 0.25rem;
+          padding: 0.25rem 0.5rem;
+          font-size: 0.75rem;
+          cursor: pointer;
+        }
+
+        .upload-preview-content {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .upload-preview-image {
+          width: 80px;
+          height: 80px;
+          object-fit: cover;
+          border-radius: 0.375rem;
+          border: 1px solid #e5e7eb;
+        }
+
+        .upload-file-info h4 {
+          font-size: 0.875rem;
+          font-weight: 500;
+          color: #111827;
+          margin: 0 0 0.25rem 0;
+        }
+
+        .upload-file-info p {
+          font-size: 0.75rem;
+          color: #6b7280;
+          margin: 0;
+        }
+
+        .upload-actions {
+          display: flex;
+          gap: 0.75rem;
+          justify-content: flex-end;
+        }
+
+        .upload-btn-cancel {
+          padding: 0.75rem 1.5rem;
+          background-color: #6b7280;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .upload-btn-submit {
+          padding: 0.75rem 1.5rem;
+          background-color: #28a745;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+
+        .upload-btn-submit:disabled {
+          background-color: rgb(100 176 100);
+          cursor: not-allowed;
+        }
+
+        .hidden-input {
+          display: none;
+        }
+
+        .no-results {
+          grid-column: 1 / -1;
+          text-align: center;
+          color: #9ca3af;
+          font-size: 1.125rem;
+          padding: 3rem 1rem;
+          border-radius: 0.5rem;
+        }
+
+        .no-results h3 {
+          margin-bottom: 0.5rem;
+        }
+
+        .no-results p {
+          margin-bottom: 1rem;
+        }
+
+        .clear-search-btn {
+          width: auto;
+          background-color: #0061ed;
+          color: white;
+          padding: 0.5rem 1.5rem;
+          border-radius: 0.5rem;
+          font-weight: 500;
+          font-size: 0.875rem;
+          border: none;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+
+        .clear-search-btn:hover {
+          background-color: #0052cc;
+        }
+
+        /* Media Queries */
+        @media (max-width: 480px) {
+          .main-container {
+            padding: 0.5rem;
+          }
+
+          .main-title {
+            font-size: 1.75rem;
+          }
+
+          .controls-container {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1rem;
+          }
+
+          .search-container {
+            order: 1;
+            max-width: none;
+          }
+
+          .view-controls {
+            order: 2;
+            justify-content: center;
+          }
+
+          .products-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .product-card {
+            flex-direction: column;
+            max-height: none;
+          }
+
+          .image-container {
+            width: 100%;
+            height: 200px;
+          }
+
+          .image-slider {
+            height: 200px;
+          }
+
+          .product-image {
+            height: 200px;
+            object-fit: contain;
+          }
+
+          .card-content {
+            padding: 1rem;
+          }
+
+          .product-name {
+            font-size: 1.125rem;
+          }
+
+          .job-number {
+            font-size: 0.75rem;
+          }
+
+          .detail-row {
+            font-size: 0.75rem;
+          }
+
+          .action-icon {
+            width: 2.5rem;
+            height: 2rem;
+          }
+
+          .status-badge {
+            font-size: 0.625rem;
+          }
+
+          .modal-two-column-row {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+
+          .modal-label {
+            min-width: 80px;
+            font-size: 0.75rem;
+          }
+
+          .modal-value {
+            font-size: 0.75rem;
+          }
+
+          .super-grid-container {
+            flex-direction: column;
+            height: auto;
+          }
+
+          .super-grid-detail {
+            width: 100%;
+          }
+
+          .tabs-list {
+            justify-content: flex-start;
+          }
+
+          .tab-button {
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+          }
+
+          .table-actions {
+            flex-direction: column;
+            gap: 0.25rem;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .main-container {
+            padding: 0.75rem;
+          }
+
+          .main-title {
+            font-size: 2rem;
+          }
+
+          .controls-container {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 1.5rem;
+          }
+
+          .search-container {
+            order: 1;
+          }
+
+          .view-controls {
+            order: 2;
+            justify-content: center;
+          }
+
+          .products-grid {
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          }
+
+          .product-card {
+            flex-direction: column;
+            max-height: none;
+          }
+
+          .image-container {
+            width: 100%;
+            height: 200px;
+          }
+
+          .image-slider {
+            height: 200px;
+          }
+
+          .product-image {
+            height: 200px;
+            object-fit: contain;
+          }
+
+          .slide-arrow-left {
+            left: 10px;
+          }
+
+          .slide-arrow-right {
+            right: 10px;
+          }
+
+          .table-container {
+            font-size: 0.875rem;
+          }
+
+          .products-table th,
+          .products-table td {
+            padding: 0.75rem 0.5rem;
+          }
+
+          .super-grid-container {
+            flex-direction: column;
+            height: auto;
+          }
+
+          .super-grid-detail {
+            width: 100%;
+            margin-top: 1rem;
+          }
+
+          .table-actions {
+            flex-direction: column;
+            gap: 0.25rem;
+            align-items: flex-start;
+          }
+        }
+
+        @media (max-width: 1024px) {
+          .products-grid {
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+          }
+
+          .super-grid-detail {
+            width: 350px;
+          }
         }
       `}</style>
 
       <div className="main-container">
         <div className="inner-container">
-          <div className="header-title">
-            <h1 className="main-title">Sample Orders List</h1>
-          </div>
+          {/* Header with title, search, and controls in one line */}
+          <div className="header-controls-container row">
+            <h1 className="main-title col-md-4">Sample Orders List</h1>
 
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="🔍 Search by product name, client, job number..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="search-input"
-            />
-          </div>
+            <div className="col-md-6 search-grid">
+              <div className="search-container">
+                <input
+                  type="text"
+                  placeholder="🔍 Search by product name, client, job number..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="search-input"
+                />
+              </div>
 
-          <div className="products-grid">
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => <ProductCard key={product.id} product={product} />)
-            ) : (
-              <div className="no-results">
-                <h3>No products found</h3>
-                <p>Try adjusting your search terms: "{searchTerm}"</p>
-                <button onClick={() => setSearchTerm('')} className="clear-search-btn">
-                  Clear Search
+              <div className="view-controls">
+                <button
+                  className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                  onClick={() => setViewMode('grid')}
+                  title="Grid View"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z" />
+                  </svg>
+                </button>
+
+                <button
+                  className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
+                  onClick={() => setViewMode('table')}
+                  title="Table View"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 3h18v4H3V3zm0 6h18v4H3V9zm0 6h18v6H3v-6z" />
+                  </svg>
+                </button>
+
+                <button
+                  className={`view-btn ${viewMode === 'super-grid' ? 'active' : ''}`}
+                  onClick={() => setViewMode('super-grid')}
+                  title="Super Grid View"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
+                  </svg>
                 </button>
               </div>
-            )}
+            </div>
           </div>
+
+          {/* Tabs */}
+          <div className="tabs-container">
+            <div className="tabs-list">
+              {statusTabs.map((status) => (
+                <button
+                  key={status}
+                  className={`tab-button ${activeTab === status ? 'active' : ''}`}
+                  onClick={() => setActiveTab(status)}
+                >
+                  {status} (
+                  {status === 'All'
+                    ? products.length
+                    : products.filter((p) => p.status === status).length}
+                  )
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Content based on view mode */}
+          {viewMode === 'grid' && (
+            <div className="products-grid">
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))
+              ) : (
+                <div className="no-results">
+                  <h3>No products found</h3>
+                  <p>Try adjusting your search terms: "{searchTerm}"</p>
+                  <button onClick={() => setSearchTerm('')} className="clear-search-btn">
+                    Clear Search
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {viewMode === 'table' && (
+            <div className="table-container">
+              <table className="products-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Job No</th>
+                    <th>Product</th>
+                    <th>Client</th>
+                    <th>Quantity</th>
+                    <th>Delivery Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredProducts.length > 0 ? (
+                    filteredProducts.map((product) => (
+                      <TableRow key={product.id} product={product} />
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>
+                        <div>
+                          <h3>No products found</h3>
+                          <p>Try adjusting your search terms: "{searchTerm}"</p>
+                          <button onClick={() => setSearchTerm('')} className="clear-search-btn">
+                            Clear Search
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {viewMode === 'super-grid' && (
+            <div className="super-grid-container">
+              <div className="super-grid-images">
+                {filteredProducts.length > 0 ? (
+                  filteredProducts.map((product) => (
+                    <SuperGridItem key={product.id} product={product} />
+                  ))
+                ) : (
+                  <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2rem' }}>
+                    <h3>No products found</h3>
+                    <p>Try adjusting your search terms: "{searchTerm}"</p>
+                    <button onClick={() => setSearchTerm('')} className="clear-search-btn">
+                      Clear Search
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="super-grid-detail">
+                {selectedProduct ? (
+                  <SuperGridDetailCard product={selectedProduct} />
+                ) : (
+                  <div className="super-grid-detail-card">
+                    <div className="detail-header">
+                      <h3>Product Details</h3>
+                    </div>
+                    <div
+                      className="detail-content"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: '#9ca3af',
+                      }}
+                    >
+                      <p>Click on an image to view details</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Priority Modal */}
+        <PriorityModal />
 
         {/* Upload Modal */}
         {uploadModalProduct && (
