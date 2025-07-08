@@ -25,6 +25,10 @@ const SampleOrdersAdminList = React.lazy(() => import('./views/pages/sample/Admi
 const SampleOrdersDesignerList = React.lazy(() => import('./views/pages/sample/DesignerList'))
 const SampleOrdersAccountList = React.lazy(() => import('./views/pages/sample/AccountantList'))
 
+const Production  = React.lazy(() => import('./views/pages/production/List'))
+
+const Receipe = React.lazy(() => import('./views/pages/sample/Receipe'))
+const ProductOverview = React.lazy(() => import('./views/pages/sample/Overview'))
 
 const JobsList = React.lazy(() => import('./views/pages/masters/jobs/List'))
 
@@ -104,8 +108,12 @@ const routes = [
 
   { path: '/enquiry/add', name: 'Add', element: EnquiryForm },
   { path: '/sampleordersadmin', name: 'Sample Orders List', element: SampleOrdersAdminList },
-    { path: '/sampleordersdesigner', name: 'Sample Orders List', element: SampleOrdersDesignerList },
-    { path: '/sampleordersaccounts', name: 'Sample Orders List', element: SampleOrdersAccountList },
+  { path: '/sampleordersdesigner', name: 'Sample Orders List', element: SampleOrdersDesignerList },
+  { path: '/sampleordersaccounts', name: 'Sample Orders List', element: SampleOrdersAccountList },
+  { path: '/productionplan', name: 'Production Plan', element: Production },
+  { path: '/recipe', name: 'Receipe', element: Receipe },
+
+  { path: '/productoverview', name: 'Overview', element: ProductOverview },
 
   { path: '/jobs', name: 'Jobs List', element: JobsList },
 

@@ -451,6 +451,15 @@ const _nav = [
     icon: <CIcon icon={cilClipboard} customClassName="nav-icon" />,
   },
 
+
+  {
+    component: CNavItem,
+    name: 'Production Planning',
+    // to: '/enquiries',
+    to: '/productionplan',
+    icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
+  },
+
   // {
   //   component: CNavGroup,
   //   name: 'Icons',

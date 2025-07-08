@@ -1,4 +1,991 @@
 import React, { useState } from 'react'
+import award1 from '../../../../public/award1.avif'
+import award2 from '../../../../public/awards3.webp'
+import award4 from '../../../../public/award4.webp'
+import award5 from '../../../../public/award5.jpg'
+import award6 from '../../../../public/award6.jpeg'
+
+const EnhancedOrdersSystem = () => {
+  const [searchTerm, setSearchTerm] = useState('')
+  const [activeTab, setActiveTab] = useState('All')
+  const [viewMode, setViewMode] = useState('grid')
+  const [selectedProduct, setSelectedProduct] = useState(null)
+  const [modalProduct, setModalProduct] = useState(null)
+  const [departmentModal, setDepartmentModal] = useState(null)
+  const [selectedDepartments, setSelectedDepartments] = useState({})
+  const [departmentFiles, setDepartmentFiles] = useState({})
+
+  // 8 Departments with color codes
+  const departments = [
+    { id: 'dtp', name: 'DTP', color: '#FF6B6B' },
+    { id: 'laser_cutting', name: 'Laser Cutting', color: '#4ECDC4' },
+    { id: 'engraving', name: 'Engraving', color: '#45B7D1' },
+    { id: 'printing', name: 'Printing', color: '#96CEB4' },
+    { id: 'assembly', name: 'Assembly', color: '#FFEAA7' },
+    { id: 'quality_check', name: 'Quality Check', color: '#DDA0DD' },
+    { id: 'packaging', name: 'Packaging', color: '#98D8C8' },
+    { id: 'dispatch', name: 'Dispatch', color: '#F7DC6F' },
+  ]
+
+  // Sample products with only Pending and Completed status
+  const products = [
+    {
+      id: 1,
+      name: 'MIC TROPHY',
+      jobNo: '14888a',
+      client: 'CLEONETT EVENTS',
+      email: 'steffie@cleonett.com',
+      contactNo: '98337 40939',
+      quantity: 46,
+      size: '10 Inches',
+      deliveryDate: '19-03-2025',
+      status: 'Pending',
+      mainImage:
+        award4,
+      pricePerPiece: '₹1,100',
+      priority: 'High',
+    },
+    {
+      id: 2,
+      name: 'CRYSTAL AWARD',
+      jobNo: '14889',
+      client: 'CORPORATE SOLUTIONS',
+      email: 'info@corpsol.com',
+      contactNo: '98765 43210',
+      quantity: 25,
+      size: '8 Inches',
+      deliveryDate: '17-04-2025',
+      status: 'Pending',
+      mainImage: award1,
+      pricePerPiece: '₹3,000',
+      priority: 'Very High',
+    },
+    {
+      id: 3,
+      name: 'GLASS TROPHY',
+      jobNo: '14893c',
+      client: 'EXCELLENCE AWARDS',
+      email: 'awards@excellence.com',
+      contactNo: '98123 45678',
+      quantity: 12,
+      size: '16 Inches',
+      deliveryDate: '11-01-2025',
+      status: 'Completed',
+      mainImage: award5,
+      pricePerPiece: '₹7,000',
+      priority: 'Medium',
+    },
+    {
+      id: 4,
+      name: 'GOLD MEDAL',
+      jobNo: '14890',
+      client: 'SPORTS FEDERATION',
+      email: 'awards@sports.com',
+      contactNo: '91234 56789',
+      quantity: 100,
+      size: '3 Inches',
+      deliveryDate: '19-01-2026',
+      status: 'Completed',
+      mainImage: award2,
+      pricePerPiece: '₹1,200',
+      priority: 'Low',
+    },
+  ]
+
+  // Get available statuses for tabs
+  const statusTabs = ['All', 'Pending', 'Completed']
+
+  // Filter products based on active tab and search term
+  const filteredProducts = products.filter((product) => {
+    const matchesTab = activeTab === 'All' || product.status === activeTab
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.jobNo.includes(searchTerm)
+    return matchesTab && matchesSearch
+  })
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'Very High':
+        return 'rgb(220, 66, 66)'
+      case 'High':
+        return 'rgb(230, 190, 33)'
+      case 'Medium':
+        return 'rgb(52, 216, 132)'
+      case 'Low':
+        return 'rgb(94, 156, 233)'
+      case 'Very Low':
+        return '#e9d5ff'
+      default:
+        return '#95A5A6'
+    }
+  }
+
+  const openModal = (product) => {
+    setModalProduct(product)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeModal = () => {
+    setModalProduct(null)
+    document.body.style.overflow = 'unset'
+  }
+
+  const openDepartmentModal = (product) => {
+    setDepartmentModal(product)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeDepartmentModal = () => {
+    setDepartmentModal(null)
+    document.body.style.overflow = 'unset'
+  }
+
+  const handleDepartmentToggle = (productId, departmentId) => {
+    setSelectedDepartments((prev) => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        [departmentId]: !prev[productId]?.[departmentId],
+      },
+    }))
+  }
+
+  const handleFileUpload = (productId, departmentId, file) => {
+    if (file) {
+      setDepartmentFiles((prev) => ({
+        ...prev,
+        [`${productId}_${departmentId}`]: file,
+      }))
+    }
+  }
+
+  const saveDepartments = () => {
+    alert('Departments and files saved successfully!')
+    closeDepartmentModal()
+  }
+
+  // Department Modal Component
+  const DepartmentModal = ({ product }) => {
+    if (!product) return null
+
+    return (
+      <div className="modal-overlay" onClick={closeDepartmentModal}>
+        <div className="department-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">Manage Departments - {product.name}</h2>
+            <button className="close-button" onClick={closeDepartmentModal}>
+              ×
+            </button>
+          </div>
+
+          <div className="department-modal-body">
+            <div className="departments-grid">
+              {departments.map((dept) => {
+                const isSelected = selectedDepartments[product.id]?.[dept.id]
+                const hasFile = departmentFiles[`${product.id}_${dept.id}`]
+
+                return (
+                  <div key={dept.id} className="department-card">
+                    <div className="department-header" style={{ backgroundColor: dept.color }}>
+                      <label className="department-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={isSelected || false}
+                          onChange={() => handleDepartmentToggle(product.id, dept.id)}
+                        />
+                        <span className="department-name">{dept.name}</span>
+                      </label>
+                    </div>
+
+                    {isSelected && (
+                      <div className="department-content">
+                        <div className="file-upload-section">
+                          <label className="file-upload-label">
+                            <input
+                              type="file"
+                              accept=".pdf,.doc,.docx,.jpg,.png"
+                              onChange={(e) =>
+                                handleFileUpload(product.id, dept.id, e.target.files[0])
+                              }
+                              className="file-input"
+                            />
+                            <div className="file-upload-button">📁 Upload File</div>
+                          </label>
+                          {hasFile && <div className="uploaded-file">✅ {hasFile.name}</div>}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="department-actions">
+              <button onClick={closeDepartmentModal} className="btn-cancel">
+                Cancel
+              </button>
+              <button onClick={saveDepartments} className="btn-save">
+                Save Departments
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Product Card Component
+  const ProductCard = ({ product }) => {
+    const selectedDepts = selectedDepartments[product.id] || {}
+    const selectedCount = Object.values(selectedDepts).filter(Boolean).length
+
+    return (
+      <div className="product-card">
+        {/* Priority Ribbon */}
+        <div
+          className="priority-ribbon"
+          style={{ backgroundColor: getPriorityColor(product.priority) }}
+        >
+          {product.priority}
+        </div>
+
+        <div className="image-container">
+          <img src={product.mainImage} alt={product.name} className="product-image" />
+        </div>
+
+        <div className="card-content">
+          <div>
+            <h2 className="product-name">{product.name}</h2>
+            <div className="job-number">
+              Job No: <span>{product.jobNo}</span>
+            </div>
+          </div>
+
+          <div className="details-container">
+            <div className="detail-row">
+              <span className="detail-label">CLIENT: </span>
+              <span className="detail-value">{product.client}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">QUANTITY: </span>
+              <span className="detail-value">{product.quantity}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">DELIVERY DATE: </span>
+              <span className="detail-value">{product.deliveryDate}</span>
+            </div>
+            <div className="detail-row">
+              <span className="detail-label">STATUS: </span>
+              <span className={`status-badge status-${product.status.toLowerCase()}`}>
+                {product.status}
+              </span>
+            </div>
+
+            {selectedCount > 0 && (
+              <div className="detail-row">
+                <span className="detail-label">DEPARTMENTS: </span>
+                <span className="detail-value">{selectedCount} selected</span>
+              </div>
+            )}
+
+            <div className="action-icons-container">
+              <button
+                className="action-btn view-btn"
+                onClick={() => openModal(product)}
+                title="View Details"
+              >
+                👁️ View
+              </button>
+
+              {product.status === 'Pending' && (
+                <button
+                  className="action-btn dept-btn"
+                  onClick={() => openDepartmentModal(product)}
+                  title="Manage Departments"
+                >
+                  🏭 Departments
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Detail Modal Component
+  const DetailModal = ({ product }) => {
+    if (!product) return null
+
+    return (
+      <div className="modal-overlay" onClick={closeModal}>
+        <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">{product.name}</h2>
+            <button className="close-button" onClick={closeModal}>
+              ×
+            </button>
+          </div>
+
+          <div className="modal-body">
+            <div className="modal-content-wrapper">
+              <div className="modal-image-section">
+                <img src={product.mainImage} alt={product.name} className="modal-image" />
+              </div>
+
+              <div className="modal-details-section">
+                <div className="modal-section">
+                  <h3 className="modal-section-title">Product Information</h3>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Job Number:</span>
+                    <span className="modal-value">{product.jobNo}</span>
+                  </div>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Quantity:</span>
+                    <span className="modal-value">{product.quantity}</span>
+                  </div>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Size:</span>
+                    <span className="modal-value">{product.size}</span>
+                  </div>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Price per Piece:</span>
+                    <span className="modal-value">{product.pricePerPiece}</span>
+                  </div>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Priority:</span>
+                    <span
+                      className="priority-badge"
+                      style={{ backgroundColor: getPriorityColor(product.priority) }}
+                    >
+                      {product.priority}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="modal-section">
+                  <h3 className="modal-section-title">Client Information</h3>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Client Name:</span>
+                    <span className="modal-value">{product.client}</span>
+                  </div>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Email:</span>
+                    <span className="modal-value">{product.email}</span>
+                  </div>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Contact:</span>
+                    <span className="modal-value">{product.contactNo}</span>
+                  </div>
+                  <div className="modal-detail-item">
+                    <span className="modal-label">Delivery Date:</span>
+                    <span className="modal-value">{product.deliveryDate}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <style jsx>{`
+        .main-container {
+          min-height: 100vh;
+          padding: 1rem;
+        }
+
+        .inner-container {
+          max-width: 1400px;
+          margin: 0 auto;
+        }
+
+        .header-controls-container {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 2rem;
+          gap: 2rem;
+          flex-wrap: wrap;
+        }
+
+        .main-title {
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: #1a202c;
+          margin: 0;
+        }
+
+        .search-container {
+          flex: 1;
+          max-width: 400px;
+        }
+
+        .search-input {
+          width: 100%;
+          padding: 0.875rem 1.25rem;
+          font-size: 1rem;
+          border: 2px solid #e2e8f0;
+          border-radius: 0.5rem;
+          background-color: white;
+          outline: none;
+          transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+          border-color: #3182ce;
+        }
+
+        .view-controls {
+          display: flex;
+          gap: 0.5rem;
+        }
+
+        .view-btn {
+          padding: 0.5rem;
+          border: 2px solid #3182ce;
+          background: white;
+          color: #3182ce;
+          cursor: pointer;
+          border-radius: 0.375rem;
+          transition: all 0.2s ease;
+        }
+
+        .view-btn.active {
+          background: #3182ce;
+          color: white;
+        }
+
+        .tabs-container {
+          margin-bottom: 2rem;
+          border-bottom: 2px solid #e2e8f0;
+        }
+
+        .tabs-list {
+          display: flex;
+          gap: 0;
+        }
+
+        .tab-button {
+          padding: 1rem 1.5rem;
+          background: none;
+          border: none;
+          border-bottom: 3px solid transparent;
+          color: #718096;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+          color: #3182ce;
+          border-bottom-color: #3182ce;
+        }
+
+        .products-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+          gap: 1.5rem;
+        }
+
+        .product-card {
+          background-color: white;
+          border-radius: 0.75rem;
+          overflow: hidden;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          display: flex;
+          height: 260px;
+          position: relative;
+          transition: transform 0.2s ease;
+        }
+
+        // .product-card:hover {
+        //   // transform: translateY(-2px);
+        //   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        // }
+
+        .priority-ribbon {
+          position: absolute;
+          top: 0;
+          left: 0;
+          color: white;
+          padding: 0.25rem 0.75rem;
+          font-size: 0.75rem;
+          font-weight: bold;
+          border-bottom-right-radius: 0.5rem;
+          z-index: 10;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-container {
+          width: 180px;
+          background-color: #f7fafc;
+          flex-shrink: 0;
+        }
+
+        .product-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .card-content {
+          padding: 1rem;
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .product-name {
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: #1a202c;
+          margin-bottom: 0.25rem;
+        }
+
+        .job-number {
+          font-size: 0.875rem;
+          font-weight: bold;
+          color: #0061ed;
+          margin-bottom: 0.75rem;
+        }
+
+        .job-number span {
+          color: #1a202c;
+        }
+
+        .detail-row {
+          margin-bottom: 0.5rem;
+          font-size: 0.875rem;
+        }
+
+        .detail-label {
+          color: #0061ed;
+          font-weight: bold;
+        }
+
+        .detail-value {
+          color: #4a5568;
+        }
+
+        .status-badge {
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        .status-pending {
+          background-color: #fed7d7;
+          color: #c53030;
+        }
+
+        .status-completed {
+          background-color: #c6f6d5;
+          color: #38a169;
+        }
+
+        .action-icons-container {
+          display: flex;
+          gap: 0.5rem;
+          margin-top: 0.75rem;
+        }
+
+        .action-btn {
+          padding: 0.5rem 1rem;
+          border: none;
+          border-radius: 0.375rem;
+          cursor: pointer;
+          font-size: 0.875rem;
+          font-weight: 500;
+          transition: all 0.2s ease;
+        }
+
+        .view-btn {
+          background-color: #0061ed;
+          color: white;
+        }
+
+        .view-btn:hover {
+          background-color: #2c5aa0;
+        }
+
+        .dept-btn {
+          background-color: #38a169;
+          color: white;
+        }
+
+        .dept-btn:hover {
+          background-color: #2f855a;
+        }
+
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+        }
+
+        .detail-modal {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 800px;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .department-modal {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 900px;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem;
+          border-bottom: 1px solid #e2e8f0;
+          background-color: #f7fafc;
+        }
+
+        .modal-title {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #1a202c;
+          margin: 0;
+        }
+
+        .close-button {
+          background: none;
+          border: none;
+          color: #718096;
+          cursor: pointer;
+          font-size: 1.5rem;
+          font-weight: bold;
+          width: 2rem;
+          height: 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.25rem;
+        }
+
+        .close-button:hover {
+          color: #4a5568;
+          background-color: #edf2f7;
+        }
+
+        .modal-body {
+          padding: 1.5rem;
+          overflow-y: auto;
+          max-height: calc(90vh - 120px);
+        }
+
+        .modal-content-wrapper {
+          display: flex;
+          gap: 2rem;
+        }
+
+        .modal-image-section {
+          flex-shrink: 0;
+          width: 250px;
+        }
+
+        .modal-image {
+          width: 100%;
+          height: 250px;
+          object-fit: cover;
+          border-radius: 0.5rem;
+        }
+
+        .modal-details-section {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .modal-section {
+          background-color: #f7fafc;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border: 1px solid #e2e8f0;
+        }
+
+        .modal-section-title {
+          font-size: 1rem;
+          font-weight: bold;
+          color: ##0061ed;
+          margin: 0 0 0.75rem 0;
+        }
+
+        .modal-detail-item {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .modal-label {
+          font-weight: 600;
+          color: #4a5568;
+          min-width: 120px;
+        }
+
+        .modal-value {
+          color: #1a202c;
+        }
+
+        .priority-badge {
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          color: white;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
+        .department-modal-body {
+          padding: 1.5rem;
+          max-height: calc(90vh - 120px);
+          overflow-y: auto;
+        }
+
+        .departments-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+
+        .department-card {
+          border: 1px solid #e2e8f0;
+          border-radius: 0.5rem;
+          overflow: hidden;
+          background-color: white;
+        }
+
+        .department-header {
+          padding: 1rem;
+          color: white;
+        }
+
+        .department-checkbox {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          margin: 0;
+        }
+
+        .department-checkbox input {
+          width: 1.25rem;
+          height: 1.25rem;
+        }
+
+        .department-name {
+          font-weight: bold;
+          font-size: 1rem;
+        }
+
+        .department-content {
+          padding: 1rem;
+          background-color: #f7fafc;
+        }
+
+        .file-upload-section {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .file-upload-label {
+          cursor: pointer;
+        }
+
+        .file-input {
+          display: none;
+        }
+
+        .file-upload-button {
+          display: inline-block;
+          padding: 0.5rem 1rem;
+          background-color: ##0061ed;
+          color: white;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          text-align: center;
+          transition: background-color 0.2s ease;
+        }
+
+        .file-upload-button:hover {
+          background-color: #2c5aa0;
+        }
+
+        .uploaded-file {
+          font-size: 0.875rem;
+          color: #38a169;
+          font-weight: 500;
+        }
+
+        .department-actions {
+          display: flex;
+          gap: 1rem;
+          justify-content: flex-end;
+          padding-top: 1rem;
+          border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-cancel {
+          padding: 0.75rem 1.5rem;
+          background-color: #718096;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-weight: 500;
+        }
+
+        .btn-save {
+          padding: 0.75rem 1.5rem;
+          background-color: #38a169;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-weight: 500;
+        }
+
+        .btn-cancel:hover {
+          background-color: #4a5568;
+        }
+
+        .btn-save:hover {
+          background-color: #2f855a;
+        }
+
+        @media (max-width: 768px) {
+          .header-controls-container {
+            flex-direction: column;
+            gap: 1rem;
+          }
+
+          .products-grid {
+            grid-template-columns: 1fr;
+          }
+
+          .product-card {
+            flex-direction: column;
+            height: auto;
+          }
+
+          .image-container {
+            width: 100%;
+            height: 200px;
+          }
+
+          .modal-content-wrapper {
+            flex-direction: column;
+          }
+
+          .modal-image-section {
+            width: 100%;
+          }
+
+          .departments-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+
+      <div className="main-container">
+        <div className="inner-container">
+          {/* Header */}
+          <div className="header-controls-container">
+            <h1 className="main-title">Orders Management</h1>
+
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="🔍 Search by product, client, job number..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+            </div>
+
+            <div className="view-controls">
+              <button
+                className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+                onClick={() => setViewMode('grid')}
+              >
+                Grid
+              </button>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="tabs-container">
+            <div className="tabs-list">
+              {statusTabs.map((status) => (
+                <button
+                  key={status}
+                  className={`tab-button ${activeTab === status ? 'active' : ''}`}
+                  onClick={() => setActiveTab(status)}
+                >
+                  {status} (
+                  {status === 'All'
+                    ? products.length
+                    : products.filter((p) => p.status === status).length}
+                  )
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Products Grid */}
+          <div className="products-grid">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+
+          {/* Modals */}
+          {modalProduct && <DetailModal product={modalProduct} />}
+          {departmentModal && <DepartmentModal product={departmentModal} />}
+        </div>
+      </div>
+    </>
+  )
+}
+
+export default EnhancedOrdersSystem
+
+
+
+
+///
+
+
+import React, { useState } from 'react'
 
 import { CButton, CCol, CFormLabel, CFormSelect } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
@@ -40,6 +1027,9 @@ const EnhancedProductCards = () => {
   const [showPriorityModal, setShowPriorityModal] = useState(false)
   const [selectedPriority, setSelectedPriority] = useState('')
   const [priorityProductId, setPriorityProductId] = useState(null)
+    const [departmentModal, setDepartmentModal] = useState(null)
+    const [selectedDepartments, setSelectedDepartments] = useState({})
+    const [departmentFiles, setDepartmentFiles] = useState({})
   const navigate = useNavigate()
 
   // Available persons list
@@ -142,7 +1132,7 @@ const EnhancedProductCards = () => {
       size: '8 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'Under Process',
+      status: 'Pending',
       deliveryDate: '17-04-2025',
       deliveryLocation: 'Bandra Kurla Complex - MUMBAI',
       deliveryAddress: {
@@ -202,7 +1192,7 @@ const EnhancedProductCards = () => {
       size: '16 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'Design Uploaded',
+      status: 'Completed',
       deliveryDate: '11-01-2025',
       deliveryLocation: 'Andheri - MUMBAI',
       deliveryMode: 'EXPRESS DELIVERY',
@@ -239,7 +1229,7 @@ const EnhancedProductCards = () => {
       size: '3 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'PI Uploaded',
+      status: 'Completed',
       deliveryDate: '19-01-2026',
       deliveryLocation: 'Worli Sports Complex - MUMBAI',
       invoiceFileName: 'invoice.pdf',
@@ -288,8 +1278,8 @@ const EnhancedProductCards = () => {
       size: '14 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'Awaiting Approval',
-      deliveryDate: '12-07-2025',
+      status: 'Completed',
+      deliveryDate: '19-02-2025',
       deliveryLocation: 'Fort - MUMBAI',
       deliveryMode: 'COURIER',
       mainImage: award6,
@@ -315,67 +1305,67 @@ const EnhancedProductCards = () => {
       invoiceUrl: invoiceUrl,
     },
 
-    {
-      id: 10,
-      name: 'MIC TROPHY',
-      jobNo: '14887b',
-      client: 'CLEONETT EVENTS',
-      email: 'steffie@cleonett.com',
-      contactNo: '98337 40939',
-      quantity: 46,
-      size: '10 Inches',
-      startTime: '2025-02-09 09:10 AM',
-      endTime: '2025-02-10 10:10 AM',
-      status: 'Completed',
-      deliveryDate: '19-03-2025',
-      deliveryLocation: 'ITC Central - Parel - MUMBAI',
-      deliveryMode: 'HAND DELIVERY',
-      mainImage: award5,
-      enquiryOrigin: 'Website Form',
-      deliveryAddress: {
-        street: 'ITC Central, Parel',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400012',
-      },
-      billingAddress: {
-        street: '1st Floor, Cleonett House, Andheri East',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400059',
-      },
-      budget: '₹50,000',
-      preferedMaterial: 'Crystal Glass',
-      briefing: 'Duplicate batch for same event — same engraving and specs.',
-      paymentTerms: '50% advance & Bal before dispatch & delivery',
-      maxImages: 1,
-      remarks: 'Special product',
-      time: '2025-02-08 04:30 PM',
-      phoneNumber: '98337 40939',
-      pricePerPiece: '₹1,100',
-      deliveryType: 'Express Hand Delivery',
-      billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
-      packingType: 'Bubble Wrap & Box',
-      innerPackingType: 'Foam Cutout',
-      premiumPackingOptions: 'Branded Gift Box',
-      packingInstructions: 'Keep same as previous lot.',
-      packingMode: 'Individual Pack',
-      deliveryAddress: 'ITC Central, Parel, Mumbai, MH 400012',
-    },
+    // {
+    //   id: 10,
+    //   name: 'MIC TROPHY',
+    //   jobNo: '14887b',
+    //   client: 'CLEONETT EVENTS',
+    //   email: 'steffie@cleonett.com',
+    //   contactNo: '98337 40939',
+    //   quantity: 46,
+    //   size: '10 Inches',
+    //   startTime: '2025-02-09 09:10 AM',
+    //   endTime: '2025-02-10 10:10 AM',
+    //   status: 'Completed',
+    //   deliveryDate: '19-03-2025',
+    //   deliveryLocation: 'ITC Central - Parel - MUMBAI',
+    //   deliveryMode: 'HAND DELIVERY',
+    //   mainImage: award5,
+    //   enquiryOrigin: 'Website Form',
+    //   deliveryAddress: {
+    //     street: 'ITC Central, Parel',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400012',
+    //   },
+    //   billingAddress: {
+    //     street: '1st Floor, Cleonett House, Andheri East',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400059',
+    //   },
+    //   budget: '₹50,000',
+    //   preferedMaterial: 'Crystal Glass',
+    //   briefing: 'Duplicate batch for same event — same engraving and specs.',
+    //   paymentTerms: '50% advance & Bal before dispatch & delivery',
+    //   maxImages: 1,
+    //   remarks: 'Special product',
+    //   time: '2025-02-08 04:30 PM',
+    //   phoneNumber: '98337 40939',
+    //   pricePerPiece: '₹1,100',
+    //   deliveryType: 'Express Hand Delivery',
+    //   billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
+    //   packingType: 'Bubble Wrap & Box',
+    //   innerPackingType: 'Foam Cutout',
+    //   premiumPackingOptions: 'Branded Gift Box',
+    //   packingInstructions: 'Keep same as previous lot.',
+    //   packingMode: 'Individual Pack',
+    //   deliveryAddress: 'ITC Central, Parel, Mumbai, MH 400012',
+    // },
   ]
 
   // Get available statuses for tabs (remove duplicate completed)
-  const statusTabs = ['All', ...new Set(products.map((product) => product.status))]
+  // const statusTabs = ['All', ...new Set(products.map((product) => product.status))]
 
   // Filter products based on active tab and search term
-  const filteredProducts = products.filter((product) => {
-    const matchesTab = activeTab === 'All' || product.status === activeTab
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.jobNo.includes(searchTerm)
-    return matchesTab && matchesSearch
-  })
+  // const filteredProducts = products.filter((product) => {
+  //   const matchesTab = activeTab === 'All' || product.status === activeTab
+  //   const matchesSearch =
+  //     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     product.jobNo.includes(searchTerm)
+  //   return matchesTab && matchesSearch
+  // })
 
   const getDeliveryModeClass = (mode) => {
     switch (mode) {
@@ -425,6 +1415,83 @@ const EnhancedProductCards = () => {
   const getMaxImages = (product) => {
     return product.maxImages || 4
   }
+
+   const statusTabs = ['All', 'Pending', 'Completed']
+
+  // Filter products based on active tab and search term
+  const filteredProducts = products.filter((product) => {
+    const matchesTab = activeTab === 'All' || product.status === activeTab
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.jobNo.includes(searchTerm)
+    return matchesTab && matchesSearch
+  })
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'Very High':
+        return 'rgb(220, 66, 66)'
+      case 'High':
+        return 'rgb(230, 190, 33)'
+      case 'Medium':
+        return 'rgb(52, 216, 132)'
+      case 'Low':
+        return 'rgb(94, 156, 233)'
+      case 'Very Low':
+        return '#e9d5ff'
+      default:
+        return '#95A5A6'
+    }
+  }
+
+    const departments = [
+    { id: 'dtp', name: 'DTP', color: '#FF6B6B' },
+    { id: 'laser_cutting', name: 'Laser Cutting', color: '#4ECDC4' },
+    { id: 'engraving', name: 'Engraving', color: '#45B7D1' },
+    { id: 'printing', name: 'Printing', color: '#96CEB4' },
+    { id: 'assembly', name: 'Assembly', color: '#FFEAA7' },
+    { id: 'quality_check', name: 'Quality Check', color: '#DDA0DD' },
+    { id: 'packaging', name: 'Packaging', color: '#98D8C8' },
+    { id: 'dispatch', name: 'Dispatch', color: '#F7DC6F' },
+  ]
+
+
+
+  const openDepartmentModal = (product) => {
+    setDepartmentModal(product)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeDepartmentModal = () => {
+    setDepartmentModal(null)
+    document.body.style.overflow = 'unset'
+  }
+
+  const handleDepartmentToggle = (productId, departmentId) => {
+    setSelectedDepartments((prev) => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        [departmentId]: !prev[productId]?.[departmentId],
+      },
+    }))
+  }
+
+  const handleFileUpload = (productId, departmentId, file) => {
+    if (file) {
+      setDepartmentFiles((prev) => ({
+        ...prev,
+        [`${productId}_${departmentId}`]: file,
+      }))
+    }
+  }
+
+  const saveDepartments = () => {
+    alert('Departments and files saved successfully!')
+    closeDepartmentModal()
+  }
+
 
   const getCurrentImage = (product) => {
     const images = getProductImages(product.id)
@@ -607,56 +1674,56 @@ const EnhancedProductCards = () => {
   }
 
   // Priority Modal Component
-  // const PriorityModal = () => {
-  //   if (!showPriorityModal) return null
+  const PriorityModal = () => {
+    if (!showPriorityModal) return null
 
-  //   return (
-  //     <div className="modal-overlay" onClick={closePriorityModal}>
-  //       <div className="priority-modal" onClick={(e) => e.stopPropagation()}>
-  //         <div className="modal-header">
-  //           <h2 className="modal-title">Set Priority</h2>
-  //           <button className="close-button" onClick={closePriorityModal}>
-  //             ×
-  //           </button>
-  //         </div>
+    return (
+      <div className="modal-overlay" onClick={closePriorityModal}>
+        <div className="priority-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">Set Priority</h2>
+            <button className="close-button" onClick={closePriorityModal}>
+              ×
+            </button>
+          </div>
 
-  //         <div className="priority-modal-body">
-  //           <div className="priority-options">
-  //             {['Very High', 'High', 'Medium', 'Low', 'Very Low'].map((priority) => (
-  //               <label
-  //                 key={priority}
-  //                 className={`priority-option priority-${priority.toLowerCase().replace(' ', '-')}`}
-  //               >
-  //                 <input
-  //                   type="radio"
-  //                   name="priority"
-  //                   className="priority"
-  //                   value={priority}
-  //                   checked={selectedPriority === priority}
-  //                   onChange={(e) => setSelectedPriority(e.target.value)}
-  //                 />
-  //                 <span className="priority-label">{priority}</span>
-  //               </label>
-  //             ))}
-  //           </div>
+          <div className="priority-modal-body">
+            <div className="priority-options">
+              {['Very High', 'High', 'Medium', 'Low', 'Very Low'].map((priority) => (
+                <label
+                  key={priority}
+                  className={`priority-option priority-${priority.toLowerCase().replace(' ', '-')}`}
+                >
+                  <input
+                    type="radio"
+                    name="priority"
+                    className="priority"
+                    value={priority}
+                    checked={selectedPriority === priority}
+                    onChange={(e) => setSelectedPriority(e.target.value)}
+                  />
+                  <span className="priority-label">{priority}</span>
+                </label>
+              ))}
+            </div>
 
-  //           <div className="priority-actions">
-  //             <button onClick={closePriorityModal} className="btn-cancel">
-  //               Cancel
-  //             </button>
-  //             <button
-  //               onClick={handlePrioritySubmit}
-  //               className="btn-submit"
-  //               disabled={!selectedPriority}
-  //             >
-  //               Add to Production Plan
-  //             </button>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   )
-  // }
+            <div className="priority-actions">
+              <button onClick={closePriorityModal} className="btn-cancel">
+                Cancel
+              </button>
+              <button
+                onClick={handlePrioritySubmit}
+                className="btn-submit"
+                disabled={!selectedPriority}
+              >
+                Add to Production Plan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // Super Grid Detail Card Component
   const SuperGridDetailCard = ({ product }) => {
@@ -712,6 +1779,8 @@ const EnhancedProductCards = () => {
                 {product.status}
               </span>
             </div>
+
+
 
             <div className="super-grid-actions">
               {/* Show only eye icon for completed status, otherwise show all actions */}
@@ -1204,7 +2273,79 @@ const EnhancedProductCards = () => {
     )
   }
 
+    const DepartmentModal = ({ product }) => {
+    if (!product) return null
+
+    return (
+      <div className="modal-overlay" onClick={closeDepartmentModal}>
+        <div className="department-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">Manage Departments - {product.name}</h2>
+            <button className="close-button" onClick={closeDepartmentModal}>
+              ×
+            </button>
+          </div>
+
+          <div className="department-modal-body">
+            <div className="departments-grid">
+              {departments.map((dept) => {
+                const isSelected = selectedDepartments[product.id]?.[dept.id]
+                const hasFile = departmentFiles[`${product.id}_${dept.id}`]
+
+                return (
+                  <div key={dept.id} className="department-card">
+                    <div className="department-header" style={{color: 'black'}}>
+                      <label className="department-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={isSelected || false}
+                          onChange={() => handleDepartmentToggle(product.id, dept.id)}
+                        />
+                        <span className="department-name">{dept.name}</span>
+                      </label>
+                    </div>
+
+                    {isSelected && (
+                      <div className="department-content">
+                        <div className="file-upload-section">
+                          <label className="file-upload-label">
+                            <input
+                              type="file"
+                              accept=".pdf,.doc,.docx,.jpg,.png"
+                              onChange={(e) =>
+                                handleFileUpload(product.id, dept.id, e.target.files[0])
+                              }
+                              className="file-input"
+                            />
+                            <div className="file-upload-button">📁 Upload File</div>
+                          </label>
+                          {hasFile && <div className="uploaded-file">✅ {hasFile.name}</div>}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="department-actions">
+              <button onClick={closeDepartmentModal} className="btn-cancel">
+                Cancel
+              </button>
+              <button onClick={saveDepartments} className="btn-save">
+                Save Departments
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+
   const ProductCard = ({ product }) => {
+     const selectedDepts = selectedDepartments[product.id] || {}
+    const selectedCount = Object.values(selectedDepts).filter(Boolean).length
     const isExpanded = expandedCards.has(product.id)
     const currentImage = getCurrentImage(product)
     const hasImage = currentImage !== null && currentImage !== undefined
@@ -1224,8 +2365,7 @@ const EnhancedProductCards = () => {
     }
 
     const handleSubmit = () => {
-      // openPriorityModal(product.id)
-      navigate('/recipe')
+      openPriorityModal(product.id)
     }
 
     return (
@@ -1262,6 +2402,13 @@ const EnhancedProductCards = () => {
               </span>
             </div>
 
+            {selectedCount > 0 || product.status === 'Completed' && (
+              <div className="detail-row">
+                <span className="detail-label">DEPARTMENTS: </span>
+                <span className="detail-value">{selectedCount || 3} selected</span>
+              </div>
+            )}
+
             <div className="action-icons-container">
               {/* Show only eye icon for completed status, otherwise show all actions */}
               {product.status === 'Completed' ? (
@@ -1276,7 +2423,7 @@ const EnhancedProductCards = () => {
                 </div>
               ) : (
                 <>
-                  {['14892', '14890', '14889', '14893c'].includes(product.jobNo) && (
+                  {/* {['14892', '14890', '14889', '14893c'].includes(product.jobNo) && ( */}
                     <div
                       className="action-icon"
                       onClick={() => openModal(product)}
@@ -1286,17 +2433,26 @@ const EnhancedProductCards = () => {
                         <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                       </svg>
                     </div>
-                  )}
-                  {['14889'].includes(product.jobNo) && (
+                  {/* )} */}
+                   {product.status === 'Pending' && (
+                <button
+                  className="dept-btn "
+                  onClick={() => openDepartmentModal(product)}
+                  title="Manage Departments"
+                >
+                  🏭 Departments
+                </button>
+              )}
+                  {/* {['14889'].includes(product.jobNo) && (
                     <button
                       className={`process-btn ${getDeliveryModeClass('Process')}`}
                       onClick={() => handleToProcessClick(product.id)}
                     >
                       To Process
                     </button>
-                  )}
+                  )} */}
 
-                  {!isProcessed && !['14893c', '14890'].includes(product.jobNo) ? (
+                  {/* {!isProcessed && !['14893c', '14890'].includes(product.jobNo) ? (
                     <button className="edit-btn" onClick={() => navigate('/salesorder')}>
                       Edit
                     </button>
@@ -1309,13 +2465,13 @@ const EnhancedProductCards = () => {
                         To Process
                       </button>
                     )
-                  )}
+                  )} */}
 
-                  {['14892'].includes(product.jobNo) && (
+                  {/* {['14892'].includes(product.jobNo) && (
                     <button className="submit-btn" onClick={handleSubmit}>
                       To Production Plan
                     </button>
-                  )}
+                  )} */}
 
                   {showUploadIcons && uploadedCount < maxImages && (
                     <div
@@ -1472,6 +2628,138 @@ const EnhancedProductCards = () => {
         .main-container {
           min-height: 100vh;
           padding: 1rem;
+        }
+
+        .departments-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+
+        .department-card {
+          border: 1px solid #e2e8f0;
+          border-radius: 0.5rem;
+          overflow: hidden;
+          background-color: white;
+        }
+
+        .department-header {
+          padding: 1rem;
+          color: white;
+        }
+
+        .department-checkbox {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          margin: 0;
+        }
+
+        .department-checkbox input {
+          width: 1.25rem;
+          height: 1.25rem;
+        }
+
+
+
+        .dept-btn {
+             padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            background: green;
+            color: white;
+            border: none;
+        }
+
+        .department-name {
+          font-weight: 600;
+          font-size: 1rem;
+        }
+
+        .department-modal-body {
+          padding: 1.5rem;
+          max-height: calc(90vh - 120px);
+          overflow-y: auto;
+        }
+
+        .department-content {
+          padding: 1rem;
+          background-color: #f7fafc;
+        }
+
+        .file-upload-section {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .file-upload-label {
+          cursor: pointer;
+        }
+
+        .file-input {
+          display: none;
+        }
+
+        .file-upload-button {
+          display: inline-block;
+          padding: 0.5rem 1rem;
+          background-color: #0061ed;
+          color: white;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          text-align: center;
+          transition: background-color 0.2s ease;
+        }
+
+        .file-upload-button:hover {
+          background-color: #2970dc;
+        }
+
+        .uploaded-file {
+          font-size: 0.875rem;
+          color: #38a169;
+          font-weight: 500;
+        }
+
+        .department-actions {
+          display: flex;
+          gap: 1rem;
+          justify-content: flex-end;
+          padding-top: 1rem;
+          border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-cancel {
+          padding: 0.75rem 1.5rem;
+          background-color: #718096;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-weight: 500;
+        }
+
+        .btn-save {
+          padding: 0.75rem 1.5rem;
+          background-color: #38a169;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-weight: 500;
+        }
+
+        .btn-cancel:hover {
+          background-color: #4a5568;
+        }
+
+        .btn-save:hover {
+          background-color: #2f855a;
         }
 
         .inner-container {
@@ -2239,6 +3527,144 @@ const EnhancedProductCards = () => {
           background-color: #f3f4f6;
         }
 
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+        }
+
+        .detail-modal {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 800px;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .department-modal {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 900px;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem;
+          border-bottom: 1px solid #e2e8f0;
+          background-color: #f7fafc;
+        }
+
+        .modal-title {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #1a202c;
+          margin: 0;
+        }
+
+        .close-button {
+          background: none;
+          border: none;
+          color: #718096;
+          cursor: pointer;
+          font-size: 1.5rem;
+          font-weight: bold;
+          width: 2rem;
+          height: 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.25rem;
+        }
+
+        .close-button:hover {
+          color: #4a5568;
+          background-color: #edf2f7;
+        }
+
+        .modal-body {
+          padding: 1.5rem;
+          overflow-y: auto;
+          max-height: calc(90vh - 120px);
+        }
+
+        .modal-content-wrapper {
+          display: flex;
+          gap: 2rem;
+        }
+
+        .modal-image-section {
+          flex-shrink: 0;
+          width: 250px;
+        }
+
+        .modal-image {
+          width: 100%;
+          height: 250px;
+          object-fit: contain;
+          border-radius: 0.5rem;
+        }
+
+        .modal-details-section {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .modal-section {
+          background-color: #f7fafc;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border: 1px solid #e2e8f0;
+        }
+
+        .modal-section-title {
+          font-size: 1rem;
+          font-weight: bold;
+          color: ##0061ed;
+          margin: 0 0 0.75rem 0;
+        }
+
+        .modal-detail-item {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .modal-label {
+          font-weight: 600;
+          color: #4a5568;
+          min-width: 120px;
+        }
+
+        .modal-value {
+          color: #1a202c;
+        }
+
+        .priority-badge {
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          color: white;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
         .modal-body {
           padding: 1.5rem;
           overflow: auto;
@@ -2927,7 +4353,7 @@ const EnhancedProductCards = () => {
         <div className="inner-container">
           {/* Header with title, search, and controls in one line */}
           <div className="header-controls-container row">
-            <h1 className="main-title col-md-4">Sample Orders List</h1>
+            <h1 className="main-title col-md-4">Production Planning List</h1>
 
             <div className="col-md-6 search-grid">
               <div className="search-container">
@@ -2940,7 +4366,7 @@ const EnhancedProductCards = () => {
                 />
               </div>
 
-              <div className="view-controls">
+              {/* <div className="view-controls">
                 <button
                   className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
                   onClick={() => setViewMode('grid')}
@@ -2970,12 +4396,12 @@ const EnhancedProductCards = () => {
                     <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
                   </svg>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="tabs-container">
+          {/* <div className="tabs-container">
             <div className="tabs-list">
               {statusTabs.map((status) => (
                 <button
@@ -2991,7 +4417,7 @@ const EnhancedProductCards = () => {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Content based on view mode */}
           {viewMode === 'grid' && (
@@ -3095,7 +4521,7 @@ const EnhancedProductCards = () => {
         </div>
 
         {/* Priority Modal */}
-        {/* <PriorityModal /> */}
+        <PriorityModal />
 
         {/* Upload Modal */}
         {uploadModalProduct && (
@@ -3104,6 +4530,8 @@ const EnhancedProductCards = () => {
 
         {/* Detail View Modal */}
         {modalProduct && <Modal product={modalProduct} onClose={closeModal} />}
+                  {departmentModal && <DepartmentModal product={departmentModal} />}
+
       </div>
     </>
   )

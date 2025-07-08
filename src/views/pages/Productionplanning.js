@@ -252,7 +252,7 @@ function BOMProcessWizard() {
       ),
     },
     {
-      title: 'RECEIPE',
+      title: 'RECIPE',
       subtitle: 'PLS SELECT THE LIST OF ITEMS U WANT TO USE TO PROCESS THIS JOB',
       content: (
         <div className="step-content">

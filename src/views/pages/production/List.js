@@ -14,7 +14,7 @@ import a2 from '../../../../public/a2.jpg'
 import a3 from '../../../../public/a3.jpg'
 import a4 from '../../../../public/a4.webp'
 
-import invoiceUrl from '../../../../public/sampleinvoice.pdf'
+// import invoiceUrl from '../../../../public/sampleinvoice.pdf'
 
 const EnhancedProductCards = () => {
   const [expandedCards, setExpandedCards] = useState(new Set())
@@ -40,7 +40,23 @@ const EnhancedProductCards = () => {
   const [showPriorityModal, setShowPriorityModal] = useState(false)
   const [selectedPriority, setSelectedPriority] = useState('')
   const [priorityProductId, setPriorityProductId] = useState(null)
+  const [departmentModal, setDepartmentModal] = useState(null)
+  const [selectedDepartments, setSelectedDepartments] = useState({})
+  const [departmentFiles, setDepartmentFiles] = useState({})
   const navigate = useNavigate()
+
+  const getProductCardColor = (id) => {
+    switch (id) {
+      case 1:
+        return '#FF0000' // Red
+      case 2:
+        return '#FFA07A' // Yellow
+      case 7:
+        return '#C6F4D6'
+      default:
+        return 'white'
+    }
+  }
 
   // Available persons list
   const availablePersons = ['Ronald', 'Melroy', 'Kaushal', 'Priya', 'Arun', 'Neha', 'Vikram']
@@ -53,7 +69,7 @@ const EnhancedProductCards = () => {
       jobNo: '14888a',
       client: 'CLEONETT EVENTS',
       email: 'steffie@cleonett.com',
-      invoiceUrl: invoiceUrl,
+      // invoiceUrl: invoiceUrl,
       contactNo: '98337 40939',
       quantity: 46,
       size: '10 Inches',
@@ -142,7 +158,7 @@ const EnhancedProductCards = () => {
       size: '8 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'Under Process',
+      status: 'Pending',
       deliveryDate: '17-04-2025',
       deliveryLocation: 'Bandra Kurla Complex - MUMBAI',
       deliveryAddress: {
@@ -190,7 +206,7 @@ const EnhancedProductCards = () => {
         state: 'MH',
         postalCode: '400012',
       },
-      invoiceUrl: invoiceUrl,
+      // invoiceUrl: invoiceUrl,
       billingAddress: {
         street: '1st Floor, Cleonett House, Andheri East',
         city: 'Mumbai',
@@ -202,7 +218,7 @@ const EnhancedProductCards = () => {
       size: '16 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'Design Uploaded',
+      status: 'Completed',
       deliveryDate: '11-01-2025',
       deliveryLocation: 'Andheri - MUMBAI',
       deliveryMode: 'EXPRESS DELIVERY',
@@ -239,7 +255,7 @@ const EnhancedProductCards = () => {
       size: '3 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'PI Uploaded',
+      status: 'Completed',
       deliveryDate: '19-01-2026',
       deliveryLocation: 'Worli Sports Complex - MUMBAI',
       invoiceFileName: 'invoice.pdf',
@@ -271,7 +287,7 @@ const EnhancedProductCards = () => {
       billingAddress: 'Sports Federation India, Worli, Mumbai, MH 400030',
       packingType: 'Velvet Pouches',
       innerPackingType: 'Individual Slot',
-      invoiceUrl: invoiceUrl,
+      // invoiceUrl: invoiceUrl,
       premiumPackingOptions: 'Branded Medal Case',
       packingInstructions: 'Group by sport type.',
       packingMode: 'Batch Pack of 10',
@@ -288,8 +304,8 @@ const EnhancedProductCards = () => {
       size: '14 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'Awaiting Approval',
-      deliveryDate: '12-07-2025',
+      status: 'Completed',
+      deliveryDate: '19-02-2025',
       deliveryLocation: 'Fort - MUMBAI',
       deliveryMode: 'COURIER',
       mainImage: award6,
@@ -312,70 +328,70 @@ const EnhancedProductCards = () => {
       packingMode: 'Batch Pack',
       deliveryAddress: 'Heritage Club, Fort, Mumbai, MH 400001',
       designFile: 'design_file.pdf',
-      invoiceUrl: invoiceUrl,
+      // invoiceUrl: invoiceUrl,
     },
 
-    {
-      id: 10,
-      name: 'MIC TROPHY',
-      jobNo: '14887b',
-      client: 'CLEONETT EVENTS',
-      email: 'steffie@cleonett.com',
-      contactNo: '98337 40939',
-      quantity: 46,
-      size: '10 Inches',
-      startTime: '2025-02-09 09:10 AM',
-      endTime: '2025-02-10 10:10 AM',
-      status: 'Completed',
-      deliveryDate: '19-03-2025',
-      deliveryLocation: 'ITC Central - Parel - MUMBAI',
-      deliveryMode: 'HAND DELIVERY',
-      mainImage: award5,
-      enquiryOrigin: 'Website Form',
-      deliveryAddress: {
-        street: 'ITC Central, Parel',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400012',
-      },
-      billingAddress: {
-        street: '1st Floor, Cleonett House, Andheri East',
-        city: 'Mumbai',
-        state: 'MH',
-        postalCode: '400059',
-      },
-      budget: '₹50,000',
-      preferedMaterial: 'Crystal Glass',
-      briefing: 'Duplicate batch for same event — same engraving and specs.',
-      paymentTerms: '50% advance & Bal before dispatch & delivery',
-      maxImages: 1,
-      remarks: 'Special product',
-      time: '2025-02-08 04:30 PM',
-      phoneNumber: '98337 40939',
-      pricePerPiece: '₹1,100',
-      deliveryType: 'Express Hand Delivery',
-      billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
-      packingType: 'Bubble Wrap & Box',
-      innerPackingType: 'Foam Cutout',
-      premiumPackingOptions: 'Branded Gift Box',
-      packingInstructions: 'Keep same as previous lot.',
-      packingMode: 'Individual Pack',
-      deliveryAddress: 'ITC Central, Parel, Mumbai, MH 400012',
-    },
+    // {
+    //   id: 10,
+    //   name: 'MIC TROPHY',
+    //   jobNo: '14887b',
+    //   client: 'CLEONETT EVENTS',
+    //   email: 'steffie@cleonett.com',
+    //   contactNo: '98337 40939',
+    //   quantity: 46,
+    //   size: '10 Inches',
+    //   startTime: '2025-02-09 09:10 AM',
+    //   endTime: '2025-02-10 10:10 AM',
+    //   status: 'Completed',
+    //   deliveryDate: '19-03-2025',
+    //   deliveryLocation: 'ITC Central - Parel - MUMBAI',
+    //   deliveryMode: 'HAND DELIVERY',
+    //   mainImage: award5,
+    //   enquiryOrigin: 'Website Form',
+    //   deliveryAddress: {
+    //     street: 'ITC Central, Parel',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400012',
+    //   },
+    //   billingAddress: {
+    //     street: '1st Floor, Cleonett House, Andheri East',
+    //     city: 'Mumbai',
+    //     state: 'MH',
+    //     postalCode: '400059',
+    //   },
+    //   budget: '₹50,000',
+    //   preferedMaterial: 'Crystal Glass',
+    //   briefing: 'Duplicate batch for same event — same engraving and specs.',
+    //   paymentTerms: '50% advance & Bal before dispatch & delivery',
+    //   maxImages: 1,
+    //   remarks: 'Special product',
+    //   time: '2025-02-08 04:30 PM',
+    //   phoneNumber: '98337 40939',
+    //   pricePerPiece: '₹1,100',
+    //   deliveryType: 'Express Hand Delivery',
+    //   billingAddress: 'Cleonett Events, 1st Floor, Andheri East, Mumbai, MH 400059',
+    //   packingType: 'Bubble Wrap & Box',
+    //   innerPackingType: 'Foam Cutout',
+    //   premiumPackingOptions: 'Branded Gift Box',
+    //   packingInstructions: 'Keep same as previous lot.',
+    //   packingMode: 'Individual Pack',
+    //   deliveryAddress: 'ITC Central, Parel, Mumbai, MH 400012',
+    // },
   ]
 
   // Get available statuses for tabs (remove duplicate completed)
-  const statusTabs = ['All', ...new Set(products.map((product) => product.status))]
+  // const statusTabs = ['All', ...new Set(products.map((product) => product.status))]
 
   // Filter products based on active tab and search term
-  const filteredProducts = products.filter((product) => {
-    const matchesTab = activeTab === 'All' || product.status === activeTab
-    const matchesSearch =
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.jobNo.includes(searchTerm)
-    return matchesTab && matchesSearch
-  })
+  // const filteredProducts = products.filter((product) => {
+  //   const matchesTab = activeTab === 'All' || product.status === activeTab
+  //   const matchesSearch =
+  //     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     product.jobNo.includes(searchTerm)
+  //   return matchesTab && matchesSearch
+  // })
 
   const getDeliveryModeClass = (mode) => {
     switch (mode) {
@@ -424,6 +440,80 @@ const EnhancedProductCards = () => {
 
   const getMaxImages = (product) => {
     return product.maxImages || 4
+  }
+
+  const statusTabs = ['All', 'Pending', 'Completed']
+
+  // Filter products based on active tab and search term
+  const filteredProducts = products.filter((product) => {
+    const matchesTab = activeTab === 'All' || product.status === activeTab
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.jobNo.includes(searchTerm)
+    return matchesTab && matchesSearch
+  })
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case 'Very High':
+        return 'rgb(220, 66, 66)'
+      case 'High':
+        return 'rgb(230, 190, 33)'
+      case 'Medium':
+        return 'rgb(52, 216, 132)'
+      case 'Low':
+        return 'rgb(94, 156, 233)'
+      case 'Very Low':
+        return '#e9d5ff'
+      default:
+        return '#95A5A6'
+    }
+  }
+
+  const departments = [
+    { id: 'dtp', name: 'DTP', color: '#FF6B6B' },
+    { id: 'laser_cutting', name: 'Laser Cutting', color: '#4ECDC4' },
+    { id: 'engraving', name: 'Engraving', color: '#45B7D1' },
+    { id: 'printing', name: 'Printing', color: '#96CEB4' },
+    { id: 'assembly', name: 'Assembly', color: '#FFEAA7' },
+    { id: 'quality_check', name: 'Quality Check', color: '#DDA0DD' },
+    { id: 'packaging', name: 'Packaging', color: '#98D8C8' },
+    { id: 'dispatch', name: 'Dispatch', color: '#F7DC6F' },
+  ]
+
+  const openDepartmentModal = (product) => {
+    setDepartmentModal(product)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeDepartmentModal = () => {
+    setDepartmentModal(null)
+    document.body.style.overflow = 'unset'
+  }
+
+  const handleDepartmentToggle = (productId, departmentId) => {
+    setSelectedDepartments((prev) => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        [departmentId]: !prev[productId]?.[departmentId],
+      },
+    }))
+  }
+
+  const handleFileUpload = (productId, departmentId, file) => {
+    if (file) {
+      setDepartmentFiles((prev) => ({
+        ...prev,
+        [`${productId}_${departmentId}`]: file,
+      }))
+    }
+  }
+
+  const saveDepartments = () => {
+    alert('Departments and files saved successfully!')
+    closeDepartmentModal()
   }
 
   const getCurrentImage = (product) => {
@@ -607,56 +697,56 @@ const EnhancedProductCards = () => {
   }
 
   // Priority Modal Component
-  // const PriorityModal = () => {
-  //   if (!showPriorityModal) return null
+  const PriorityModal = () => {
+    if (!showPriorityModal) return null
 
-  //   return (
-  //     <div className="modal-overlay" onClick={closePriorityModal}>
-  //       <div className="priority-modal" onClick={(e) => e.stopPropagation()}>
-  //         <div className="modal-header">
-  //           <h2 className="modal-title">Set Priority</h2>
-  //           <button className="close-button" onClick={closePriorityModal}>
-  //             ×
-  //           </button>
-  //         </div>
+    return (
+      <div className="modal-overlay" onClick={closePriorityModal}>
+        <div className="priority-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">Set Priority</h2>
+            <button className="close-button" onClick={closePriorityModal}>
+              ×
+            </button>
+          </div>
 
-  //         <div className="priority-modal-body">
-  //           <div className="priority-options">
-  //             {['Very High', 'High', 'Medium', 'Low', 'Very Low'].map((priority) => (
-  //               <label
-  //                 key={priority}
-  //                 className={`priority-option priority-${priority.toLowerCase().replace(' ', '-')}`}
-  //               >
-  //                 <input
-  //                   type="radio"
-  //                   name="priority"
-  //                   className="priority"
-  //                   value={priority}
-  //                   checked={selectedPriority === priority}
-  //                   onChange={(e) => setSelectedPriority(e.target.value)}
-  //                 />
-  //                 <span className="priority-label">{priority}</span>
-  //               </label>
-  //             ))}
-  //           </div>
+          <div className="priority-modal-body">
+            <div className="priority-options">
+              {['Very High', 'High', 'Medium', 'Low', 'Very Low'].map((priority) => (
+                <label
+                  key={priority}
+                  className={`priority-option priority-${priority.toLowerCase().replace(' ', '-')}`}
+                >
+                  <input
+                    type="radio"
+                    name="priority"
+                    className="priority"
+                    value={priority}
+                    checked={selectedPriority === priority}
+                    onChange={(e) => setSelectedPriority(e.target.value)}
+                  />
+                  <span className="priority-label">{priority}</span>
+                </label>
+              ))}
+            </div>
 
-  //           <div className="priority-actions">
-  //             <button onClick={closePriorityModal} className="btn-cancel">
-  //               Cancel
-  //             </button>
-  //             <button
-  //               onClick={handlePrioritySubmit}
-  //               className="btn-submit"
-  //               disabled={!selectedPriority}
-  //             >
-  //               Add to Production Plan
-  //             </button>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   )
-  // }
+            <div className="priority-actions">
+              <button onClick={closePriorityModal} className="btn-cancel">
+                Cancel
+              </button>
+              <button
+                onClick={handlePrioritySubmit}
+                className="btn-submit"
+                disabled={!selectedPriority}
+              >
+                Add to Production Plan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // Super Grid Detail Card Component
   const SuperGridDetailCard = ({ product }) => {
@@ -967,14 +1057,14 @@ const EnhancedProductCards = () => {
     return (
       <div className="modal-overlay" onClick={onClose}>
         <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
-          <div className="modal-header">
+          <div className="modal-header" style={{ background: getProductCardColor(product.id) }}>
             <h2 className="modal-title">{product.name}</h2>
             <button className="close-button" onClick={onClose}>
               ×
             </button>
           </div>
 
-          <div className="modal-body">
+          <div className="modal-body" style={{ background: getProductCardColor(product.id) }}>
             {/* 📌 Wrap Image + Info in same row */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem' }}>
               {/* Image Section */}
@@ -1020,7 +1110,7 @@ const EnhancedProductCards = () => {
                   <span className="modal-label">Client Name:</span>
                   <span className="modal-value">{product.client}</span>
                 </div>
-                <div className="modal-detail-item">
+                {/* <div className="modal-detail-item">
                   <span className="modal-label">Email:</span>
                   <a href={`mailto:${product.email}`} className="modal-link">
                     {product.email}
@@ -1031,7 +1121,7 @@ const EnhancedProductCards = () => {
                   <a href={`tel:${product.contactNo}`} className="modal-link">
                     {product.contactNo}
                   </a>
-                </div>
+                </div> */}
               </div>
 
               <div className="modal-section">
@@ -1040,10 +1130,10 @@ const EnhancedProductCards = () => {
                   <span className="modal-label">Payment Terms:</span>
                   <span className="modal-value">{product.paymentTerms}</span>
                 </div>
-                <div className="modal-detail-item">
+                {/* <div className="modal-detail-item">
                   <span className="modal-label">Billing Address:</span>
                   <span className="modal-value">{product.billingAddress}</span>
-                </div>
+                </div> */}
                 <div className="modal-detail-item">
                   <span className="modal-label">Remarks:</span>
                   <span className="modal-value">{product.remarks}</span>
@@ -1106,7 +1196,7 @@ const EnhancedProductCards = () => {
                 <div className="modal-documents-section">
                   <h3 className="modal-section-title">Documents</h3>
                   <div className="document-files">
-                    {product.status === 'PI Uploaded' && product.invoiceUrl && (
+                    {/* {product.status === 'PI Uploaded' && product.invoiceUrl && (
                       <div className="document-item">
                         <div className="document-info">
                           <svg
@@ -1127,7 +1217,7 @@ const EnhancedProductCards = () => {
                           Download
                         </button>
                       </div>
-                    )}
+                    )} */}
                     {product.status === 'Design Uploaded' && product.designFile && (
                       <div className="document-item">
                         <div className="document-info">
@@ -1152,7 +1242,7 @@ const EnhancedProductCards = () => {
                     )}
                     {['Awaiting Approval', 'Completed'].includes(product.status) && (
                       <>
-                        <div className="document-item">
+                        {/* <div className="document-item">
                           <div className="document-info">
                             <svg
                               width="16"
@@ -1171,7 +1261,7 @@ const EnhancedProductCards = () => {
                           >
                             Download
                           </button>
-                        </div>
+                        </div> */}
                         <div className="document-item">
                           <div className="document-info">
                             <svg
@@ -1204,7 +1294,78 @@ const EnhancedProductCards = () => {
     )
   }
 
+  const DepartmentModal = ({ product }) => {
+    if (!product) return null
+
+    return (
+      <div className="modal-overlay" onClick={closeDepartmentModal}>
+        <div className="department-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-header">
+            <h2 className="modal-title">Manage Departments - {product.name}</h2>
+            <button className="close-button" onClick={closeDepartmentModal}>
+              ×
+            </button>
+          </div>
+
+          <div className="department-modal-body">
+            <div className="departments-grid">
+              {departments.map((dept) => {
+                const isSelected = selectedDepartments[product.id]?.[dept.id]
+                const hasFile = departmentFiles[`${product.id}_${dept.id}`]
+
+                return (
+                  <div key={dept.id} className="department-card">
+                    <div className="department-header" style={{ color: 'black' }}>
+                      <label className="department-checkbox">
+                        <input
+                          type="checkbox"
+                          checked={isSelected || false}
+                          onChange={() => handleDepartmentToggle(product.id, dept.id)}
+                        />
+                        <span className="department-name">{dept.name}</span>
+                      </label>
+                    </div>
+
+                    {isSelected && (
+                      <div className="department-content">
+                        <div className="file-upload-section">
+                          <label className="file-upload-label">
+                            <input
+                              type="file"
+                              accept=".pdf,.doc,.docx,.jpg,.png"
+                              onChange={(e) =>
+                                handleFileUpload(product.id, dept.id, e.target.files[0])
+                              }
+                              className="file-input"
+                            />
+                            <div className="file-upload-button">📁 Upload File</div>
+                          </label>
+                          {hasFile && <div className="uploaded-file">✅ {hasFile.name}</div>}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            <div className="department-actions">
+              <button onClick={closeDepartmentModal} className="btn-cancel">
+                Cancel
+              </button>
+              <button onClick={saveDepartments} className="btn-save">
+                Save Departments
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   const ProductCard = ({ product }) => {
+    const selectedDepts = selectedDepartments[product.id] || {}
+    const selectedCount = Object.values(selectedDepts).filter(Boolean).length
     const isExpanded = expandedCards.has(product.id)
     const currentImage = getCurrentImage(product)
     const hasImage = currentImage !== null && currentImage !== undefined
@@ -1224,12 +1385,11 @@ const EnhancedProductCards = () => {
     }
 
     const handleSubmit = () => {
-      // openPriorityModal(product.id)
-      navigate('/recipe')
+      openPriorityModal(product.id)
     }
 
     return (
-      <div className="product-card">
+      <div className="product-card" style={{ background: getProductCardColor(product.id) }} >
         <div className="image-container">
           <img src={currentImage} alt={product.name} className="product-image" />
         </div>
@@ -1262,12 +1422,20 @@ const EnhancedProductCards = () => {
               </span>
             </div>
 
+            {selectedCount > 0 ||
+              (product.status === 'Completed' && (
+                <div className="detail-row">
+                  <span className="detail-label">DEPARTMENTS: </span>
+                  <span className="detail-value">{selectedCount || 3} selected</span>
+                </div>
+              ))}
+
             <div className="action-icons-container">
               {/* Show only eye icon for completed status, otherwise show all actions */}
               {product.status === 'Completed' ? (
                 <div
                   className="action-icon"
-                  onClick={() => openModal(product)}
+                  onClick={() => navigate('/productoverview')}
                   title="View All Details"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1276,27 +1444,36 @@ const EnhancedProductCards = () => {
                 </div>
               ) : (
                 <>
-                  {['14892', '14890', '14889', '14893c'].includes(product.jobNo) && (
-                    <div
-                      className="action-icon"
-                      onClick={() => openModal(product)}
-                      title="View All Details"
+                  {/* {['14892', '14890', '14889', '14893c'].includes(product.jobNo) && ( */}
+                  <div
+                    className="action-icon"
+                    onClick={() => navigate('/productoverview')}
+                    title="View All Details"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                    </svg>
+                  </div>
+                  {/* )} */}
+                  {/* {product.status === 'Pending' && (
+                    <button
+                      className="dept-btn "
+                      onClick={() => openDepartmentModal(product)}
+                      title="Manage Departments"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
-                      </svg>
-                    </div>
-                  )}
-                  {['14889'].includes(product.jobNo) && (
+                      🏭 Departments
+                    </button>
+                  )} */}
+                  {/* {['14889'].includes(product.jobNo) && (
                     <button
                       className={`process-btn ${getDeliveryModeClass('Process')}`}
                       onClick={() => handleToProcessClick(product.id)}
                     >
                       To Process
                     </button>
-                  )}
+                  )} */}
 
-                  {!isProcessed && !['14893c', '14890'].includes(product.jobNo) ? (
+                  {/* {!isProcessed && !['14893c', '14890'].includes(product.jobNo) ? (
                     <button className="edit-btn" onClick={() => navigate('/salesorder')}>
                       Edit
                     </button>
@@ -1309,13 +1486,13 @@ const EnhancedProductCards = () => {
                         To Process
                       </button>
                     )
-                  )}
+                  )} */}
 
-                  {['14892'].includes(product.jobNo) && (
+                  {/* {['14892'].includes(product.jobNo) && (
                     <button className="submit-btn" onClick={handleSubmit}>
                       To Production Plan
                     </button>
-                  )}
+                  )} */}
 
                   {showUploadIcons && uploadedCount < maxImages && (
                     <div
@@ -1381,7 +1558,7 @@ const EnhancedProductCards = () => {
           <div className="table-actions">
             <button
               className="table-view-btn"
-              onClick={() => openModal(product)}
+              onClick={() => navigate('/productoverview')}
               title="View Details"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1472,6 +1649,136 @@ const EnhancedProductCards = () => {
         .main-container {
           min-height: 100vh;
           padding: 1rem;
+        }
+
+        .departments-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1rem;
+          margin-bottom: 2rem;
+        }
+
+        .department-card {
+          border: 1px solid #e2e8f0;
+          border-radius: 0.5rem;
+          overflow: hidden;
+          background-color: white;
+        }
+
+        .department-header {
+          padding: 1rem;
+          color: white;
+        }
+
+        .department-checkbox {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          margin: 0;
+        }
+
+        .department-checkbox input {
+          width: 1.25rem;
+          height: 1.25rem;
+        }
+
+        .dept-btn {
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          display: inline-block;
+          background: green;
+          color: white;
+          border: none;
+        }
+
+        .department-name {
+          font-weight: 600;
+          font-size: 1rem;
+        }
+
+        .department-modal-body {
+          padding: 1.5rem;
+          max-height: calc(90vh - 120px);
+          overflow-y: auto;
+        }
+
+        .department-content {
+          padding: 1rem;
+          background-color: #f7fafc;
+        }
+
+        .file-upload-section {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .file-upload-label {
+          cursor: pointer;
+        }
+
+        .file-input {
+          display: none;
+        }
+
+        .file-upload-button {
+          display: inline-block;
+          padding: 0.5rem 1rem;
+          background-color: #0061ed;
+          color: white;
+          border-radius: 0.375rem;
+          font-size: 0.875rem;
+          text-align: center;
+          transition: background-color 0.2s ease;
+        }
+
+        .file-upload-button:hover {
+          background-color: #2970dc;
+        }
+
+        .uploaded-file {
+          font-size: 0.875rem;
+          color: #38a169;
+          font-weight: 500;
+        }
+
+        .department-actions {
+          display: flex;
+          gap: 1rem;
+          justify-content: flex-end;
+          padding-top: 1rem;
+          border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-cancel {
+          padding: 0.75rem 1.5rem;
+          background-color: #718096;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-weight: 500;
+        }
+
+        .btn-save {
+          padding: 0.75rem 1.5rem;
+          background-color: #38a169;
+          color: white;
+          border: none;
+          border-radius: 0.5rem;
+          cursor: pointer;
+          font-weight: 500;
+        }
+
+        .btn-cancel:hover {
+          background-color: #4a5568;
+        }
+
+        .btn-save:hover {
+          background-color: #2f855a;
         }
 
         .inner-container {
@@ -2239,6 +2546,143 @@ const EnhancedProductCards = () => {
           background-color: #f3f4f6;
         }
 
+        .modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 1rem;
+        }
+
+        .detail-modal {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 800px;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .department-modal {
+          background-color: white;
+          border-radius: 0.75rem;
+          width: 100%;
+          max-width: 900px;
+          max-height: 90vh;
+          overflow: hidden;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 1.5rem;
+          border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+          font-size: 1.5rem;
+          font-weight: bold;
+          color: #1a202c;
+          margin: 0;
+        }
+
+        .close-button {
+          background: none;
+          border: none;
+          color: #718096;
+          cursor: pointer;
+          font-size: 1.5rem;
+          font-weight: bold;
+          width: 2rem;
+          height: 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 0.25rem;
+        }
+
+        .close-button:hover {
+          color: #4a5568;
+          background-color: #edf2f7;
+        }
+
+        .modal-body {
+          padding: 1.5rem;
+          overflow-y: auto;
+          max-height: calc(90vh - 120px);
+        }
+
+        .modal-content-wrapper {
+          display: flex;
+          gap: 2rem;
+        }
+
+        .modal-image-section {
+          flex-shrink: 0;
+          width: 250px;
+        }
+
+        .modal-image {
+          width: 100%;
+          height: 250px;
+          object-fit: contain;
+          border-radius: 0.5rem;
+        }
+
+        .modal-details-section {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .modal-section {
+          background-color: #f7fafc;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border: 1px solid #e2e8f0;
+        }
+
+        .modal-section-title {
+          font-size: 1rem;
+          font-weight: bold;
+          color: ##0061ed;
+          margin: 0 0 0.75rem 0;
+        }
+
+        .modal-detail-item {
+          display: flex;
+          gap: 0.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .modal-label {
+          font-weight: 600;
+          color: #4a5568;
+          min-width: 120px;
+        }
+
+        .modal-value {
+          color: #1a202c;
+        }
+
+        .priority-badge {
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          color: white;
+          font-size: 0.75rem;
+          font-weight: 600;
+        }
+
         .modal-body {
           padding: 1.5rem;
           overflow: auto;
@@ -2927,7 +3371,7 @@ const EnhancedProductCards = () => {
         <div className="inner-container">
           {/* Header with title, search, and controls in one line */}
           <div className="header-controls-container row">
-            <h1 className="main-title col-md-4">Sample Orders List</h1>
+            <h1 className="main-title col-md-4">Production Planning List</h1>
 
             <div className="col-md-6 search-grid">
               <div className="search-container">
@@ -2940,7 +3384,7 @@ const EnhancedProductCards = () => {
                 />
               </div>
 
-              <div className="view-controls">
+              {/* <div className="view-controls">
                 <button
                   className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
                   onClick={() => setViewMode('grid')}
@@ -2970,12 +3414,12 @@ const EnhancedProductCards = () => {
                     <path d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z" />
                   </svg>
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="tabs-container">
+          {/* <div className="tabs-container">
             <div className="tabs-list">
               {statusTabs.map((status) => (
                 <button
@@ -2991,7 +3435,7 @@ const EnhancedProductCards = () => {
                 </button>
               ))}
             </div>
-          </div>
+          </div> */}
 
           {/* Content based on view mode */}
           {viewMode === 'grid' && (
@@ -3095,7 +3539,7 @@ const EnhancedProductCards = () => {
         </div>
 
         {/* Priority Modal */}
-        {/* <PriorityModal /> */}
+        <PriorityModal />
 
         {/* Upload Modal */}
         {uploadModalProduct && (
@@ -3104,6 +3548,7 @@ const EnhancedProductCards = () => {
 
         {/* Detail View Modal */}
         {modalProduct && <Modal product={modalProduct} onClose={closeModal} />}
+        {departmentModal && <DepartmentModal product={departmentModal} />}
       </div>
     </>
   )

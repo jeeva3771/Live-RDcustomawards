@@ -68,7 +68,7 @@ const EnhancedProductCards = () => {
       id: 4,
       name: 'ACRYLIC PLAQUE',
       jobNo: '14891',
-      client: 'TECH INNOVATIONS',
+      client: 'Ram',
       email: 'contact@techinno.com',
       contactNo: '87654 32109',
       startTime: '2025-02-09 09:10 AM',
