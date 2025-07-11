@@ -19,7 +19,6 @@ import {
 import { DocsComponents, DocsExample } from 'src/components'
 import { useNavigate, useParams } from 'react-router-dom'
 
-
 const Tooltips = () => {
   const { processId } = useParams()
   const navigate = useNavigate()
@@ -53,6 +52,30 @@ const Tooltips = () => {
           Please provide a valid code.
         </CFormFeedback> */}
       </CCol>
+      <CCol md={4} className="position-relative">
+        <CFormLabel htmlFor="size" className="clr-black fw-medium">
+          Size of Cutting Sheet
+        </CFormLabel>
+        <CFormInput type="text" id="size" required />
+      </CCol>
+      <CCol md={4} className="position-relative">
+        <CFormLabel htmlFor="ups" className="clr-black fw-medium">
+          No of UPS per Sheet
+        </CFormLabel>
+        <CFormInput type="number" id="ups" required />
+      </CCol>
+      <CCol md={4} className="position-relative">
+        <CFormLabel htmlFor="qty" className="clr-black fw-medium">
+          Qty Required
+        </CFormLabel>
+        <CFormInput type="number" id="qty" required />
+      </CCol>
+      <CCol md={4} className="position-relative">
+        <CFormLabel htmlFor="qtySqft" className="clr-black fw-medium">
+          Qty in SQFT
+        </CFormLabel>
+        <CFormInput type="number" id="qtySqft" required />
+      </CCol>
       <CCol md={4} className="position-relative mb-2">
         <CFormLabel htmlFor="status" className="clr-black fw-medium">
           Status
@@ -67,6 +90,7 @@ const Tooltips = () => {
           Please provide a valid city.
         </CFormFeedback> */}
       </CCol>
+
       {/* <CCol md={4} className="position-relative">
         <CFormLabel htmlFor="validationTooltipUsername">Status</CFormLabel>
         <CInputGroup className="has-validation">

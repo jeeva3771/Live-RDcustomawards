@@ -36,7 +36,6 @@ import {
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 
-
 const DepartmentList = () => {
   const navigate = useNavigate()
   // Sample data
@@ -45,6 +44,7 @@ const DepartmentList = () => {
       name: 'Trophy Design',
       code: 'RD001',
       status: 'Active',
+      process: 'DTP, UV Printing, Screen Printing, Laser Cutting',
       createdAt: '2024-01-12 09:30 AM',
       createdBy: 'Arun Prakash',
       updatedAt: '2024-12-10 02:15 PM',
@@ -54,6 +54,7 @@ const DepartmentList = () => {
       name: '3D Modeling & Rendering',
       code: 'RD002',
       status: 'Active',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       createdAt: '2024-02-05 10:00 AM',
       createdBy: 'Lavanya S',
       updatedAt: '2024-12-09 01:00 PM',
@@ -63,6 +64,7 @@ const DepartmentList = () => {
       name: 'Laser Engraving Unit',
       code: 'RD003',
       status: 'Inactive',
+      process: 'Welding, Painting, Polishing, Drilling',
       createdAt: '2024-03-10 11:45 AM',
       createdBy: 'Karthik R',
       updatedAt: '2024-12-07 11:30 AM',
@@ -72,6 +74,7 @@ const DepartmentList = () => {
       name: 'Metal Casting & Finishing',
       code: 'RD004',
       status: 'Active',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       createdAt: '2024-04-01 08:20 AM',
       createdBy: 'Sowmya K',
       updatedAt: '2024-12-06 04:45 PM',
@@ -81,6 +84,7 @@ const DepartmentList = () => {
       name: 'Quality Control & Assurance',
       code: 'RD005',
       status: 'Active',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       createdAt: '2024-05-18 09:30 AM',
       createdBy: 'Rajiv Menon',
       updatedAt: '2024-12-05 03:20 PM',
@@ -89,7 +93,10 @@ const DepartmentList = () => {
     {
       name: 'Order Fulfilment & Dispatch',
       code: 'RD006',
+
+
       status: 'Inactive',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       createdAt: '2024-06-22 01:00 PM',
       createdBy: 'Bharath S',
       updatedAt: '2024-12-03 12:45 PM',
@@ -99,6 +106,7 @@ const DepartmentList = () => {
       name: 'Client Design Approvals',
       code: 'RD007',
       status: 'Active',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       createdAt: '2024-07-08 10:45 AM',
       createdBy: 'Karthik R',
       updatedAt: '2024-12-01 10:30 AM',
@@ -108,6 +116,7 @@ const DepartmentList = () => {
       name: 'Packaging & Logistics',
       code: 'RD008',
       status: 'Active',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       createdAt: '2024-08-14 03:15 PM',
       createdBy: 'Arun Prakash',
       updatedAt: '2024-12-02 05:15 PM',
@@ -117,6 +126,8 @@ const DepartmentList = () => {
       name: 'Client Support & Order Coordination',
       code: 'RD009',
       status: 'Active',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
+
       createdAt: '2024-09-12 11:00 AM',
       createdBy: 'Megha Jain',
       updatedAt: '2024-12-11 03:10 PM',
@@ -125,6 +136,7 @@ const DepartmentList = () => {
     {
       name: 'Digital Artwork & Proofing',
       code: 'RD010',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       status: 'Active',
       createdAt: '2024-10-05 02:30 PM',
       createdBy: 'Sakthi Vel',
@@ -135,6 +147,7 @@ const DepartmentList = () => {
       name: 'Procurement & Vendor Management',
       code: 'RD011',
       status: 'Inactive',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       createdAt: '2024-11-01 10:15 AM',
       createdBy: 'Mohan R',
       updatedAt: '2024-12-04 09:00 AM',
@@ -144,6 +157,7 @@ const DepartmentList = () => {
       name: 'Event Branding & Custom Orders',
       code: 'RD012',
       status: 'Active',
+      process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
       createdAt: '2024-12-01 04:00 PM',
       createdBy: 'Divya Ramesh',
       updatedAt: '2024-12-15 01:00 PM',
@@ -294,6 +308,14 @@ const DepartmentList = () => {
                 >
                   Code{getSortIcon('code')}
                 </CTableHeaderCell>
+
+                <CTableHeaderCell
+                  scope="col"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleSort('process')}
+                >
+                  Process Under This Department{getSortIcon('process')}
+                </CTableHeaderCell>
                 <CTableHeaderCell
                   scope="col"
                   style={{ cursor: 'pointer' }}
@@ -313,6 +335,7 @@ const DepartmentList = () => {
                     <CTableDataCell>{startIndex + index + 1}</CTableDataCell>
                     <CTableDataCell>{process.name}</CTableDataCell>
                     <CTableDataCell>{process.code}</CTableDataCell>
+                    <CTableDataCell>{process.process}</CTableDataCell>
                     <CTableDataCell>{getStatusBadge(process.status)}</CTableDataCell>
                     <CTableDataCell className="text-center">
                       <CButton
@@ -466,6 +489,15 @@ const DepartmentList = () => {
                   :
                 </CCol>
                 <CCol sm={7}>{getStatusBadge(selectedProcess.status)}</CCol>
+              </CRow>
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Process Under This Department
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.process}</CCol>
               </CRow>
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">

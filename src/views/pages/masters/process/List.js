@@ -46,6 +46,10 @@ const ProcessList = () => {
       name: 'Customer Registration',
       code: 'CUST001',
       status: 'Active',
+      size: '14 * 12',
+      ups: 'No of UPS per Sheet',
+      qty: 'Qty Required',
+      QtySqft: 'Qty in SQFT',
       createdAt: '2024-01-15 09:30 AM',
       createdBy: 'John Doe',
       updatedAt: '2024-12-20 4:25 PM',
@@ -294,6 +298,7 @@ const ProcessList = () => {
             <CTable striped hover className="table-min-widths">
               <CTableHead>
                 <CTableRow>
+
                   <CTableHeaderCell scope="col">S.No</CTableHeaderCell>
                   <CTableHeaderCell
                     scope="col"
@@ -309,6 +314,36 @@ const ProcessList = () => {
                   >
                     Code{getSortIcon('code')}
                   </CTableHeaderCell>
+
+                  <CTableHeaderCell
+                    scope="col"
+                    className="sortable-header"
+                    onClick={() => handleSort('name')}
+                  >
+                     Size of Cutting Sheet{getSortIcon('name')}
+                  </CTableHeaderCell>
+                  <CTableHeaderCell
+                    scope="col"
+                    className="sortable-header"
+                    onClick={() => handleSort('name')}
+                  >
+                    No of UPS per Sheet{getSortIcon('name')}
+                  </CTableHeaderCell>
+                  <CTableHeaderCell
+                    scope="col"
+                    className="sortable-header"
+                    onClick={() => handleSort('name')}
+                  >
+                    Qty Required{getSortIcon('name')}
+                  </CTableHeaderCell>
+                  <CTableHeaderCell
+                    scope="col"
+                    className="sortable-header"
+                    onClick={() => handleSort('name')}
+                  >
+                    Qty in SQFT{getSortIcon('name')}
+                  </CTableHeaderCell>
+
                   <CTableHeaderCell
                     scope="col"
                     className="sortable-header"
