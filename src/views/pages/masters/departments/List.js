@@ -41,7 +41,7 @@ const DepartmentList = () => {
   // Sample data
   const [processes] = useState([
     {
-      name: 'Trophy Design',
+      name: 'DTP',
       code: 'RD001',
       status: 'Active',
       process: 'DTP, UV Printing, Screen Printing, Laser Cutting',
@@ -51,7 +51,7 @@ const DepartmentList = () => {
       updatedBy: 'Lavanya S',
     },
     {
-      name: '3D Modeling & Rendering',
+      name: 'CNC',
       code: 'RD002',
       status: 'Active',
       process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
@@ -61,7 +61,7 @@ const DepartmentList = () => {
       updatedBy: 'Karthik R',
     },
     {
-      name: 'Laser Engraving Unit',
+      name: 'UV Printing',
       code: 'RD003',
       status: 'Inactive',
       process: 'Welding, Painting, Polishing, Drilling',
@@ -71,7 +71,7 @@ const DepartmentList = () => {
       updatedBy: 'Dinesh Kumar',
     },
     {
-      name: 'Metal Casting & Finishing',
+      name: 'Screen Printing',
       code: 'RD004',
       status: 'Active',
       process: 'CNC, MachiningAssembly, Quality, Control, Packaging',
@@ -481,15 +481,7 @@ const DepartmentList = () => {
                 </CCol>
                 <CCol sm={7}>{selectedProcess.code}</CCol>
               </CRow>
-              <CRow className="mb-2">
-                <CCol sm={4} className="fw-semibold">
-                  Status
-                </CCol>
-                <CCol sm={1} className="text-center fw-bold">
-                  :
-                </CCol>
-                <CCol sm={7}>{getStatusBadge(selectedProcess.status)}</CCol>
-              </CRow>
+
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">
                   Process Under This Department
@@ -499,6 +491,17 @@ const DepartmentList = () => {
                 </CCol>
                 <CCol sm={7}>{selectedProcess.process}</CCol>
               </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Status
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{getStatusBadge(selectedProcess.status)}</CCol>
+              </CRow>
+
               <CRow className="mb-2">
                 <CCol sm={4} className="fw-semibold">
                   CreatedAt

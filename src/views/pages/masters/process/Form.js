@@ -20,116 +20,136 @@ import { DocsComponents, DocsExample } from 'src/components'
 import { useNavigate, useParams } from 'react-router-dom'
 
 const Tooltips = () => {
+  const [selectedColumns, setSelectedColumns] = useState([])
   const { processId } = useParams()
   const navigate = useNavigate()
-  // const [validated, setValidated] = useState(false)
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    event.stopPropagation()
+  const [inputValue, setInputValue] = useState('')
+
+  const addColumn = () => {
+    const trimmed = inputValue.trim()
+    if (trimmed && !selectedColumns.includes(trimmed)) {
+      setSelectedColumns([...selectedColumns, trimmed])
+    }
+    setInputValue('')
   }
+
+  const handleRemove = (col) => {
+    setSelectedColumns(selectedColumns.filter((item) => item !== col))
+  }
+
+  const handleDragStart = (e, index) => {
+    e.dataTransfer.setData('dragIndex', index)
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+  }
+
+  const handleDrop = (e, dropIndex) => {
+    const dragIndex = parseInt(e.dataTransfer.getData('dragIndex'), 10)
+    const items = [...selectedColumns]
+    const [movedItem] = items.splice(dragIndex, 1)
+    items.splice(dropIndex, 0, movedItem)
+    setSelectedColumns(items)
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    console.log('Final column order:', selectedColumns)
+  }
+
   return (
-    <CForm
-      className="row g-3 needs-validation"
-      noValidate
-      // validated={validated}
-      onSubmit={handleSubmit}
-    >
-      <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="processName" className="clr-black fw-medium">
-          Process Name
-        </CFormLabel>
-        <CFormInput type="text" id="processName" required />
-        {/* <CFormFeedback tooltip invalid>
-          Please provide a valid process name.
-        </CFormFeedback> */}
-      </CCol>
-      <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="code" className="clr-black fw-medium">
-          Code
-        </CFormLabel>
-        <CFormInput type="text" id="code" required />
-        {/* <CFormFeedback tooltip invalid>
-          Please provide a valid code.
-        </CFormFeedback> */}
-      </CCol>
-      <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="size" className="clr-black fw-medium">
-          Size of Cutting Sheet
-        </CFormLabel>
-        <CFormInput type="text" id="size" required />
-      </CCol>
-      <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="ups" className="clr-black fw-medium">
-          No of UPS per Sheet
-        </CFormLabel>
-        <CFormInput type="number" id="ups" required />
-      </CCol>
-      <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="qty" className="clr-black fw-medium">
-          Qty Required
-        </CFormLabel>
-        <CFormInput type="number" id="qty" required />
-      </CCol>
-      <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="qtySqft" className="clr-black fw-medium">
-          Qty in SQFT
-        </CFormLabel>
-        <CFormInput type="number" id="qtySqft" required />
-      </CCol>
-      <CCol md={4} className="position-relative mb-2">
-        <CFormLabel htmlFor="status" className="clr-black fw-medium">
-          Status
-        </CFormLabel>
-        <CFormSelect id="status" required>
-          <option defaultValue="">Select status</option>
-          <option value="active">Active</option>
-          <option value="Inactive">Inactive</option>
-          {/* <option>...</option> */}
-        </CFormSelect>
-        {/* <CFormFeedback tooltip invalid>
-          Please provide a valid city.
-        </CFormFeedback> */}
+    <CForm className="row g-3" onSubmit={handleSubmit}>
+      <CCol md={4}>
+        <CFormLabel>Process Name</CFormLabel>
+        <CFormInput required />
       </CCol>
 
-      {/* <CCol md={4} className="position-relative">
-        <CFormLabel htmlFor="validationTooltipUsername">Status</CFormLabel>
-        <CInputGroup className="has-validation">
-          <CInputGroupText id="inputGroupPrepend">@</CInputGroupText>
+      <CCol md={4}>
+        <CFormLabel>Code</CFormLabel>
+        <CFormInput required />
+      </CCol>
+
+      <CCol md={4}>
+        <CFormLabel>Status</CFormLabel>
+        <CFormInput required />
+      </CCol>
+
+      {/* Input Field to Add Columns */}
+      <CCol md={4}>
+        <CFormLabel>Add Column Name</CFormLabel>
+        <div className="d-flex gap-2">
           <CFormInput
-            type="text"
-            id="validationTooltipUsername"
-            defaultValue=""
-            aria-describedby="inputGroupPrepend"
-            required
+            placeholder="Enter column name"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
           />
-          <CFormFeedback tooltip invalid>
-            Please choose a username.
-          </CFormFeedback>
-        </CInputGroup>
-      </CCol> */}
-      {/* <CCol md={6} className="position-relative">
-        <CFormLabel htmlFor="validationTooltip03">City</CFormLabel>
-        <CFormInput type="text" id="validationTooltip03" required />
-        <CFormFeedback tooltip invalid>
-          Please provide a valid city.
-        </CFormFeedback>
+          <CButton
+            type="button"
+            className="px-3 bg-blue clr-white button-sizing"
+            onClick={addColumn}
+          >
+            Add
+          </CButton>
+        </div>
+
+        {/* Horizontal Drag List */}
+        {selectedColumns.length > 0 && (
+          <div
+            className="mt-4 d-flex flex-wrap gap-2"
+            style={{
+              minHeight: '60px',
+              border: '1px dashed #ccc',
+              padding: '10px',
+              borderRadius: '6px',
+            }}
+          >
+            {selectedColumns.map((col, index) => (
+              <div
+                key={col}
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, index)}
+                style={{
+                  padding: '8px 12px',
+                  borderRadius: '20px',
+                  border: '1px solid #ccc',
+                  background: '#f1f1f1',
+                  cursor: 'grab',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                }}
+              >
+                <span>
+                  {index + 1}. {col}
+                </span>
+                <span
+                  style={{
+                    color: 'red',
+                    marginLeft: '5px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                  }}
+                  onClick={() => handleRemove(col)}
+                >
+                  ✕
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </CCol>
 
-      <CCol md={3} className="position-relative">
-        <CFormLabel htmlFor="validationTooltip05">City</CFormLabel>
-        <CFormInput type="text" id="validationTooltip05" required />
-        <CFormFeedback tooltip invalid>
-          Please provide a valid zip.
-        </CFormFeedback>
-      </CCol> */}
       <CCol xs={12} className="d-flex justify-content-center gap-2 flex-wrap">
         {processId ? (
-          // <CButton color="primary" type="submit" onClick={() => navigate('/process')}>
+          // <CButton color="primary" type="submit" onClick={() => navigate('/materials')}>
           //   Update
           // </CButton>
           <button
             className="px-3 bg-blue clr-white button-sizing"
-            onClick={() => navigate('/process')}
+            onClick={() => navigate('/materials')}
           >
             Update
           </button>
@@ -138,12 +158,12 @@ const Tooltips = () => {
             <CButton color="danger" type="reset" className="text-white">
               Reset
             </CButton>
-            {/* <CButton color="primary" type="submit" onClick={() => navigate('/process')}>
-              Submit
-            </CButton> */}
+            {/* <CButton color="primary" type="submit" onClick={() => navigate('/materials')}>
+                    Submit
+                  </CButton> */}
             <button
               className="px-3 bg-blue clr-white button-sizing"
-              onClick={() => navigate('/process')}
+              onClick={() => navigate('/materials')}
             >
               Submit
             </button>
@@ -161,16 +181,8 @@ const ProcessForm = () => {
         <CCard className="mb-4">
           <CCardHeader>
             <strong className="clr-blue fs-5">Process Form</strong>
-            {/* <small>Tooltips</small> */}
           </CCardHeader>
           <CCardBody>
-            {/* <p className="text-body-secondary small">
-              If your form layout allows it, you can swap the text for the tooltip to display
-              validation feedback in a styled tooltip. Be sure to have a parent with{' '}
-              <code>position: relative</code> on it for tooltip positioning. In the example below,
-              our column classes have this already, but your project may require an alternative
-              setup.
-            </p> */}
             <DocsExample href="forms/validation#tooltips">{Tooltips()}</DocsExample>
           </CCardBody>
         </CCard>

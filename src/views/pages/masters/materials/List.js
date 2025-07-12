@@ -45,6 +45,7 @@ const MaterialsList = () => {
     {
       id: 1,
       materialName: 'Steel Rod',
+      type: 'Recipe Material',
       price: '₹250.00',
       cost: '₹200.00',
       stock: '150',
@@ -59,6 +60,7 @@ const MaterialsList = () => {
     {
       id: 2,
       materialName: 'Cement Bag',
+      type: 'Recipe Material',
       price: '₹450.00',
       cost: '₹400.00',
       stock: '75',
@@ -74,6 +76,7 @@ const MaterialsList = () => {
       id: 3,
       materialName: 'Aluminum Sheet',
       price: '₹350.00',
+      type: 'Consumables',
       cost: '₹300.00',
       stock: '200',
       unit: 'Sheet',
@@ -88,6 +91,8 @@ const MaterialsList = () => {
       id: 4,
       materialName: 'Copper Wire',
       price: '₹800.00',
+            type: 'Packing Materials',
+
       cost: '₹750.00',
       stock: '50',
       unit: 'Meter',
@@ -100,6 +105,8 @@ const MaterialsList = () => {
     },
     {
       id: 5,
+      type: 'Packing Materials',
+
       materialName: 'Wooden Plank',
       price: '₹180.00',
       cost: '₹150.00',
@@ -114,7 +121,9 @@ const MaterialsList = () => {
     },
     {
       id: 6,
+      type: 'Consumables',
       materialName: 'Glass Panel',
+      type: 'Packing Materials',
       price: '₹500.00',
       cost: '₹450.00',
       stock: '80',
@@ -129,6 +138,7 @@ const MaterialsList = () => {
     {
       id: 7,
       materialName: 'Plastic Pipe',
+      type: 'Consumables',
       price: '₹120.00',
       cost: '₹100.00',
       stock: '500',
@@ -146,6 +156,7 @@ const MaterialsList = () => {
       price: '₹80.00',
       cost: '₹60.00',
       stock: '1000',
+      type: 'Recipe Material',
       unit: 'Kg',
       code: 'IRN008',
       status: 'Active',
@@ -162,6 +173,7 @@ const MaterialsList = () => {
       stock: '2000',
       unit: 'Kg',
       code: 'SND009',
+      type: 'Recipe Material',
       status: 'Active',
       createdAt: '2024-09-03 04:15 PM',
       createdBy: 'Tom Brown',
@@ -174,6 +186,7 @@ const MaterialsList = () => {
       price: '₹600.00',
       cost: '₹550.00',
       stock: '120',
+      type: 'Recipe Material',
       unit: 'Liter',
       code: 'PNT010',
       status: 'Inactive',
@@ -188,6 +201,7 @@ const MaterialsList = () => {
       price: '₹280.00',
       cost: '₹250.00',
       stock: '90',
+      type: 'Recipe Material',
       unit: 'Sheet',
       code: 'RBR011',
       status: 'Active',
@@ -202,6 +216,7 @@ const MaterialsList = () => {
       price: '₹400.00',
       cost: '₹350.00',
       stock: '250',
+      type: 'Recipe Material',
       unit: 'Piece',
       code: 'CRM012',
       status: 'Inactive',
@@ -352,6 +367,13 @@ const MaterialsList = () => {
                 >
                   Material Name{getSortIcon('materialName')}
                 </CTableHeaderCell>
+                 <CTableHeaderCell
+                  scope="col"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => handleSort('type')}
+                >
+                  Type of Material{getSortIcon('type')}
+                </CTableHeaderCell>
                 <CTableHeaderCell
                   scope="col"
                   style={{ cursor: 'pointer' }}
@@ -405,6 +427,7 @@ const MaterialsList = () => {
                   <CTableRow key={process.id}>
                     <CTableDataCell>{startIndex + index + 1}</CTableDataCell>
                     <CTableDataCell>{process.materialName}</CTableDataCell>
+                    <CTableDataCell>{process.type}</CTableDataCell>
                     <CTableDataCell>{process.price}</CTableDataCell>
                     <CTableDataCell>{process.cost}</CTableDataCell>
                     <CTableDataCell>{process.stock}</CTableDataCell>
@@ -544,6 +567,16 @@ const MaterialsList = () => {
                   :
                 </CCol>
                 <CCol sm={7}>{selectedProcess.materialName}</CCol>
+              </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                 Type of Material
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.type}</CCol>
               </CRow>
 
               <CRow className="mb-2">

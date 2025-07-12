@@ -36,20 +36,20 @@ import {
 } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
 
-
 const ProcessList = () => {
   const navigate = useNavigate()
   // Sample data
   const [processes] = useState([
     {
       id: 1,
-      name: 'Customer Registration',
+      name: 'DTP',
       code: 'CUST001',
       status: 'Active',
-      size: '14 * 12',
-      ups: 'No of UPS per Sheet',
-      qty: 'Qty Required',
-      QtySqft: 'Qty in SQFT',
+      size: '14 x 12',
+      ups: 13, // Number of units per sheet
+      qty: 100, // Total units
+      qtySqft: 11.67,
+      columnList: 'Size of Cutting Sheet, No of UPS per Sheet, Qty Required, Qty in SQFT',
       createdAt: '2024-01-15 09:30 AM',
       createdBy: 'John Doe',
       updatedAt: '2024-12-20 4:25 PM',
@@ -57,8 +57,13 @@ const ProcessList = () => {
     },
     {
       id: 2,
-      name: 'Payment Processing',
+      name:  'UV Printing',
       code: 'PAY002',
+      size: '12 x 12',
+      columnList: 'Size of Cutting Sheet, No of UPS per Sheet',
+      ups: 15, // Number of units per sheet
+      qty: 80, // Total units
+      qtySqft: 15.63,
       status: 'Inactive',
       createdAt: '2024-02-10 11:15 AM',
       createdBy: 'Jane Smith',
@@ -67,9 +72,14 @@ const ProcessList = () => {
     },
     {
       id: 3,
-      name: 'Order Management',
+      name:  'Screen Printing',
+      columnList: 'No of UPS per Sheet, Qty Required, Qty in SQFT',
       code: 'ORD003',
       status: 'Active',
+      size: '44 x 12',
+      qtySqft: 12.13,
+      ups: 10, // Number of units per sheet
+      qty: 80, // Total units
       createdAt: '2024-03-05 11:20 AM',
       createdBy: 'Mike Johnson',
       updatedAt: '2024-12-19 11:45 PM',
@@ -77,8 +87,13 @@ const ProcessList = () => {
     },
     {
       id: 4,
-      name: 'Inventory Update',
+      name: 'Laser Cutting',
+      columnList: 'Quantity',
       code: 'INV004',
+      size: '16 x 12',
+      qtySqft: 17.17,
+      ups: 10, // Number of units per sheet
+      qty: 200, // Total units
       status: 'Inactive',
       createdAt: '2024-04-12 08:45 AM',
       createdBy: 'Sarah Wilson',
@@ -87,8 +102,13 @@ const ProcessList = () => {
     },
     {
       id: 5,
-      name: 'Email Notification',
+      name: 'CNC',
       code: 'EML005',
+      size: '14 x 14',
+      columnList: 'Size of Cutting Sheet, No of UPS per Sheet, Qty Required, Qty in SQFT',
+      qtySqft: 11.67,
+      ups: 10, // Number of units per sheet
+      qty: 500, // Total units
       status: 'Active',
       createdAt: '2024-05-18 08:45 AM',
       createdBy: 'David Chen',
@@ -97,8 +117,13 @@ const ProcessList = () => {
     },
     {
       id: 6,
-      name: 'Data Backup',
+      name: 'MachiningAssembly',
       code: 'BAK006',
+      columnList: 'Size of Cutting Sheet, No of UPS per Sheet, Qty Required, Qty in SQFT',
+      size: '14 x 12',
+      qtySqft: 11.67,
+      ups: 10, // Number of units per sheet
+      qty: 10, // Total units
       status: 'Active',
       createdAt: '2024-06-22 09:45 AM',
       createdBy: 'Lisa Anderson',
@@ -107,9 +132,12 @@ const ProcessList = () => {
     },
     {
       id: 7,
-      name: 'Report Generation',
+      name:  'Quality, Control',
+      columnList: 'Size of Cutting Sheet, No of UPS per Sheet, Qty Required, Qty in SQFT',
       code: 'RPT007',
       status: 'Inactive',
+      size: '14 x 19 ',
+
       createdAt: '2024-07-08 09:45 AM',
       createdBy: 'Robert Taylor',
       updatedAt: '2024-12-16 02:45 AM',
@@ -117,9 +145,11 @@ const ProcessList = () => {
     },
     {
       id: 8,
-      name: 'Security Scan',
+      name: 'Packaging',
       code: 'SEC008',
+      columnList: 'Size of Cutting Sheet, No of UPS per Sheet, Qty Required, Qty in SQFT',
       status: 'Active',
+
       createdAt: '2024-08-14 04:45 AM',
       createdBy: 'Emily Davis',
       updatedAt: '2024-12-22 09:45 AM',
@@ -128,7 +158,9 @@ const ProcessList = () => {
     {
       id: 9,
       name: 'System Maintenance',
+      columnList: 'Quantity',
       code: 'SYS009',
+
       status: 'Active',
       createdAt: '2024-09-03 02:45 AM',
       createdBy: 'Tom Brown',
@@ -138,8 +170,10 @@ const ProcessList = () => {
     {
       id: 10,
       name: 'Data Migration',
+      columnList: 'Size of Cutting Sheet, No of UPS per Sheet, Qty Required',
       code: 'MIG010',
       status: 'Inactive',
+
       createdAt: '2024-10-11 09:45 AM',
       createdBy: 'Anna White',
       updatedAt: '2024-12-15 09:45 AM',
@@ -148,6 +182,7 @@ const ProcessList = () => {
     {
       id: 11,
       name: 'API Integration',
+      columnList: 'Quantity',
       code: 'API011',
       status: 'Active',
       createdAt: '2024-11-07 01:45 AM',
@@ -158,7 +193,9 @@ const ProcessList = () => {
     {
       id: 12,
       name: 'Log Cleanup',
+      columnList: 'Quantity',
       code: 'LOG012',
+
       status: 'Inactive',
       createdAt: '2024-12-01 11:45 AM',
       createdBy: 'Mark Wilson',
@@ -298,7 +335,6 @@ const ProcessList = () => {
             <CTable striped hover className="table-min-widths">
               <CTableHead>
                 <CTableRow>
-
                   <CTableHeaderCell scope="col">S.No</CTableHeaderCell>
                   <CTableHeaderCell
                     scope="col"
@@ -318,30 +354,9 @@ const ProcessList = () => {
                   <CTableHeaderCell
                     scope="col"
                     className="sortable-header"
-                    onClick={() => handleSort('name')}
+                    onClick={() => handleSort('columnList')}
                   >
-                     Size of Cutting Sheet{getSortIcon('name')}
-                  </CTableHeaderCell>
-                  <CTableHeaderCell
-                    scope="col"
-                    className="sortable-header"
-                    onClick={() => handleSort('name')}
-                  >
-                    No of UPS per Sheet{getSortIcon('name')}
-                  </CTableHeaderCell>
-                  <CTableHeaderCell
-                    scope="col"
-                    className="sortable-header"
-                    onClick={() => handleSort('name')}
-                  >
-                    Qty Required{getSortIcon('name')}
-                  </CTableHeaderCell>
-                  <CTableHeaderCell
-                    scope="col"
-                    className="sortable-header"
-                    onClick={() => handleSort('name')}
-                  >
-                    Qty in SQFT{getSortIcon('name')}
+                    Column List{getSortIcon('columnList')}
                   </CTableHeaderCell>
 
                   <CTableHeaderCell
@@ -363,6 +378,9 @@ const ProcessList = () => {
                       <CTableDataCell>{startIndex + index + 1}</CTableDataCell>
                       <CTableDataCell className="no-wrap">{process.name}</CTableDataCell>
                       <CTableDataCell className="no-wrap">{process.code}</CTableDataCell>
+                      <CTableDataCell>{process.columnList}</CTableDataCell>
+
+
                       <CTableDataCell>{getStatusBadge(process.status)}</CTableDataCell>
                       <CTableDataCell className="text-center">
                         <div className="d-flex justify-content-center gap-1 actions-container">
@@ -508,6 +526,16 @@ const ProcessList = () => {
                   :
                 </CCol>
                 <CCol sm={7}>{selectedProcess.code}</CCol>
+              </CRow>
+
+              <CRow className="mb-2">
+                <CCol sm={4} className="fw-semibold">
+                  Column List
+                </CCol>
+                <CCol sm={1} className="text-center fw-bold">
+                  :
+                </CCol>
+                <CCol sm={7}>{selectedProcess.columnList}</CCol>
               </CRow>
 
               <CRow className="mb-2">

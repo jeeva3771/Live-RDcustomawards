@@ -44,6 +44,21 @@ const Tooltips = () => {
           Please provide a valid process name.
         </CFormFeedback> */}
       </CCol>
+      <CCol md={4} className="position-relative mb-2">
+        <CFormLabel htmlFor="typeOfMaterial" className="clr-black fw-medium">
+          Type of Material
+        </CFormLabel>
+        <CFormSelect id="typeOfMaterial" required>
+          <option defaultValue="">Select Type of Material</option>
+          <option value="active">Recipe Materials</option>
+          <option value="Inactive">Consumables</option>
+          <option value="Inactive">Packing Materials</option>
+          {/* <option>...</option> */}
+        </CFormSelect>
+        {/* <CFormFeedback tooltip invalid>
+          Please provide a valid city.
+        </CFormFeedback> */}
+      </CCol>
       <CCol md={4} className="position-relative">
         <CFormLabel htmlFor="price" className="clr-black fw-medium">
           Price

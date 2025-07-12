@@ -2009,6 +2009,12 @@ const RecipeWizard = () => {
                                           className="form-input table-cell-full-width"
                                           placeholder="48' x 24'"
                                         />
+                                        {/* <select className="form-input table-cell-full-width">
+                                          <option>Select Size</option>
+                                          <option>48 x 24</option>
+                                          <option>40 x 21</option>
+                                          <option>18 x 24</option>
+                                        </select> */}
                                       </td>
                                       <td>
                                         <input
@@ -2024,6 +2030,12 @@ const RecipeWizard = () => {
                                           className="form-input table-cell-full-width"
                                           placeholder="14"
                                         />
+                                        {/* <select className="form-input table-cell-full-width">
+                                          <option>Select Ups</option>
+                                          <option>10</option>
+                                          <option>50</option>
+                                          <option>100</option>
+                                        </select> */}
                                       </td>
                                       <td>
                                         <input
@@ -2039,6 +2051,12 @@ const RecipeWizard = () => {
                                           className="form-input table-cell-full-width"
                                           placeholder="26.29"
                                         />
+                                         {/* <select className="form-input table-cell-full-width">
+                                          <option>Select qty</option>
+                                          <option>26</option>
+                                          <option>21</option>
+                                          <option>10</option>
+                                        </select> */}
                                       </td>
                                       <td>
                                         <input
@@ -2054,6 +2072,12 @@ const RecipeWizard = () => {
                                           className="form-input table-cell-full-width"
                                           placeholder="210.29"
                                         />
+                                         {/* <select className="form-input table-cell-full-width">
+                                          <option>Select SQFT</option>
+                                          <option>26.29</option>
+                                          <option>21.20</option>
+                                          <option>210.29</option>
+                                        </select> */}
                                       </td>
                                       <td className="table-cell-center">-</td>
                                     </>
