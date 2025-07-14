@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
 import mainImage from '../../../../public/a1.avif'
+import { useNavigate } from 'react-router-dom'
 
 const ProductInfoPage = () => {
+  const navigate = useNavigate()
   // Sample product data
   const [product] = useState({
     id: 1,
     name: 'MIC TROPHY',
-    jobNo: '14887b',
+    jobNo: '14888a',
     quantity: 100,
     size: "8' x 4'",
     deliveryDate: '2024-12-15',
@@ -27,7 +29,7 @@ const ProductInfoPage = () => {
     premiumPackingOptions: 'Gift Box',
     packingMode: 'Individual',
     packingInstructions: 'Handle with care, fragile items inside',
-    status: 'Approved',
+    status: 'Pending',
     invoiceUrl: '#',
     designFile: '#',
     mainImage: mainImage,
@@ -52,7 +54,6 @@ const ProductInfoPage = () => {
       quantity: '10',
       unitPrice: '$12.50',
       totalPrice: '$125.00',
-      process: 'DTP, UV Printing'
     },
     {
       id: 2,
@@ -62,7 +63,6 @@ const ProductInfoPage = () => {
       quantity: '50',
       unitPrice: '$2.00',
       totalPrice: '$100.00',
-      process: 'DTP, Laser Cutting'
     },
     {
       id: 3,
@@ -72,7 +72,6 @@ const ProductInfoPage = () => {
       quantity: '200',
       unitPrice: '$0.25',
       totalPrice: '$50.00',
-      process: 'DTP, Screen Printing'
     },
     {
       id: 4,
@@ -82,7 +81,6 @@ const ProductInfoPage = () => {
       quantity: '5',
       unitPrice: '$18.00',
       totalPrice: '$90.00',
-      process: 'DTP, UV Printing'
     },
     {
       id: 5,
@@ -91,7 +89,6 @@ const ProductInfoPage = () => {
       ups: '1',
       quantity: '3',
       unitPrice: '$25.00',
-      process: 'DTP, CNC',
       totalPrice: '$75.00',
     },
   ])
@@ -119,19 +116,7 @@ const ProductInfoPage = () => {
           quantity: '2 bottles',
           files: [
             { name: 'glue_specs.pdf', url: '#' },
-            { name: 'usage_guide.pdf', url: '#' },
-          ]
-        },
-        {
-          type: 'MATERIAL',
-          name: 'BLACK ACRYLIC 3MM',
-          sizeOfCuttingSheet: "48' x 24'",
-          noOfUpsPerSheet: '14',
-          qtyRequired: '26.29',
-          qtyInSqft: '210.29',
-          quantity: '3 sheets',
-          files: [
-            { name: 'thickness_specs.pdf', url: '#' }
+            { name: 'usage_guide.pdf', url: '#' }
           ]
         },
         {
@@ -148,7 +133,7 @@ const ProductInfoPage = () => {
           ]
         }
       ],
-      status: 'Approved',
+      status: 'Completed',
     },
     {
       id: 2,
@@ -161,30 +146,6 @@ const ProductInfoPage = () => {
         { name: 'laser_settings.txt', url: '#', uploadDate: '2024-12-02' }
       ],
       materials: [
-        {
-          type: 'CONSUMABLE',
-          name: 'EPOXY ADHESIVE',
-          sizeOfCuttingSheet: '-',
-          noOfUpsPerSheet: '-',
-          qtyRequired: '-',
-          qtyInSqft: '-',
-          quantity: '1 tube',
-          files: [
-            { name: 'epoxy_guide.pdf', url: '#' },
-          ]
-        },
-        {
-          type: 'PACKING',
-          name: 'BUBBLE WRAP',
-          sizeOfCuttingSheet: '-',
-          noOfUpsPerSheet: '-',
-          qtyRequired: '-',
-          qtyInSqft: '-',
-          quantity: '10 meters',
-          files: [
-            { name: 'wrapping_guide.pdf', url: '#' }
-          ]
-        },
         {
           type: 'MATERIAL',
           name: 'BLACK ACRYLIC 2MM',
@@ -277,7 +238,8 @@ const ProductInfoPage = () => {
             { name: 'ink_specifications.pdf', url: '#' },
             { name: 'color_chart.pdf', url: '#' }
           ]
-        }
+        },
+
       ],
       status: 'Pending',
     }
@@ -320,11 +282,13 @@ const ProductInfoPage = () => {
         .product-info-page {
           min-height: 100vh;
           font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          background: rgb(255, 160, 122);
         }
 
         .header1 {
           text-align: center;
           padding: 15px 0;
+          background: rgb(255, 160, 122);
         }
 
         .main-title {
@@ -785,7 +749,7 @@ const ProductInfoPage = () => {
       </div>
 
       <div className="container">
-        <button className="back-btn" onClick={() => window.history.back()}>
+        <button className="back-btn" onClick={() => navigate('/sampleordersadmin')}>
           ← Back
         </button>
 
@@ -853,7 +817,6 @@ const ProductInfoPage = () => {
                   <th>Size</th>
                   <th>Ups</th>
                   <th>Quantity</th>
-                  <th>Process</th>
                 </tr>
               </thead>
               <tbody>
@@ -864,7 +827,6 @@ const ProductInfoPage = () => {
                     <td>{item.size}</td>
                     <td>{item.ups}</td>
                     <td>{item.quantity}</td>
-                    <td>{item.process}</td>
                   </tr>
                 ))}
               </tbody>
@@ -991,14 +953,14 @@ const ProductInfoPage = () => {
               <span className="info-label">Client Name:</span>
               <span className="info-value">{product.client}</span>
             </div>
-            {/* <div className="info-item">
+            <div className="info-item">
               <span className="info-label">Email:</span>
               <span className="info-value">{product.email}</span>
             </div>
             <div className="info-item">
               <span className="info-label">Contact:</span>
               <span className="info-value">{product.contactNo}</span>
-            </div> */}
+            </div>
           </div>
 
           <div className="detail-card">
@@ -1064,7 +1026,7 @@ const ProductInfoPage = () => {
         <div className="details-grid">
           <div className="detail-card">
             <h2 className="section-title">📝 Packing Instructions</h2>
-            <div className="info-value">
+            <div style={{ fontSize: '0.95rem', color: '#2c3e50', lineHeight: '1.5' }}>
               {product.packingInstructions}
             </div>
           </div>

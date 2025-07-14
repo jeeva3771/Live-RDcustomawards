@@ -149,7 +149,7 @@ const Tooltips = () => {
           // </CButton>
           <button
             className="px-3 bg-blue clr-white button-sizing"
-            onClick={() => navigate('/materials')}
+            onClick={() => navigate('/process')}
           >
             Update
           </button>
@@ -163,7 +163,7 @@ const Tooltips = () => {
                   </CButton> */}
             <button
               className="px-3 bg-blue clr-white button-sizing"
-              onClick={() => navigate('/materials')}
+              onClick={() => navigate('/process')}
             >
               Submit
             </button>

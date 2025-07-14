@@ -387,12 +387,15 @@ const _nav = [
   //     },
   //   ],
   // },
-  {
-    component: CNavItem,
-    name: 'Production Planning',
-    to: '/productionplanning',
-    icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
-  },
+
+
+
+  // {
+  //   component: CNavItem,
+  //   name: 'Production Planning',
+  //   to: '/productionplanning',
+  //   icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
+  // },
   {
     component: CNavItem,
     name: 'Users',
@@ -452,13 +455,17 @@ const _nav = [
   },
 
 
-  {
-    component: CNavItem,
-    name: 'Production Planning',
-    // to: '/enquiries',
-    to: '/productionplan',
-    icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
-  },
+
+  // {
+  //   component: CNavItem,
+  //   name: 'Production Planning',
+  //   // to: '/enquiries',
+  //   to: '/productionplan',
+  //   icon: <CIcon icon={cilDescription} customClassName="nav-icon" />,
+  // },
+
+
+
 
   // {
   //   component: CNavGroup,

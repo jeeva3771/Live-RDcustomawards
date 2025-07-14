@@ -326,7 +326,7 @@ const EnhancedProductCards = () => {
       size: '10 Inches',
       startTime: '2025-02-09 09:10 AM',
       endTime: '2025-02-10 10:10 AM',
-      status: 'Completed',
+      status: 'Approved',
       deliveryDate: '19-03-2025',
       deliveryLocation: 'ITC Central - Parel - MUMBAI',
       deliveryMode: 'HAND DELIVERY',
@@ -395,11 +395,8 @@ const EnhancedProductCards = () => {
         return 'status-dispatch'
       case 'BILLING':
         return 'status-billing'
-      case 'Approve':
-        return 'status-green'
-      case 'Reject':
-        return 'status-red'
-      case 'Completed':
+
+      case 'Approved':
         return 'status-completed'
       default:
         return 'status-default'
@@ -715,7 +712,7 @@ const EnhancedProductCards = () => {
 
             <div className="super-grid-actions">
               {/* Show only eye icon for completed status, otherwise show all actions */}
-              {product.status === 'Completed' ? (
+              {product.status === 'Approved' ? (
                 <div
                   className="action-icon"
                   onClick={() => openModal(product)}
@@ -1102,7 +1099,7 @@ const EnhancedProductCards = () => {
               </div>
 
               {/* Document Files Section */}
-              {(product.invoiceUrl || product.designFile || product.status === 'Completed') && (
+              {(product.invoiceUrl || product.designFile || product.status === 'Approved') && (
                 <div className="modal-documents-section">
                   <h3 className="modal-section-title">Documents</h3>
                   <div className="document-files">
@@ -1150,7 +1147,7 @@ const EnhancedProductCards = () => {
                         </button>
                       </div>
                     )}
-                    {['Awaiting Approval', 'Completed'].includes(product.status) && (
+                    {['Awaiting Approval', 'Approved'].includes(product.status) && (
                       <>
                         <div className="document-item">
                           <div className="document-info">
@@ -1264,10 +1261,10 @@ const EnhancedProductCards = () => {
 
             <div className="action-icons-container">
               {/* Show only eye icon for completed status, otherwise show all actions */}
-              {product.status === 'Completed' ? (
+              {product.status === 'Approved' ? (
                 <div
                   className="action-icon"
-                  onClick={() => openModal(product)}
+                  onClick={() => navigate('/productoverview')}
                   title="View All Details"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1286,6 +1283,7 @@ const EnhancedProductCards = () => {
                         <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
                       </svg>
                     </div>
+
                   )}
                   {['14889'].includes(product.jobNo) && (
                     <button
@@ -1379,15 +1377,28 @@ const EnhancedProductCards = () => {
         </td>
         <td>
           <div className="table-actions">
-            <button
-              className="table-view-btn"
-              onClick={() => openModal(product)}
-              title="View Details"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
-              </svg>
-            </button>
+            {['14887b'].includes(product.jobNo) && (
+              <button
+                className="table-view-btn"
+                onClick={() => navigate('/productoverview')}
+                title="View Details"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                </svg>
+              </button>
+            )}
+            {!['14887b'].includes(product.jobNo) && (
+              <button
+                className="table-view-btn"
+                onClick={() => openModal(product)}
+                title="View Details"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+                </svg>
+              </button>
+            )}
 
             {['14889'].includes(product.jobNo) && (
               <button

@@ -17,7 +17,7 @@ import {
   CRow,
 } from '@coreui/react'
 import { DocsComponents, DocsExample } from 'src/components'
-import { useNavigate, useParams } from 'react-router-dom'fff
+import { useNavigate, useParams } from 'react-router-dom'
 
 
 const Tooltips = () => {

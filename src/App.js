@@ -67,6 +67,7 @@ import { CSpinner, useColorModes } from '@coreui/react'
 import './scss/style.scss'
 import './App.css'
 import './media.css'
+import ScrollToTop from './Scroll'
 
 // Pages
 const Login = React.lazy(() => import('./views/pages/login/Login'))
@@ -89,6 +90,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
+    <ScrollToTop />
       <Suspense
         fallback={
           <div className="pt-3 text-center">
@@ -96,6 +98,7 @@ const App = () => {
           </div>
         }
       >
+
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />

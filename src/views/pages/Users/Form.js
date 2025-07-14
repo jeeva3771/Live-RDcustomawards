@@ -57,10 +57,27 @@ const Tooltips = () => {
         <CFormLabel htmlFor="password" className="clr-black fw-medium">
           Password
         </CFormLabel>
-        <CFormInput type="text" id="password" required />
+        <CFormInput type="password" id="password" required />
         {/* <CFormFeedback tooltip invalid>
                 Please provide a valid code.
               </CFormFeedback> */}
+      </CCol>
+      <CCol md={4} className="position-relative mb-2">
+        <CFormLabel htmlFor="role" className="clr-black fw-medium">
+          Department
+        </CFormLabel>
+        <CFormSelect id="role" name="role" required>
+          <option value="">Select department</option>
+          <option value="awards_coordinator">DTP</option>
+          <option value="design_lead">CNC</option>
+          <option value="data_entry">Data Entry</option>
+          <option value="proofing_manager">UV Printing</option>
+          <option value="vendor_liaison">Screen Printing</option>
+          <option value="event_liaison">Event Liaison</option>
+          <option value="inventory_manager">Inventory Manager</option>
+          <option value="photographer">Photographer</option>
+          <option value="archivist">Archivist</option>
+        </CFormSelect>
       </CCol>
       <CCol md={4} className="position-relative mb-2">
         <CFormLabel htmlFor="role" className="clr-black fw-medium">
