@@ -70,9 +70,19 @@ const Tooltips = () => {
         <CFormInput required />
       </CCol>
 
-      <CCol md={4}>
-        <CFormLabel>Status</CFormLabel>
-        <CFormInput required />
+      <CCol md={4} className="position-relative mb-2">
+        <CFormLabel htmlFor="status" className="clr-black fw-medium">
+          Status
+        </CFormLabel>
+        <CFormSelect id="status" required>
+          <option defaultValue="">Select status</option>
+          <option value="active">Active</option>
+          <option value="Inactive">Inactive</option>
+          {/* <option>...</option> */}
+        </CFormSelect>
+        {/* <CFormFeedback tooltip invalid>
+                Please provide a valid city.
+              </CFormFeedback> */}
       </CCol>
 
       {/* Input Field to Add Columns */}
