@@ -1470,10 +1470,19 @@ const RecipeWizard = () => {
           color: #495057;
         }
 
-        .custom-costing-inputs {
+        .custom-costing-inputs, .process-time {
           display: flex;
           gap: 12px;
           align-items: center;
+        }
+
+         .processtotal-time-input {
+          padding: 8px 12px;
+          border: 1px solid #ced4da;
+          border-radius: 4px;
+          font-size: 14px;
+          min-width: 150px;
+          text-align: center;
         }
 
         .custom-input {
@@ -2571,45 +2580,170 @@ const RecipeWizard = () => {
                 </div>
               </div>
 
+              {/* Process Section */}
+              <div className="costing-section">
+                <div className="costing-table-container">
+                  <table className="costing-table">
+                    <thead>
+                      <tr>
+                        <th
+                          colSpan={4}
+                          className="section-header"
+                          style={{ background: '#e8f5e8', color: '#2e7d32' }}
+                        >
+                          Process
+                        </th>
+                      </tr>
+                      <tr>
+                        <th>Process List</th>
+                        <th>Time</th>
+                        <th>Amount</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getSelectedProcesses().map((process, index) => (
+                        <tr key={process}>
+                          <td>{process}</td>
+                          <td>
+                            <input
+                              type="number"
+                              className="costing-input"
+                              placeholder="Hours"
+                              id={`process-time-${index}`}
+                              onChange={(e) => {
+                                // Update total process time when individual times change
+                                const inputs = document.querySelectorAll('[id^="process-time-"]')
+                                let totalTime = 0
+                                inputs.forEach((input) => {
+                                  totalTime += parseFloat(input.value) || 0
+                                })
+                                const totalTimeElement =
+                                  document.getElementById('total-process-time')
+                                if (totalTimeElement) {
+                                  totalTimeElement.textContent = totalTime.toFixed(1)
+                                }
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input type="number" className="costing-input" placeholder="Amount" />
+                          </td>
+                          <td>1</td>
+                        </tr>
+                      ))}
+                      <tr className="total-row">
+                        <td colSpan="3" className="total-label">
+                          Total
+                        </td>
+                        <td className="total-value">₹1000</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Labour Charges Section */}
+              <div className="costing-section">
+                <div className="costing-table-container">
+                  <table className="costing-table">
+                    <thead>
+                      <tr>
+                        <th
+                          colSpan={3}
+                          className="section-header"
+                          style={{ background: '#fff3e0', color: '#f57c00' }}
+                        >
+                          Labour Charges
+                        </th>
+                      </tr>
+                      <tr>
+                        <th>Labour</th>
+                        <th>Amount</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Labour</td>
+                        <td>
+                          <input type="number" className="costing-input" placeholder="Amount" />
+                        </td>
+                        <td>1</td>
+                      </tr>
+                      <tr className="total-row">
+                        <td colSpan="2" className="total-label">
+                          Total
+                        </td>
+                        <td className="total-value">₹5000</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
               {/* Custom Costing Section */}
               <div className="costing-section">
                 <div className="custom-costing-header">
-                  <div>
-                  <h4>Custom Costing</h4>
-                  <div className="custom-costing-inputs">
-                    <input
-                      type="text"
-                      placeholder="Column name"
-                      value={customCostingName}
-                      onChange={(e) => setCustomCostingName(e.target.value)}
-                      className="custom-input"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Value"
-                      value={customCostingValue}
-                      onChange={(e) => setCustomCostingValue(e.target.value)}
-                      className="custom-input"
-                    />
-                    <button onClick={addCustomCosting} className="btn btn-primary">
-                      Add
-                    </button>
-                  </div>
-                  </div>
-                  <div className="costing-summary">
-                <div className="summary-row">
-                  <span className="summary-label">Sub Total:</span>
-                  <span className="summary-value">₹10,000</span>
-                </div>
-                {customCostingItems.length > 0 &&
-                  customCostingItems.map((item) => (
-                    <div className="summary-row" key={item.name}>
-                      <span className="summary-label">{item.name}:</span>
-                      <span className="summary-value">₹{item.value.toFixed(2)}</span>
-                    </div>
-                  ))}
+                  {/* <div>
+                    <h5>Total process time</h5>
+                    <div className="process-time">
+                      <input
+                        type="text"
+                        placeholder="Column name"
+                        value={10}
+                        className='processtotal-time-input'
+                        disabled
 
-                {/* <div className="summary-row">
+                        // value={customCostingName}
+                        // onChange={(e) => setCustomCostingName(e.target.value)}
+                      />
+                    </div>
+                  </div> */}
+
+                  <div>
+                    <h5>Custom Costing</h5>
+                    <div className="custom-costing-inputs">
+                      <input
+                        type="text"
+                        placeholder="Column name"
+                        value={customCostingName}
+                        onChange={(e) => setCustomCostingName(e.target.value)}
+                        className="custom-input"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Value"
+                        value={customCostingValue}
+                        onChange={(e) => setCustomCostingValue(e.target.value)}
+                        className="custom-input"
+                      />
+                      <button onClick={addCustomCosting} className="btn btn-primary">
+                        Add
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div>
+                      <h5>Total process time:</h5><span>10</span>
+                    </div>
+                    <h5>Summary :</h5>
+
+                    <div className="costing-summary">
+                      <div className="summary-row">
+                        <span className="summary-label">Sub Total:</span>
+                        <span className="summary-value">₹10,000</span>
+                      </div>
+                      {customCostingItems.length > 0 &&
+                        customCostingItems.map((item) => (
+                          <div className="summary-row" key={item.name}>
+                            <span className="summary-label">{item.name}:</span>
+                            <span className="summary-value">₹{item.value.toFixed(2)}</span>
+                          </div>
+                        ))}
+
+                      {/* <div className="summary-row">
                   <span className="summary-label">Shipping:</span>
                   <span className="summary-value">
                     ₹
@@ -2621,11 +2755,12 @@ const RecipeWizard = () => {
                     />
                   </span>
                 </div> */}
-                <div className="summary-row final-total">
-                  <span className="summary-label">Final Total:</span>
-                  <span className="summary-value">₹{calculateFinalTotal().toFixed(2)}</span>
-                </div>
-              </div>
+                      <div className="summary-row final-total">
+                        <span className="summary-label">Final Total:</span>
+                        <span className="summary-value">₹{calculateFinalTotal().toFixed(2)}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* {customCostingItems.length > 0 && (
@@ -2647,7 +2782,6 @@ const RecipeWizard = () => {
               </div>
 
               {/* Summary Section */}
-
             </div>
           )}
         </div>
