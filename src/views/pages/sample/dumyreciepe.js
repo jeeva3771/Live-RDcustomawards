@@ -18,16 +18,12 @@ const RecipeWizard = () => {
   const [nextSerialNumber, setNextSerialNumber] = useState(1)
   const [departmentItemOrders, setDepartmentItemOrders] = useState({})
   const [draggedItem, setDraggedItem] = useState(null)
-  const [materialSellingPrice, setMaterialSellingPrice] = useState('')
-  const [materialProfitMargin, setMaterialProfitMargin] = useState('')
-  const [consumableSellingPrice, setConsumableSellingPrice] = useState('')
-  const [consumableProfitMargin, setConsumableProfitMargin] = useState('')
-  const [packingSellingPrice, setPackingSellingPrice] = useState('')
-  const [packingProfitMargin, setPackingProfitMargin] = useState('')
   const [customCostingName, setCustomCostingName] = useState('')
   const [customCostingValue, setCustomCostingValue] = useState('')
   const [customCostingItems, setCustomCostingItems] = useState([])
   const [shippingCost, setShippingCost] = useState('200')
+  const [processEstimates, setProcessEstimates] = useState({})
+  const [labourCost, setLabourCost] = useState('')
 
   // Job information
   const jobNo = '14888a'
@@ -295,6 +291,7 @@ const RecipeWizard = () => {
       qtyOfCuttingSheetRequired: '',
       qtyOfCuttingSheetInSqft: '',
       files: [],
+      estimatedCost: '',
     }))
 
     const newBomConsumables = selectedConsumables.map((consumable) => ({
@@ -303,6 +300,7 @@ const RecipeWizard = () => {
       quantity: '',
       processes: [],
       files: [],
+      estimatedCost: '',
     }))
 
     const newBomPackingMaterials = selectedPackingMaterials.map((packingMaterial) => ({
@@ -311,6 +309,7 @@ const RecipeWizard = () => {
       quantity: '',
       processes: [],
       files: [],
+      estimatedCost: '',
     }))
 
     setBomMaterials(newBomMaterials)
@@ -617,24 +616,75 @@ const RecipeWizard = () => {
     setCustomCostingItems(customCostingItems.filter((item) => item.id !== id))
   }
 
+  // Calculate dynamic estimated costs and times
+  const calculateDynamicMaterialCost = (material) => {
+    const baseRate = 50 // Base rate per unit
+    const quantity = parseFloat(material.quantity) || 0
+    const sizeMultiplier = material.size ? 1.2 : 1
+    return (baseRate * quantity * sizeMultiplier).toFixed(2)
+  }
+
+  const calculateDynamicConsumableCost = (consumable) => {
+    const baseRate = 25 // Base rate per unit
+    const quantity = parseFloat(consumable.quantity) || 0
+    return (baseRate * quantity).toFixed(2)
+  }
+
+  const calculateDynamicPackingCost = (packing) => {
+    const baseRate = 15 // Base rate per unit
+    const quantity = parseFloat(packing.quantity) || 0
+    return (baseRate * quantity).toFixed(2)
+  }
+
+  const calculateDynamicProcessTime = (process) => {
+    const processTimeMap = {
+      'DTP': 2,
+      'UV Printing': 4,
+      'Screen Printing': 6,
+      'Laser Cutting': 3,
+      'CNC Machining': 8,
+      'Assembly': 5,
+      'Quality Control': 2,
+      'Packaging': 1,
+      'Welding': 6,
+      'Painting': 4,
+      'Polishing': 3,
+      'Drilling': 2
+    }
+    return processTimeMap[process] || 2
+  }
+
+  const calculateDynamicProcessCost = (process) => {
+    const time = calculateDynamicProcessTime(process)
+    const hourlyRate = 100 // Rate per hour
+    return (time * hourlyRate).toFixed(2)
+  }
+
   const calculateMaterialTotal = () => {
     return bomMaterials.reduce((total, material) => {
-      const quantity = parseFloat(material.quantity) || 0
-      return total + quantity
+      const cost = parseFloat(calculateDynamicMaterialCost(material)) || 0
+      return total + cost
     }, 0)
   }
 
   const calculateConsumableTotal = () => {
     return bomConsumables.reduce((total, consumable) => {
-      const quantity = parseFloat(consumable.quantity) || 0
-      return total + quantity
+      const cost = parseFloat(calculateDynamicConsumableCost(consumable)) || 0
+      return total + cost
     }, 0)
   }
 
   const calculatePackingTotal = () => {
     return bomPackingMaterials.reduce((total, packing) => {
-      const quantity = parseFloat(packing.quantity) || 0
-      return total + quantity
+      const cost = parseFloat(calculateDynamicPackingCost(packing)) || 0
+      return total + cost
+    }, 0)
+  }
+
+  const calculateProcessTotal = () => {
+    return getSelectedProcesses().reduce((total, process) => {
+      const cost = parseFloat(calculateDynamicProcessCost(process)) || 0
+      return total + cost
     }, 0)
   }
 
@@ -646,18 +696,27 @@ const RecipeWizard = () => {
     const materialTotal = calculateMaterialTotal()
     const consumableTotal = calculateConsumableTotal()
     const packingTotal = calculatePackingTotal()
+    const processTotal = calculateProcessTotal()
+    const labourTotal = parseFloat(labourCost) || 0
     const customTotal = calculateCustomCostingTotal()
-    return materialTotal + consumableTotal + packingTotal + customTotal
+    return materialTotal + consumableTotal + packingTotal + processTotal + labourTotal + customTotal
   }
 
   const calculateFinalTotal = () => {
     const subTotal = calculateSubTotal()
-    const shipping = parseFloat(shippingCost) || 0
-    return subTotal + shipping
+    const customTotal = calculateCustomCostingTotal()
+    return subTotal + customTotal
+  }
+
+  const calculateTotalProcessTime = () => {
+    return getSelectedProcesses().reduce((total, process) => {
+      const time = calculateDynamicProcessTime(process)
+      return total + time
+    }, 0)
   }
 
   const changeStep = (direction) => {
-    if (direction === 1 && currentStep < 6) {
+    if (direction === 1 && currentStep < 5) {
       if (currentStep === 2) {
         generateBOM()
       }
@@ -688,6 +747,9 @@ const RecipeWizard = () => {
       bomPackingMaterials,
       departmentEntries,
       departmentItemOrders,
+      processEstimates,
+      labourCost,
+      customCostingItems,
       timestamp: new Date().toISOString(),
     }
 
@@ -1135,7 +1197,7 @@ const RecipeWizard = () => {
         }
 
         input[type="file"] {
-          color: transparent; /* hides text */
+          color: transparent;
         }
 
         .file-list {
@@ -1386,77 +1448,136 @@ const RecipeWizard = () => {
         }
 
         .costing-section {
-          margin-bottom: 30px;
+          margin-bottom: 24px;
         }
 
-        .costing-table-container {
+        .costing-section-header {
+          background: #f8f9fa;
           border: 1px solid #e9ecef;
-          border-radius: 8px;
-          overflow: hidden;
-          background: white;
-        }
-
-        .costing-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-
-        .costing-table th,
-        .costing-table td {
-          padding: 12px;
-          text-align: left;
-          border-bottom: 1px solid #e9ecef;
-          font-size: 14px;
-        }
-
-        .section-header {
-          font-weight: 600;
-          font-size: 16px;
-          text-align: center;
+          border-radius: 8px 8px 0 0;
           padding: 16px;
+          margin-bottom: 0;
+        }
+
+        .costing-section-header h4 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 600;
         }
 
         .material-header {
           background: #e3f2fd;
           color: #1976d2;
+          border-color: #bbdefb;
         }
 
         .consumable-header {
           background: #fff3e0;
           color: #f57c00;
+          border-color: #ffcc80;
         }
 
         .packing-header {
           background: #f3e5f5;
           color: #7b1fa2;
+          border-color: #e1bee7;
         }
 
-        .costing-input {
-          width: 80px;
-          padding: 6px 8px;
+        .process-header {
+          background: #e8f5e8;
+          color: #2e7d32;
+          border-color: #c8e6c9;
+        }
+
+        .labour-header {
+          background: #fff8e1;
+          color: #f57c00;
+          border-color: #ffecb3;
+        }
+
+        .costing-cards-container {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 16px;
+          border: 1px solid #e9ecef;
+          border-top: none;
+          border-radius: 0 0 8px 8px;
+          background: white;
+          padding: 16px;
+        }
+
+        .costing-card {
+          border: 1px solid #e9ecef;
+          border-radius: 8px;
+          padding: 16px;
+          margin: 0;
+          background: white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .costing-card-header {
+          margin-bottom: 16px;
+          padding-bottom: 8px;
+          border-bottom: 2px solid #f8f9fa;
+        }
+
+        .costing-card-header h5 {
+          margin: 0;
+          font-size: 14px;
+          font-weight: 600;
+          color: #495057;
+        }
+
+        .costing-card-content {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .costing-field {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 12px;
+          background: #f8f9fa;
+          border-radius: 4px;
+          border: 1px solid #e9ecef;
+          min-height: 16px;
+        }
+
+        .costing-field label {
+          font-weight: 500;
+          color: #495057;
+          font-size: 12px;
+          margin: 0;
+        }
+
+        .costing-field span {
+          color: #28a745;
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .costing-field-input {
+          width: 120px;
+          padding: 8px 12px;
           border: 1px solid #ced4da;
           border-radius: 4px;
-          font-size: 13px;
+          font-size: 12px;
           text-align: center;
+          outline: none;
+          transition: border-color 0.3s ease;
+          flex-shrink: 0;
         }
 
-        .total-row {
-          background: #f8f9fa;
-          font-weight: 600;
-        }
-
-        .total-label {
-          text-align: right;
-          font-weight: 600;
-        }
-
-        .total-value {
-          text-align: center;
-          font-weight: 600;
-          color: #0061ed;
+        .costing-field-input:focus {
+          border-color: #0061ed;
+          box-shadow: 0 0 0 2px rgba(0, 97, 237, 0.1);
         }
 
         .custom-costing-header {
+          display: flex;
+          justify-content: space-between;
           background: #f8f9fa;
           padding: 16px;
           border-radius: 8px;
@@ -1468,10 +1589,19 @@ const RecipeWizard = () => {
           color: #495057;
         }
 
-        .custom-costing-inputs {
+        .custom-costing-inputs, .process-time {
           display: flex;
           gap: 12px;
           align-items: center;
+        }
+
+        .processtotal-time-input {
+          padding: 8px 12px;
+          border: 1px solid #ced4da;
+          border-radius: 4px;
+          font-size: 14px;
+          min-width: 150px;
+          text-align: center;
         }
 
         .custom-input {
@@ -1521,7 +1651,7 @@ const RecipeWizard = () => {
           border: 2px solid #0061ed;
           border-radius: 8px;
           padding: 20px;
-          margin-top: 30px;
+          width: 276px;
         }
 
         .summary-row {
@@ -1565,6 +1695,18 @@ const RecipeWizard = () => {
           color: #0061ed;
         }
 
+        @media (max-width: 1200px) {
+          .costing-cards-container {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        @media (max-width: 900px) {
+          .costing-cards-container {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
         @media (max-width: 768px) {
           .two-column-layout {
             grid-template-columns: 1fr;
@@ -1602,6 +1744,51 @@ const RecipeWizard = () => {
           .btn-large {
             width: 100%;
           }
+
+          .costing-cards-container {
+            grid-template-columns: 1fr;
+            gap: 12px;
+            padding: 12px;
+          }
+
+          .costing-field {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            padding: 12px;
+          }
+
+          .costing-field label {
+            font-size: 12px;
+            font-weight: 600;
+          }
+
+          .costing-field span {
+            font-size: 14px;
+            text-align: left;
+            font-weight: 600;
+            color: #28a745;
+          }
+
+          .custom-costing-header {
+            flex-direction: column;
+            gap: 16px;
+          }
+
+          .custom-costing-inputs {
+            flex-direction: column;
+            width: 100%;
+          }
+
+          .custom-input {
+            width: 100%;
+            min-width: auto;
+          }
+
+          .costing-summary {
+            width: 100%;
+            margin-top: 20px;
+          }
         }
 
         @media (min-width: 1200px) {
@@ -1636,7 +1823,8 @@ const RecipeWizard = () => {
                     : 'inactive'
               }`}
               onClick={() => {
-                if (step.num <= currentStep + 1) {
+                // Allow navigation to any step that has been visited or is the next step
+                if (step.num <= Math.max(currentStep, 2)) {
                   if (
                     step.num === 3 &&
                     (selectedMaterials.length > 0 ||
@@ -1650,6 +1838,10 @@ const RecipeWizard = () => {
                   }
                   setCurrentStep(step.num)
                 }
+              }}
+              style={{
+                cursor: step.num <= Math.max(currentStep, 2) ? 'pointer' : 'not-allowed',
+                opacity: step.num <= Math.max(currentStep, 2) ? 1 : 0.6
               }}
             >
               <div className="step-number">Step {step.num}</div>
@@ -2389,207 +2581,193 @@ const RecipeWizard = () => {
 
               {/* Material Section */}
               <div className="costing-section">
-                <div className="costing-table-container">
-                  <table className="costing-table">
-                    <thead>
-                      <tr>
-                        <th colSpan="7" className="section-header material-header">
-                          Material
-                        </th>
-                      </tr>
-                      <tr>
-                        <th>Material Type</th>
-                        <th>Size</th>
-                        <th>Ups</th>
-                        <th>Quantity</th>
-                        <th>Selling Rate</th>
-                        <th>Profit Margin</th>
-                        <th>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {bomMaterials.map((material, index) => (
-                        <tr key={material.id}>
-                          <td>{material.name}</td>
-                          <td>{material.size || '-'}</td>
-                          <td>{material.ups || '-'}</td>
-                          <td>{material.quantity || '-'}</td>
-                          <td>
-                            <input
-                              type="number"
-                              value={material.sellingPrice || ''}
-                              onChange={(e) =>
-                                updateBOMMaterial(material.id, 'sellingPrice', e.target.value)
-                              }
-                              className="costing-input"
-                              placeholder="10"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              value={material.profitMargin || ''}
-                              onChange={(e) =>
-                                updateBOMMaterial(material.id, 'profitMargin', e.target.value)
-                              }
-                              className="costing-input"
-                              placeholder="10%"
-                            />
-                          </td>
-                          <td>-</td>
-                        </tr>
-                      ))}
-                      <tr className="total-row">
-                        <td colSpan="6" className="total-label">
-                          Total
-                        </td>
-                        <td className="total-value">Total ①</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="costing-section-header material-header">
+                  <h4>📦 Material</h4>
+                </div>
+                <div className="costing-cards-container">
+                  {bomMaterials.map((material, index) => (
+                    <div key={material.id} className="costing-card material-card">
+                      <div className="costing-card-header">
+                        <h5>{material.name}</h5>
+                      </div>
+                      <div className="costing-card-content">
+                        <div className="costing-field">
+                          <label>Size:</label>
+                          <span>{material.size || '-'}</span>
+                        </div>
+                        <div className="costing-field">
+                          <label>Ups:</label>
+                          <span>{material.ups || '-'}</span>
+                        </div>
+                        <div className="costing-field">
+                          <label>Quantity:</label>
+                          <span>{material.quantity || '-'}</span>
+                        </div>
+                        <div className="costing-field">
+                          <label>Estimated Cost:</label>
+                          <span>₹{calculateDynamicMaterialCost(material)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* Consumable Section */}
               <div className="costing-section">
-                <div className="costing-table-container">
-                  <table className="costing-table">
-                    <thead>
-                      <tr>
-                        <th colSpan="5" className="section-header consumable-header">
-                          Consumable
-                        </th>
-                      </tr>
-                      <tr>
-                        <th>Consumable Type</th>
-                        <th>Quantity</th>
-                        <th>Selling Rate</th>
-                        <th>Profit Margin</th>
-                        <th>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {bomConsumables.map((consumable, index) => (
-                        <tr key={consumable.id}>
-                          <td>{consumable.name}</td>
-                          <td>{consumable.quantity || '-'}</td>
-                          <td>
-                            <input
-                              type="number"
-                              value={consumable.sellingPrice || ''}
-                              onChange={(e) =>
-                                updateBOMConsumable(consumable.id, 'sellingPrice', e.target.value)
-                              }
-                              className="costing-input"
-                              placeholder="10"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              value={consumable.profitMargin || ''}
-                              onChange={(e) =>
-                                updateBOMConsumable(consumable.id, 'profitMargin', e.target.value)
-                              }
-                              className="costing-input"
-                              placeholder="10%"
-                            />
-                          </td>
-                          <td>-</td>
-                        </tr>
-                      ))}
-                      <tr className="total-row">
-                        <td colSpan="4" className="total-label">
-                          Total
-                        </td>
-                        <td className="total-value">Total ②</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="costing-section-header consumable-header">
+                  <h4>🧪 Consumable</h4>
+                </div>
+                <div className="costing-cards-container">
+                  {bomConsumables.map((consumable, index) => (
+                    <div key={consumable.id} className="costing-card consumable-card">
+                      <div className="costing-card-header">
+                        <h5>{consumable.name}</h5>
+                      </div>
+                      <div className="costing-card-content">
+                        <div className="costing-field">
+                          <label>Quantity:</label>
+                          <span>{consumable.quantity || '-'}</span>
+                        </div>
+                        <div className="costing-field">
+                          <label>Estimated Cost:</label>
+                          <span>₹{calculateDynamicConsumableCost(consumable)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
               {/* Packing Section */}
               <div className="costing-section">
-                <div className="costing-table-container">
-                  <table className="costing-table">
-                    <thead>
-                      <tr>
-                        <th colSpan="5" className="section-header packing-header">
-                          Packing
-                        </th>
-                      </tr>
-                      <tr>
-                        <th>Packing Material Type</th>
-                        <th>Quantity</th>
-                        <th>Selling Rate</th>
-                        <th>Profit Margin</th>
-                        <th>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {bomPackingMaterials.map((packing, index) => (
-                        <tr key={packing.id}>
-                          <td>{packing.name}</td>
-                          <td>{packing.quantity || '-'}</td>
-                          <td>
-                            <input
-                              type="number"
-                              value={packing.sellingPrice || ''}
-                              onChange={(e) =>
-                                updateBOMPackingMaterial(packing.id, 'sellingPrice', e.target.value)
-                              }
-                              className="costing-input"
-                              placeholder="10"
-                            />
-                          </td>
-                          <td>
-                            <input
-                              type="number"
-                              value={packing.profitMargin || ''}
-                              onChange={(e) =>
-                                updateBOMPackingMaterial(packing.id, 'profitMargin', e.target.value)
-                              }
-                              className="costing-input"
-                              placeholder="10%"
-                            />
-                          </td>
-                          <td>-</td>
-                        </tr>
-                      ))}
-                      <tr className="total-row">
-                        <td colSpan="4" className="total-label">
-                          Total
-                        </td>
-                        <td className="total-value">Total ③</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div className="costing-section-header packing-header">
+                  <h4>📦 Packing</h4>
+                </div>
+                <div className="costing-cards-container">
+                  {bomPackingMaterials.map((packing, index) => (
+                    <div key={packing.id} className="costing-card packing-card">
+                      <div className="costing-card-header">
+                        <h5>{packing.name}</h5>
+                      </div>
+                      <div className="costing-card-content">
+                        <div className="costing-field">
+                          <label>Quantity:</label>
+                          <span>{packing.quantity || '-'}</span>
+                        </div>
+                        <div className="costing-field">
+                          <label>Estimated Cost:</label>
+                          <span>₹{calculateDynamicPackingCost(packing)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Process Section */}
+              <div className="costing-section">
+                <div className="costing-section-header process-header">
+                  <h4>⚙️ Process</h4>
+                </div>
+                <div className="costing-cards-container">
+                  {getSelectedProcesses().map((process, index) => (
+                    <div key={process} className="costing-card process-card">
+                      <div className="costing-card-header">
+                        <h5>{process}</h5>
+                      </div>
+                      <div className="costing-card-content">
+                        <div className="costing-field">
+                          <label>Time (Hours):</label>
+                          <span>{calculateDynamicProcessTime(process)}</span>
+                        </div>
+                        <div className="costing-field">
+                          <label>Estimated Cost:</label>
+                          <span>₹{calculateDynamicProcessCost(process)}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Labour Charges Section */}
+              <div className="costing-section">
+                <div className="costing-section-header labour-header">
+                  <h4>👷 Labour Charges</h4>
+                </div>
+                <div className="costing-cards-container">
+                  <div className="costing-card labour-card">
+                    <div className="costing-card-header">
+                      <h5>Labour</h5>
+                    </div>
+                    <div className="costing-card-content">
+                      <div className="costing-field">
+                        <label>Estimated Cost:</label>
+                        <input
+                          type="number"
+                          className="costing-field-input"
+                          placeholder="Enter cost"
+                          value={labourCost}
+                          onChange={(e) => setLabourCost(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Custom Costing Section */}
               <div className="costing-section">
                 <div className="custom-costing-header">
-                  <h4>Custom Costing</h4>
-                  <div className="custom-costing-inputs">
-                    <input
-                      type="text"
-                      placeholder="Column name"
-                      value={customCostingName}
-                      onChange={(e) => setCustomCostingName(e.target.value)}
-                      className="custom-input"
-                    />
-                    <input
-                      type="number"
-                      placeholder="Value"
-                      value={customCostingValue}
-                      onChange={(e) => setCustomCostingValue(e.target.value)}
-                      className="custom-input"
-                    />
-                    <button onClick={addCustomCosting} className="btn btn-primary">
-                      Add
-                    </button>
+                  <div>
+                    <h5>Custom Costing</h5>
+                    <div className="custom-costing-inputs">
+                      <input
+                        type="text"
+                        placeholder="Column name"
+                        value={customCostingName}
+                        onChange={(e) => setCustomCostingName(e.target.value)}
+                        className="custom-input"
+                      />
+                      <input
+                        type="number"
+                        placeholder="Value"
+                        value={customCostingValue}
+                        onChange={(e) => setCustomCostingValue(e.target.value)}
+                        className="custom-input"
+                      />
+                      <button onClick={addCustomCosting} className="btn btn-primary">
+                        Add
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div>
+                      <h5>Total process time: {calculateTotalProcessTime().toFixed(1)} hours</h5>
+                    </div>
+                    <h5>Summary:</h5>
+
+                    <div className="costing-summary">
+                      <div className="summary-row">
+                        <span className="summary-label">Sub Total:</span>
+                        <span className="summary-value">₹{calculateSubTotal().toFixed(2)}</span>
+                      </div>
+
+                      {customCostingItems.length > 0 &&
+                        customCostingItems.map((item) => (
+                          <div className="summary-row" key={item.name}>
+                            <span className="summary-label">{item.name}:</span>
+                            <span className="summary-value">₹{item.value.toFixed(2)}</span>
+                          </div>
+                        ))}
+
+                      <div className="summary-row final-total">
+                        <span className="summary-label">Final Total:</span>
+                        <span className="summary-value">₹{calculateFinalTotal().toFixed(2)}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -2609,30 +2787,6 @@ const RecipeWizard = () => {
                     ))}
                   </div>
                 )}
-              </div>
-
-              {/* Summary Section */}
-              <div className="costing-summary">
-                <div className="summary-row">
-                  <span className="summary-label">Sub Total:</span>
-                  <span className="summary-value">₹10,000</span>
-                </div>
-                <div className="summary-row">
-                  <span className="summary-label">Shipping:</span>
-                  <span className="summary-value">
-                    ₹
-                    <input
-                      type="number"
-                      value={shippingCost}
-                      onChange={(e) => setShippingCost(e.target.value)}
-                      className="shipping-input"
-                    />
-                  </span>
-                </div>
-                <div className="summary-row final-total">
-                  <span className="summary-label">Final Total:</span>
-                  <span className="summary-value">₹{calculateFinalTotal().toFixed(2)}</span>
-                </div>
               </div>
             </div>
           )}
